@@ -7,13 +7,25 @@ import { FormError } from '../components/common/FormError';
 import { Button } from '../components/common/Button';
 import { eventVisuals } from '../components/dashboard/eventIcon';
 import { relativeTimeFromIso } from '../utils/relativeTime';
+import { compareStages } from '../hooks/useDashboardStageCelebration';
+import type { Stage } from '../types/assessment.types';
 
+// Derive direction from the backend's stage_changed payload
+// (`details.from_stage` + `details.to_stage`). Tolerates a legacy
+// `details.direction` for forward-compat.
 const stageDirectionFromDetails = (
   details?: Record<string, unknown>
 ): 'up' | 'down' | 'same' | null => {
   if (!details) return null;
-  const dir = details['direction'];
-  if (dir === 'up' || dir === 'down' || dir === 'same') return dir;
+  const legacy = details['direction'];
+  if (legacy === 'up' || legacy === 'down' || legacy === 'same') return legacy;
+  const from = details['from_stage'];
+  const to = details['to_stage'];
+  if (typeof from === 'string' && typeof to === 'string') {
+    const dir = compareStages(to as Stage, from as Stage);
+    if (dir === 'first') return null;
+    return dir;
+  }
   return null;
 };
 

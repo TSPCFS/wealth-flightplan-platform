@@ -147,9 +147,10 @@ export const activityFirstPage: ActivityResponse = {
     },
     {
       event_type: 'stage_changed',
-      title: 'Moved from Momentum to Freedom',
+      title: 'Moved from Momentum → Freedom',
       timestamp: '2026-05-12T10:31:00Z',
-      details: { direction: 'up' },
+      // Backend emits from_stage + to_stage; FE derives direction client-side.
+      details: { from_stage: 'Momentum', to_stage: 'Freedom', assessment_id: 'a1' },
     },
   ],
   next_cursor: 'cursor-2',

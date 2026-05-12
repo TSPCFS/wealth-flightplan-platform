@@ -192,9 +192,9 @@ All fields optional. Missing fields untouched. `email` is not editable here (sep
     "next_stage": "Independence"
   },
   "overall_progress": {
-    "framework_completion_pct": 35,
+    "framework_completion_pct": 33,
     "steps_completed": 2,
-    "steps_total": 7,
+    "steps_total": 6,
     "current_focus_step": "3",
     "next_step": { "step_number": "3", "title": "Money Matrix" }
   },
@@ -372,7 +372,15 @@ Undo. **Response 200:** same shape.
 ```
 
 Event types (Phase 5): `assessment_submitted`, `worksheet_submitted`, `step_completed`, `stage_changed`.
+
 `stage_changed` is derived (consecutive 5Q/10Q assessments where calculated_stage differs) — never stored, computed on read.
+
+Per-event `details` shape:
+- `assessment_submitted`: `{ assessment_id, assessment_type, stage, score }` (stage is null for gap_test)
+- `worksheet_submitted`: `{ worksheet_id, worksheet_code }`
+- `step_completed`: `{ step_number }`
+- `stage_changed`: `{ from_stage, to_stage, assessment_id }`. The FE derives direction (up/down/same) from `from_stage` + `to_stage` against the canonical stage order — backend does NOT emit a `direction` field.
+
 Aggregations like calculator use are out of scope for Phase 5.
 
 ### GET /users/milestones
