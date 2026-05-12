@@ -135,7 +135,7 @@ All authenticated endpoints expect: `Authorization: Bearer <access_token>`.
 
 ---
 
-## User Endpoints (Phase 1 minimum)
+## User Endpoints
 
 ### GET /users/profile
 **Auth required.**
@@ -151,9 +151,178 @@ All authenticated endpoints expect: `Authorization: Bearer <access_token>`.
   "household_size": 4,
   "number_of_dependants": 2,
   "subscription_tier": "free",
+  "current_stage": "Freedom",
+  "latest_assessment_id": "uuid",
   "created_at": "2026-05-12T10:30:00Z"
 }
 ```
+- `current_stage`: string | null — stage from most recent 5Q or 10Q (null if user has never taken one)
+- `latest_assessment_id`: string | null — most recent assessment of any type (null if none)
+
+---
+
+## Assessment Endpoints (Phase 2)
+
+All require Bearer auth. Each submission inserts a new row in `assessments` (no overwrites). History preserved.
+
+### Scoring tables
+
+**5Q / 10Q letter → points:** `a=1, b=2, c=3, d=4`
+
+**5Q stage bands (total 5-20):**
+- 5-8 → `Foundation`
+- 9-12 → `Momentum`
+- 13-16 → `Freedom`
+- 17-20 → `Independence`
+
+**10Q stage bands (total 10-40):**
+- 10-16 → `Foundation`
+- 17-23 → `Momentum`
+- 24-30 → `Freedom`
+- 31-36 → `Independence`
+- 37-40 → `Abundance`
+
+**GAP Test value → points:** `no=0, partially=1, yes=2`
+
+**GAP Test bands (total 0-24):**
+- 20-24 → `solid_plan`
+- 13-19 → `meaningful_gaps`
+- 0-12 → `wide_gaps`
+
+### Question catalogue
+
+**5Q (also Q1-Q5 of 10Q):**
+1. **q1** — *If both earners stopped today, how long could you maintain current lifestyle?* — a: <1mo · b: 1-3mo · c: 3-12mo · d: indefinite (passive covers)
+2. **q2** — *How is your household budget structured?* — a: none · b: rough mental tally · c: written · d: zero-based
+3. **q3** — *State of your consumer debt (credit cards, store accounts, personal loans)?* — a: not tracked · b: >15% of income · c: <15% and reducing · d: zero
+4. **q4** — *6+ months of income protection (insurance + cash reserves)?* — a: none · b: partial · c: in place · d: in place + passive income
+5. **q5** — *% of net worth that is income-generating (excludes home, cars, contents)?* — a: <10% · b: 10-30% · c: 30-60% · d: >60%
+
+**Additional Q6-Q10 for 10Q:**
+6. **q6** — *Will status?* — a: none · b: >5yr old · c: <5yr old · d: reviewed in last 12mo
+7. **q7** — *TFSA usage?* — a: none · b: irregular · c: consistent, below cap · d: maxed for the couple
+8. **q8** — *Section 11F retirement (27.5%, capped R350k)?* — a: none · b: employer only · c: partial · d: optimised
+9. **q9** — *Last insurance cover review (life/disability/income protection)?* — a: >3yr · b: 2-3yr · c: 1-2yr · d: <12mo
+10. **q10** — *Last Net Worth Statement produced?* — a: never · b: >5yr · c: 1-2yr · d: annually
+
+**GAP Test (12 items, each `yes`/`partially`/`no`):**
+1. **q1** — *Current will signed within last 3 years*
+2. **q2** — *Known monthly surplus to within R5,000 accuracy*
+3. **q3** — *Monthly Money Conversation in last 30 days*
+4. **q4** — *Emergency fund equal to 3-6 months of expenses*
+5. **q5** — *Life cover sized for debt + 10-15yr income replacement*
+6. **q6** — *Income protection (monthly benefit) in place*
+7. **q7** — *Short-term insurance reviewed in last 12mo (with 2+ quotes)*
+8. **q8** — *TFSA maxed (R36k per person this tax year)*
+9. **q9** — *Section 11F retirement contribution optimised (27.5%)*
+10. **q10** — *Bucket 3 "Dream Fund" held in a separate, named account*
+11. **q11** — *Business owner: key-person & buy-and-sell cover current — answer `yes` if not a business owner*
+12. **q12** — *Annual cover review with an advisor in last 12mo*
+
+### POST /assessments/5q
+**Request:**
+```json
+{
+  "responses": { "q1": "c", "q2": "d", "q3": "b", "q4": "a", "q5": "c" },
+  "completion_time_seconds": 95
+}
+```
+- All 5 keys required, each value `a|b|c|d`
+- `completion_time_seconds`: optional non-negative integer
+
+**Response 201:**
+```json
+{
+  "assessment_id": "uuid",
+  "assessment_type": "5q",
+  "total_score": 13,
+  "calculated_stage": "Freedom",
+  "previous_stage": "Momentum",
+  "stage_details": {
+    "name": "Freedom",
+    "income_runway": "3-12 months",
+    "description": "Mostly debt-free; consistently investing 20%+ of income."
+  },
+  "recommendations": [
+    "Complete the Net Worth Statement (Appendix B)",
+    "Review TFSA and RA contributions",
+    "Take the full 10-question assessment for deeper placement"
+  ],
+  "created_at": "2026-05-12T10:30:00Z"
+}
+```
+- `previous_stage`: null if user has no prior 5Q/10Q
+- `stage_details.description`: one-line stage summary (backend authors the strings)
+- `recommendations`: 3-5 stage-specific bullets (backend authors)
+**Errors:** 400 `VALIDATION_ERROR`, 401
+
+### POST /assessments/10q
+Same shape with `q1..q10`. Total 10-40. 5 stage bands.
+
+### POST /assessments/gap-test
+**Request:**
+```json
+{
+  "responses": { "q1": "yes", "q2": "partially", "q3": "no", "q4": "no", "q5": "yes", "q6": "yes", "q7": "partially", "q8": "no", "q9": "no", "q10": "yes", "q11": "yes", "q12": "partially" },
+  "completion_time_seconds": 240
+}
+```
+**Response 201:**
+```json
+{
+  "assessment_id": "uuid",
+  "assessment_type": "gap_test",
+  "total_score": 13,
+  "band": "meaningful_gaps",
+  "gaps_identified": [
+    {
+      "question_code": "q3",
+      "title": "Monthly Money Conversation",
+      "current_status": "no",
+      "priority": "high",
+      "recommendation": "Schedule a 30-minute Money Conversation with your partner this week (see Appendix E)."
+    },
+    {
+      "question_code": "q2",
+      "title": "Monthly surplus accuracy",
+      "current_status": "partially",
+      "priority": "medium",
+      "recommendation": "Tighten budget tracking — aim to know surplus within R5,000 each month."
+    }
+  ],
+  "advisor_recommendation": "Book a GAP Plan™ conversation",
+  "gap_plan_eligible": true,
+  "created_at": "2026-05-12T10:30:00Z"
+}
+```
+- `band`: `solid_plan` | `meaningful_gaps` | `wide_gaps`
+- `gap_plan_eligible`: true if total < 20 OR any answer is `no`
+- `gaps_identified`: any `no` (priority `high`) or `partially` (priority `medium`) answer. `yes` excluded. Sorted: `no` first then `partially`, then by question number ascending.
+- `recommendation` strings authored by backend, one per gap
+
+### GET /assessments/history
+**Response 200:**
+```json
+{
+  "assessments": [
+    { "assessment_id": "uuid", "assessment_type": "10q", "total_score": 28, "calculated_stage": "Freedom", "created_at": "2026-05-12T10:30:00Z" }
+  ],
+  "current_stage": "Freedom",
+  "stage_progression": [
+    { "stage": "Foundation", "score": 12, "date": "2026-01-15T08:00:00Z" },
+    { "stage": "Momentum", "score": 18, "date": "2026-03-20T08:00:00Z" },
+    { "stage": "Freedom", "score": 28, "date": "2026-05-12T10:30:00Z" }
+  ]
+}
+```
+- `assessments`: all submissions for the user, newest first, all types. Each entry includes type-appropriate score field (`calculated_stage` for 5Q/10Q, `band` for gap_test — use `null` for fields that don't apply).
+- `current_stage`: most recent 5Q or 10Q `calculated_stage`. null if none.
+- `stage_progression`: one entry per 5Q/10Q submission, oldest first.
+
+### GET /assessments/{assessment_id}
+Owner-only.
+**Response 200:** full submission including raw `responses`, score, stage/band, `gaps_identified` (for gap test), `recommendations`, `completion_time_seconds`, `created_at`.
+**Errors:** 404 `NOT_FOUND` for either non-existent or other-user IDs (no enumeration).
 
 ---
 
