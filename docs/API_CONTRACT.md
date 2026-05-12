@@ -11,7 +11,7 @@ All authenticated endpoints expect: `Authorization: Bearer <access_token>`.
 
 ## Conventions
 
-- All timestamps ISO 8601 UTC: `2026-05-12T10:30:00Z`
+- All timestamps ISO 8601 UTC with explicit `Z` suffix: `2026-05-12T10:30:00Z`. Fractional seconds optional but tz designator is required. Backend must emit tz-aware UTC datetimes (e.g. `datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")`).
 - All IDs are UUID v4 strings
 - Error response shape (all 4xx/5xx):
   ```json
@@ -83,7 +83,9 @@ All authenticated endpoints expect: `Authorization: Bearer <access_token>`.
   }
 }
 ```
-**Errors:** 401 `INVALID_CREDENTIALS`, 403 `EMAIL_NOT_VERIFIED` (still allow login but flag), 429 rate-limited
+**Errors:** 401 `INVALID_CREDENTIALS`, 429 rate-limited
+
+**Unverified email policy:** Login SUCCEEDS for unverified users (200 with full token pair). The response `user.email_verified` flag tells the UI whether to render a "please verify" banner. There is NO 403 path for unverified login in Phase 1. Endpoints that require verification (added in later phases) will return 403 `EMAIL_NOT_VERIFIED` themselves.
 
 ---
 
