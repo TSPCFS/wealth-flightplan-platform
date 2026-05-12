@@ -55,6 +55,7 @@ class User(Base):
     # Account
     account_status: Mapped[str] = mapped_column(String(20), default="active", nullable=False)
     subscription_tier: Mapped[str] = mapped_column(String(20), default="free", nullable=False)
+    is_business_owner: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     # 2FA
     two_factor_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)

@@ -110,7 +110,26 @@ class UserProfile(ZuluResponse):
     household_income_monthly_after_tax: MoneyAmount | None = None
     household_size: int | None = None
     number_of_dependants: int | None = None
+    is_business_owner: bool = False
+    primary_language: str = "en"
+    timezone: str = "SAST"
     subscription_tier: str
     current_stage: str | None = None
     latest_assessment_id: UUID | None = None
     created_at: ZuluDateTime
+
+
+class ProfileUpdateRequest(BaseModel):
+    """Partial profile update. Every field is optional; the API layer applies
+    only the fields that are present in the request body."""
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    first_name: str | None = Field(default=None, min_length=1, max_length=100)
+    last_name: str | None = Field(default=None, min_length=1, max_length=100)
+    household_income_monthly_after_tax: Decimal | None = Field(default=None, gt=0)
+    household_size: int | None = Field(default=None, ge=1)
+    number_of_dependants: int | None = Field(default=None, ge=0)
+    is_business_owner: bool | None = None
+    primary_language: str | None = Field(default=None, min_length=2, max_length=10)
+    timezone: str | None = Field(default=None, min_length=1, max_length=50)
