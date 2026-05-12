@@ -18,6 +18,8 @@ describe('userService', () => {
         last_name: 'User',
         email_verified: true,
         subscription_tier: 'free',
+        current_stage: null,
+        latest_assessment_id: null,
         created_at: '2024-01-01',
       };
       vi.mocked(apiClient.getProfile).mockResolvedValue(mockProfile);
