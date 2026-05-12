@@ -23,6 +23,9 @@ export interface User {
   // Populated only on /users/profile. Login's nested user payload omits these.
   current_stage?: Stage | null;
   latest_assessment_id?: string | null;
+  is_business_owner?: boolean;
+  primary_language?: string;
+  timezone?: string;
   created_at?: string;
 }
 
@@ -98,5 +101,8 @@ export interface PasswordResetConfirmResponse {
 export interface ProfileResponse extends User {
   current_stage: Stage | null;
   latest_assessment_id: string | null;
+  is_business_owner: boolean;
+  primary_language: string;
+  timezone: string;
   created_at: string;
 }

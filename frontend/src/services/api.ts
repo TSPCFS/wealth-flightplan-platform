@@ -48,6 +48,14 @@ import type {
   WorksheetsListResponse,
   WorksheetSubmission,
 } from '../types/worksheet.types';
+import type {
+  ActivityResponse,
+  DashboardResponse,
+  MilestonesResponse,
+  ProfilePatch,
+  ProgressResponse,
+  RecommendationsResponse,
+} from '../types/user.types';
 
 // localStorage token keys. HttpOnly cookies are post-MVP.
 export const ACCESS_TOKEN_KEY = 'wfp.access_token';
@@ -389,6 +397,49 @@ class ApiClient {
       ? decodeURIComponent(match[1].trim())
       : `worksheet-${worksheetId}.${format}`;
     return { blob, filename };
+  }
+
+  // User endpoints (Phase 5)
+  async updateProfile(patch: ProfilePatch): Promise<ProfileResponse> {
+    return this.apiRequest<ProfileResponse>('/users/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(patch),
+    });
+  }
+
+  async getDashboard(): Promise<DashboardResponse> {
+    return this.apiRequest<DashboardResponse>('/users/dashboard');
+  }
+
+  async getRecommendations(): Promise<RecommendationsResponse> {
+    return this.apiRequest<RecommendationsResponse>('/users/recommendations');
+  }
+
+  async getUserProgress(): Promise<ProgressResponse> {
+    return this.apiRequest<ProgressResponse>('/users/progress');
+  }
+
+  async setStepComplete(stepNumber: StepNumber): Promise<ProgressResponse> {
+    return this.apiRequest<ProgressResponse>(
+      `/users/progress/steps/${encodeURIComponent(stepNumber)}/complete`,
+      { method: 'POST' }
+    );
+  }
+
+  async setStepIncomplete(stepNumber: StepNumber): Promise<ProgressResponse> {
+    return this.apiRequest<ProgressResponse>(
+      `/users/progress/steps/${encodeURIComponent(stepNumber)}/incomplete`,
+      { method: 'POST' }
+    );
+  }
+
+  async getActivity(cursor?: string, limit?: number): Promise<ActivityResponse> {
+    const query = buildQuery({ cursor, limit });
+    return this.apiRequest<ActivityResponse>(`/users/activity${query}`);
+  }
+
+  async getMilestones(): Promise<MilestonesResponse> {
+    return this.apiRequest<MilestonesResponse>('/users/milestones');
   }
 }
 

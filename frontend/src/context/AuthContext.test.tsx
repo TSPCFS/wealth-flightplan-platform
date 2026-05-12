@@ -29,6 +29,9 @@ const mockUser = {
   subscription_tier: 'free',
   current_stage: null,
   latest_assessment_id: null,
+  is_business_owner: false,
+  primary_language: 'en',
+  timezone: 'SAST',
   created_at: '2026-05-12T10:30:00Z',
 };
 
