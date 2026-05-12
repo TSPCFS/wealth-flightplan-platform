@@ -76,6 +76,35 @@ export const DashboardPage: React.FC = () => {
             </>
           )}
         </section>
+
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Link
+            to="/framework"
+            className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition"
+          >
+            <h3 className="text-base font-semibold text-gray-900">Explore the framework</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Seven steps from financial GPS to abundance.
+            </p>
+            <span className="inline-flex items-center text-sm font-medium text-blue-600 mt-3">
+              Open →
+            </span>
+          </Link>
+          <Link
+            to="/examples"
+            className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition"
+          >
+            <h3 className="text-base font-semibold text-gray-900">
+              Try an example calculator
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Worked examples with interactive compound interest, debt, budget and net worth tools.
+            </p>
+            <span className="inline-flex items-center text-sm font-medium text-blue-600 mt-3">
+              Browse →
+            </span>
+          </Link>
+        </section>
       </div>
     </div>
   );
