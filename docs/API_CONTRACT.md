@@ -460,6 +460,51 @@ All required, numbers ≥ 0.
 }
 ```
 
+### Calculator config input shapes
+
+`calculator_config.inputs[]` entries use one of these shapes:
+
+**Scalar (`number`, `text`, `select`):**
+```json
+{ "name": "years", "label": "Years", "type": "number", "default": 25,
+  "min": 1, "max": 60, "step": 1, "format": "integer" }
+```
+- `format`: `"currency" | "integer" | "percent" | "decimal"` (number only)
+- `options: string[]` required when `type: "select"`
+
+**Array (`array`):** for table-style inputs like `debts`, `lifestyle_assets`, `liabilities`. Use `type: "array"`. `item_schema` is an **ordered array** of column definitions (so rendering order + labels are preserved):
+```json
+{
+  "name": "debts",
+  "label": "Debts",
+  "type": "array",
+  "min_items": 1,
+  "max_items": 20,
+  "item_schema": [
+    { "name": "name",             "label": "Account",  "type": "text" },
+    { "name": "balance",          "label": "Balance",  "type": "number", "format": "currency", "min": 0 },
+    { "name": "annual_rate_pct",  "label": "Rate",     "type": "number", "format": "percent",  "min": 0, "max": 50 },
+    { "name": "minimum_payment",  "label": "Minimum",  "type": "number", "format": "currency", "min": 0 }
+  ],
+  "default": [
+    { "name": "Credit Card", "balance": 30000, "annual_rate_pct": 24, "minimum_payment": 1500 }
+  ]
+}
+```
+The contract uses `type: "array"`, NOT `type: "list"`. `item_schema` is an array, NOT an object map.
+
+### Compound interest semantics
+
+The `compound_interest` calculator uses **nominal monthly compounding throughout** (the textbook formula `FV = PV(1+r)^n + PMT × [((1+r)^n - 1) / r]` with `r = annual_rate_pct/100/12`, `n = years × 12`). Some book examples in `wealth_index.md` quote figures that imply annual compounding during idle phases (e.g. WE-4's R11.06M for Nomvula's 25-year idle phase) or real returns rather than nominal (e.g. WE-6's R1.9M implies ~6% effective). These book figures are **illustrative approximations**, not exact targets — calculator output may diverge by 5–25%. The `educational_text` for each affected example should disclose the difference.
+
+### Debtonator™ implementation
+
+The `debtonator` method is implemented as **avalanche with the highest-rate debt's effective rate capped at prime (10.25%)** — a simplified model of the access-bond mechanic described in `wealth_index.md` WE-12. Captures the headline saving without modelling daily-interest accrual or partial-draw cashflows. A higher-fidelity model is out of scope for Phase 3.
+
+### Examples with `calculator_type: null`
+
+Not every worked example has an interactive calculator. WE-9 (Vitality), WE-10 (Section 11F tax relief — deferred), and WE-13 (Bond date-change trick — daily-interest mechanic doesn't fit the month-step debt simulator faithfully) are descriptive-only in Phase 3. The frontend should render the description + `educational_text` and omit the calculator block.
+
 ### GET /content/framework
 **Response 200:**
 ```json
