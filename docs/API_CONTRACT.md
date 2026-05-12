@@ -653,6 +653,171 @@ All monetary fields (`household_income_monthly_after_tax`, all `total_*`/`balanc
 
 ---
 
+## Worksheet Endpoints (Phase 4)
+
+All require Bearer auth. Worksheets are user-data forms with backend validation and calculation. Each submission inserts a row into `worksheet_responses` (per DATABASE_SCHEMA.md). Drafts (`is_draft: true`) are autosaved as the user types; submits (`is_draft: false`) trigger validation and calculation.
+
+### Worksheet codes
+
+- `APP-A` — Zero-Based Budget
+- `APP-B` — Net Worth Statement
+- `APP-C` — Risk Cover Review Checklist
+- `APP-D` — Debt Disclosure
+- `APP-E` — Monthly Money Review Agenda
+- `APP-F` — attooh! Life File (estate documentation)
+- `APP-G` — 10-Question Self-Assessment *(already wired via /assessments/10q; the worksheet variant just persists the same questions as a fillable, draftable form. Use the existing assessment endpoint for submission. Listed here for completeness.)*
+
+### GET /worksheets
+List worksheet catalogue (metadata only; no user data).
+**Response 200:**
+```json
+{
+  "worksheets": [
+    {
+      "worksheet_code": "APP-A",
+      "title": "Zero-Based Budget",
+      "description": "Every rand has a job. Income − (Needs + Wants + Invest) = R0.",
+      "related_step_number": "2",
+      "related_example_codes": ["WE-7"],
+      "estimated_time_minutes": 30,
+      "has_calculator": true
+    }
+  ],
+  "total": 7
+}
+```
+
+### GET /worksheets/{worksheet_code}
+Single worksheet schema (form definition) — no user data.
+**Response 200:**
+```json
+{
+  "worksheet_code": "APP-A",
+  "title": "Zero-Based Budget",
+  "description": "...",
+  "sections": [
+    {
+      "name": "income",
+      "label": "Income",
+      "fields": [
+        { "name": "salary_1", "label": "Salary (primary earner)", "type": "number", "format": "currency", "min": 0 },
+        { "name": "salary_2", "label": "Salary (secondary)", "type": "number", "format": "currency", "min": 0 }
+      ]
+    },
+    {
+      "name": "needs",
+      "label": "Needs",
+      "fields": [
+        { "name": "bond", "label": "Bond / rent", "type": "number", "format": "currency", "min": 0 },
+        { "name": "utilities", "label": "Utilities", "type": "number", "format": "currency", "min": 0 }
+      ]
+    }
+  ]
+}
+```
+- Section fields use the same scalar shapes as `calculator_config.inputs` (`type: number|text|select`).
+- Some worksheets use `type: array` at the section level (e.g. APP-D Debt Disclosure has one section `debts` whose `fields` is empty but the section carries `item_schema` + `min_items`/`max_items`). Document any worksheet-specific shapes in the seed.
+
+### POST /worksheets/{worksheet_code}/draft
+Save (or overwrite) the user's current draft. Idempotent — at most one draft per (user, worksheet_code).
+**Request:**
+```json
+{
+  "response_data": { "income": { "salary_1": 45000 }, "needs": { "bond": 11000 } },
+  "completion_percentage": 25
+}
+```
+- `response_data`: free-form JSON; partial allowed
+- `completion_percentage`: integer 0-100 (FE may compute and pass; backend re-derives on submit)
+
+**Response 200:**
+```json
+{
+  "worksheet_id": "uuid",
+  "worksheet_code": "APP-A",
+  "is_draft": true,
+  "completion_percentage": 25,
+  "updated_at": "2026-05-12T10:30:00Z"
+}
+```
+
+### POST /worksheets/{worksheet_code}/submit
+Submit final response. Validates against worksheet schema, runs the calculation (if any), persists as a non-draft row, deletes the matching draft.
+**Request:** same shape as `/draft` (full `response_data`).
+**Response 201:**
+```json
+{
+  "worksheet_id": "uuid",
+  "worksheet_code": "APP-A",
+  "is_draft": false,
+  "completion_percentage": 100,
+  "calculated_values": {
+    "total_income": 45000,
+    "total_needs": 32000,
+    "total_wants": 3500,
+    "total_invest": 9500,
+    "surplus_deficit": 0,
+    "needs_pct": 71.1,
+    "wants_pct": 7.8,
+    "invest_pct": 21.1,
+    "status": "balanced"
+  },
+  "feedback": {
+    "status": "needs_attention",
+    "message": "Needs at 71.1% exceeds the 50% target by 21.1 pts.",
+    "recommendations": [
+      "Review bond affordability or refinance options",
+      "Audit recurring subscriptions and discretionary fixed costs"
+    ]
+  },
+  "created_at": "2026-05-12T10:30:00Z"
+}
+```
+- `feedback.status`: `"on_track" | "needs_attention" | "critical"`
+- `calculated_values` shape varies per worksheet (documented in the worksheet catalogue's `calculated_schema` field)
+- For worksheets without a calculator (APP-C, APP-E, APP-F): `calculated_values: null`, `feedback` describes completion-based status only.
+**Errors:** 400 `VALIDATION_ERROR` (missing required fields, out-of-range numbers, etc.), 404 `NOT_FOUND` for unknown worksheet_code.
+
+### GET /worksheets/{worksheet_code}/latest
+Returns the user's most recent submission OR draft for this worksheet (whichever is newer).
+**Response 200:**
+```json
+{
+  "worksheet_id": "uuid",
+  "worksheet_code": "APP-A",
+  "is_draft": false,
+  "response_data": { /* ... */ },
+  "calculated_values": { /* ... */ },
+  "feedback": { /* ... */ },
+  "completion_percentage": 100,
+  "created_at": "2026-05-12T10:30:00Z",
+  "updated_at": "2026-05-12T10:30:00Z"
+}
+```
+**Response 204:** No content (user has neither submitted nor drafted this worksheet).
+
+### GET /worksheets/{worksheet_code}/history
+**Response 200:**
+```json
+{
+  "worksheet_code": "APP-A",
+  "submissions": [
+    { "worksheet_id": "uuid", "completion_percentage": 100, "calculated_values_summary": { "surplus_deficit": 0, "needs_pct": 71.1 }, "created_at": "2026-05-12T10:30:00Z" }
+  ]
+}
+```
+- `submissions`: completed (non-draft) only, newest first
+- `calculated_values_summary`: 2-4 headline values per worksheet (defined in seed)
+
+### GET /worksheets/{worksheet_id}/export/{format}
+- `format`: `"pdf" | "csv"`
+- Returns the binary file with `Content-Disposition: attachment; filename=...`
+- PDF generated server-side (ReportLab) using worksheet-specific templates
+- CSV is a flat key/value of `response_data` + `calculated_values`
+**Errors:** 404 `NOT_FOUND` if worksheet_id doesn't belong to user OR doesn't exist (no enumeration), 400 if `is_draft: true` (cannot export drafts).
+
+---
+
 ## CORS
 
 Backend must allow these origins for Phase 1:
