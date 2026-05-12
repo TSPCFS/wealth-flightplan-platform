@@ -131,3 +131,17 @@ def register_payload(email: str = "alice@example.com", **overrides):
     }
     payload.update(overrides)
     return payload
+
+
+async def authed_session(client, email: str) -> tuple[str, str]:
+    """Register a user and return (access_token, user_id)."""
+    r = await client.post("/auth/register", json=register_payload(email))
+    assert r.status_code == 201, r.text
+    user_id = r.json()["user_id"]
+    login = await client.post("/auth/login", json={"email": email, "password": VALID_PASSWORD})
+    assert login.status_code == 200, login.text
+    return login.json()["access_token"], user_id
+
+
+def bearer(token: str) -> dict:
+    return {"Authorization": f"Bearer {token}"}

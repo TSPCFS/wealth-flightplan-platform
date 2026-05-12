@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
+from app.api import assessments as assessments_routes
 from app.api import auth as auth_routes
 from app.api import users as users_routes
 from app.api.deps import limiter
@@ -48,9 +49,11 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Wealth FlightPlan API",
         description=(
-            "Phase 1: Authentication & user management. " "Source of truth: docs/API_CONTRACT.md."
+            "Phase 1: Authentication & user management. "
+            "Phase 2: Assessments. "
+            "Source of truth: docs/API_CONTRACT.md."
         ),
-        version="0.1.0",
+        version="0.2.0",
         lifespan=lifespan,
     )
 
@@ -77,6 +80,7 @@ def create_app() -> FastAPI:
     # Routes
     app.include_router(auth_routes.router)
     app.include_router(users_routes.router)
+    app.include_router(assessments_routes.router)
 
     @app.get("/health", tags=["meta"], status_code=status.HTTP_200_OK)
     async def health() -> dict[str, str]:
