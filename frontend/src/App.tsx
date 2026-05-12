@@ -19,6 +19,10 @@ import { ExamplesPage } from './pages/ExamplesPage';
 import { ExampleDetailPage } from './pages/ExampleDetailPage';
 import { CaseStudiesPage } from './pages/CaseStudiesPage';
 import { CaseStudyDetailPage } from './pages/CaseStudyDetailPage';
+import { WorksheetsCataloguePage } from './pages/WorksheetsCataloguePage';
+import { WorksheetFillPage } from './pages/WorksheetFillPage';
+import { WorksheetHistoryPage } from './pages/WorksheetHistoryPage';
+import { WorksheetResultsPage } from './pages/WorksheetResultsPage';
 
 const protect = (element: React.ReactNode) => (
   <ProtectedRoute>{element}</ProtectedRoute>
@@ -54,6 +58,11 @@ function App() {
 
           <Route path="/case-studies" element={protect(<CaseStudiesPage />)} />
           <Route path="/case-studies/:studyCode" element={protect(<CaseStudyDetailPage />)} />
+
+          <Route path="/worksheets" element={protect(<WorksheetsCataloguePage />)} />
+          <Route path="/worksheets/:code" element={protect(<WorksheetFillPage />)} />
+          <Route path="/worksheets/:code/history" element={protect(<WorksheetHistoryPage />)} />
+          <Route path="/worksheets/results/:id" element={protect(<WorksheetResultsPage />)} />
 
           {/* Default redirect */}
           <Route path="/" element={<Navigate to="/login" replace />} />

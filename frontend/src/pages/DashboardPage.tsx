@@ -77,7 +77,7 @@ export const DashboardPage: React.FC = () => {
           )}
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
             to="/framework"
             className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition"
@@ -102,6 +102,18 @@ export const DashboardPage: React.FC = () => {
             </p>
             <span className="inline-flex items-center text-sm font-medium text-blue-600 mt-3">
               Browse →
+            </span>
+          </Link>
+          <Link
+            to="/worksheets"
+            className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition"
+          >
+            <h3 className="text-base font-semibold text-gray-900">Worksheets</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Fillable forms (budget, net worth, debt and more) with autosaving drafts.
+            </p>
+            <span className="inline-flex items-center text-sm font-medium text-blue-600 mt-3">
+              Open →
             </span>
           </Link>
         </section>
