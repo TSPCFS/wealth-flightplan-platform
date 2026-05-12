@@ -49,3 +49,6 @@ coverage/
 
 # Local Docker volumes (just in case)
 postgres_data/
+
+# Local-only port override
+docker-compose.override.yml
