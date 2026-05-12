@@ -330,6 +330,284 @@ Owner-only.
 
 ---
 
+## Content Endpoints (Phase 3)
+
+All require Bearer auth. Content is seeded (read-only for v1) — there is no POST/PATCH/DELETE.
+
+Source content lives in `/Users/cornels/Downloads/files/wealth_index.md`. Backend authors the seed in `content_metadata` and a sibling table for example detail fields (see Phase 3 backend prompt for schema decisions).
+
+### Stage and step identifiers
+
+- **Stage**: `"Foundation" | "Momentum" | "Freedom" | "Independence" | "Abundance"`
+- **Step number**: string, one of `"1" | "2" | "3" | "4a" | "4b" | "5" | "6"` (string so 4a/4b stay first-class)
+
+### Calculator types
+
+Phase 3 defines 4 calculator types. Each example has `calculator_type: <type> | null`.
+
+#### compound_interest
+**Input:**
+```json
+{
+  "monthly_contribution": 5000,
+  "initial_amount": 0,
+  "years": 25,
+  "annual_rate_pct": 10,
+  "withdrawal_rate_pct": 4
+}
+```
+- `monthly_contribution`: number ≥ 0
+- `initial_amount`: number ≥ 0 (default 0)
+- `years`: integer 1–60
+- `annual_rate_pct`: number 0–25 (typical 2–15)
+- `withdrawal_rate_pct`: number 0–10 (default 4, used to compute monthly_passive_income)
+
+**Output:**
+```json
+{
+  "final_amount": 6400000,
+  "total_contributed": 1500000,
+  "total_growth": 4900000,
+  "monthly_passive_income": 21333.33,
+  "year_by_year": [
+    { "year": 1, "balance": 62800, "contributions_to_date": 60000, "growth_to_date": 2800 }
+  ]
+}
+```
+All monetary outputs are rounded to 2 decimal places; `year_by_year` has exactly `years` entries.
+
+#### debt_analysis
+**Input:**
+```json
+{
+  "debts": [
+    { "name": "Credit Card", "balance": 15000, "annual_rate_pct": 24, "minimum_payment": 750 },
+    { "name": "Store Account", "balance": 8000, "annual_rate_pct": 28, "minimum_payment": 400 }
+  ],
+  "surplus_available": 2000,
+  "method": "snowball"
+}
+```
+- `debts`: array of 1–20; each entry's fields all required, all numeric ≥ 0
+- `surplus_available`: number ≥ 0 — extra paid each month above sum-of-minimums
+- `method`: `"snowball" | "avalanche" | "debtonator"`
+
+**Output:**
+```json
+{
+  "total_debt": 23000,
+  "weighted_average_rate_pct": 25.4,
+  "total_monthly_minimums": 1150,
+  "debt_free_months": 11,
+  "total_interest_paid": 2410.55,
+  "payment_order": [
+    { "name": "Store Account", "balance": 8000, "annual_rate_pct": 28, "expected_close_month": 5, "reason": "smallest balance first" }
+  ],
+  "monthly_projection": [
+    { "month": 1, "total_balance": 21950, "interest_charged": 510, "accounts_remaining": 2 }
+  ]
+}
+```
+
+#### budget_allocator
+**Input:**
+```json
+{ "income_monthly": 45000, "needs": 32000, "wants": 3500, "invest": 9500 }
+```
+All required, numbers ≥ 0.
+
+**Output:**
+```json
+{
+  "total_income": 45000,
+  "total_allocated": 45000,
+  "surplus_deficit": 0,
+  "needs_pct": 71.1,
+  "wants_pct": 7.8,
+  "invest_pct": 21.1,
+  "status": "balanced",
+  "feedback": "Needs are 21 pts above the 50% target; consider reviewing bond affordability.",
+  "target_comparison": [
+    { "category": "needs",  "actual_pct": 71.1, "target_pct": 50, "status": "high" },
+    { "category": "wants",  "actual_pct": 7.8,  "target_pct": 30, "status": "low" },
+    { "category": "invest", "actual_pct": 21.1, "target_pct": 20, "status": "on_track" }
+  ]
+}
+```
+- `status`: `"balanced" | "deficit" | "surplus"` based on `total_income - total_allocated`
+- Per-category status: `"low" | "on_track" | "high"` (on_track if within ±5 percentage points of target)
+
+#### net_worth_analyzer
+**Input:**
+```json
+{
+  "lifestyle_assets":         [{ "name": "Primary home",    "value": 4500000 }],
+  "income_generating_assets": [{ "name": "Retirement annuity", "value": 1200000 }],
+  "liabilities":              [{ "name": "Bond", "value": 3100000 }]
+}
+```
+
+**Output:**
+```json
+{
+  "total_lifestyle_assets": 4500000,
+  "total_income_generating_assets": 1200000,
+  "total_assets": 5700000,
+  "total_liabilities": 3100000,
+  "net_worth": 2600000,
+  "income_generating_pct_of_net_worth": 46.2,
+  "interpretation": "46% of your net worth is income-generating. Healthy households target 60%+ over time."
+}
+```
+
+### GET /content/framework
+**Response 200:**
+```json
+{
+  "steps": [
+    {
+      "step_number": "1",
+      "title": "Financial GPS",
+      "subtitle": "Know your position",
+      "description": "...",
+      "key_metrics": ["Current stage", "Destination"],
+      "time_estimate_minutes": 90,
+      "stage_relevance": ["Foundation", "Momentum", "Freedom", "Independence", "Abundance"],
+      "related_example_codes": ["WE-1"],
+      "related_worksheet_codes": ["APP-B", "APP-G"]
+    }
+  ]
+}
+```
+Ordering: `"1", "2", "3", "4a", "4b", "5", "6"`. `related_worksheet_codes` is forward-looking metadata for Phase 4; FE may render as placeholders.
+
+### GET /content/steps/{step_number}
+Single step; same shape as one entry in `framework.steps` plus an optional long-form `body_markdown` field for narrative content.
+**Errors:** 404 `NOT_FOUND` for unknown step_number.
+
+### GET /content/examples
+**Query params (all optional):**
+- `step_number`: `"1" | "2" | ... | "6"`
+- `stage`: one of the 5 stage strings
+- `calculator_type`: one of the 4 calc types
+- `has_calculator`: `true | false`
+- `q`: free-text search (matches title, summary, key_principle, keywords)
+
+**Response 200:**
+```json
+{
+  "examples": [
+    {
+      "example_code": "WE-3",
+      "title": "R5k/month for 25 years",
+      "step_number": "6",
+      "chapter": "Step 6: Investment",
+      "calculator_type": "compound_interest",
+      "stage_relevance": ["Foundation", "Momentum", "Freedom"],
+      "key_principle": "Magic of consistent monthly saving + time horizon.",
+      "summary": "Age 35→60, 10% p.a. → R6.4m at retirement; R21.3k/month passive (4% rule)."
+    }
+  ],
+  "total": 13
+}
+```
+List view; no calculator config. Use the detail endpoint for that.
+
+### GET /content/examples/{example_code}
+**Response 200:**
+```json
+{
+  "example_code": "WE-3",
+  "title": "R5k/month for 25 years",
+  "step_number": "6",
+  "chapter": "Step 6: Investment",
+  "description": "Long-form description of the scenario.",
+  "key_principle": "Magic of consistent monthly saving + time horizon.",
+  "key_takeaway": "Time horizon beats contribution amount.",
+  "educational_text": "Markdown-formatted teaching content.",
+  "stage_relevance": ["Foundation", "Momentum", "Freedom"],
+  "calculator_type": "compound_interest",
+  "calculator_config": {
+    "inputs": [
+      { "name": "monthly_contribution", "label": "Monthly contribution (R)", "type": "number", "default": 5000, "min": 0, "max": 100000, "step": 500, "format": "currency" },
+      { "name": "years", "label": "Years", "type": "number", "default": 25, "min": 1, "max": 60, "step": 1, "format": "integer" },
+      { "name": "annual_rate_pct", "label": "Annual growth rate (%)", "type": "number", "default": 10, "min": 0, "max": 25, "step": 0.5, "format": "percent" }
+    ],
+    "interpretation_template": "At R{monthly_contribution}/month for {years} years at {annual_rate_pct}% growth, you accumulate R{final_amount}, generating R{monthly_passive_income}/month in passive income."
+  },
+  "related_example_codes": ["WE-4", "WE-5", "WE-6"]
+}
+```
+- `calculator_config` is present iff `calculator_type` is non-null.
+- `inputs[].format`: `"currency" | "integer" | "percent" | "decimal"` — UI rendering hint.
+- `interpretation_template` placeholders are output keys formatted per the field's expected format on the frontend.
+**Errors:** 404 `NOT_FOUND`.
+
+### POST /content/examples/{example_code}/calculate
+**Auth required.** Body matches the input shape of the example's `calculator_type`.
+**Response 200:**
+```json
+{
+  "example_code": "WE-3",
+  "calculator_type": "compound_interest",
+  "inputs": { "monthly_contribution": 5000, "years": 25, "annual_rate_pct": 10, "initial_amount": 0, "withdrawal_rate_pct": 4 },
+  "outputs": { /* output shape per calculator_type */ },
+  "interpretation": "At R5,000/month for 25 years at 10% growth, you accumulate R6,400,000..."
+}
+```
+- `inputs` echoes the (validated, defaulted) inputs back so the FE can render exactly what was computed.
+- `interpretation` is the template filled with formatted values.
+**Errors:** 400 `VALIDATION_ERROR`, 404 `NOT_FOUND` if example has `calculator_type: null` or doesn't exist, 401.
+
+The calculate endpoint records an `example_interactions` row (per DATABASE_SCHEMA.md) for analytics.
+
+### GET /content/case-studies
+**Query params (all optional):** `stage`, `step_number`, `q`.
+**Response 200:**
+```json
+{
+  "case_studies": [
+    {
+      "study_code": "CS-001",
+      "name": "Susan & Johan",
+      "summary": "R85k/month → found R90k invisible monthly drain.",
+      "learning": "Started with honest number; built 20-year plan to independence.",
+      "stage_relevance": ["Foundation", "Momentum"],
+      "related_step_numbers": ["1"]
+    }
+  ],
+  "total": 15
+}
+```
+
+### GET /content/case-studies/{study_code}
+**Response 200:**
+```json
+{
+  "study_code": "CS-001",
+  "name": "Susan & Johan",
+  "age_band": "Multiple",
+  "income_monthly": 85000,
+  "situation": "Long-form description of where the household started.",
+  "learning": "What changed and why.",
+  "key_insight": "One-line takeaway.",
+  "stage_relevance": ["Foundation", "Momentum"],
+  "related_step_numbers": ["1"],
+  "related_example_codes": ["WE-1"]
+}
+```
+- `income_monthly`: number or null
+- `age_band`: short string ("34/32", "Senior/40s", "Multiple"...) — preserves source text from the book.
+**Errors:** 404 `NOT_FOUND`.
+
+---
+
+## Decimal serialization (carryover fix)
+
+All monetary fields (`household_income_monthly_after_tax`, all `total_*`/`balance` numeric outputs, etc.) MUST serialize as JSON numbers, not strings. Backend Phase 2 currently emits `"85000.00"` from `Decimal` columns — fix in Phase 3 by adding a Pydantic v2 serializer that coerces `Decimal → float` for response models.
+
+---
+
 ## CORS
 
 Backend must allow these origins for Phase 1:
