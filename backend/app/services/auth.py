@@ -242,7 +242,7 @@ async def login(
     access, _ = _issue_access(user, settings)
     refresh, _ = _issue_refresh(user, settings)
 
-    user.last_login = datetime.now(UTC).replace(tzinfo=None)
+    user.last_login = datetime.now(UTC)
     await audit.record(
         session,
         action="auth.login",
@@ -300,7 +300,7 @@ async def verify_email(
 
     if not user.email_verified:
         user.email_verified = True
-        user.email_verified_at = datetime.now(UTC).replace(tzinfo=None)
+        user.email_verified_at = datetime.now(UTC)
 
     await audit.record(
         session,

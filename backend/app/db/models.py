@@ -19,6 +19,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.datetimes import utcnow
 from app.db.database import Base
 from app.db.types import GUID, INETType, JSONType
 
@@ -31,7 +32,9 @@ class User(Base):
     # Auth
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    email_verified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    email_verified_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
 
     # Profile
@@ -63,20 +66,26 @@ class User(Base):
     # Token versioning — bumped to invalidate all refresh tokens (e.g. on password reset).
     token_version: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
-    # Timestamps
+    # Timestamps (tz-aware UTC — see app.core.datetimes)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, server_default=func.current_timestamp(), nullable=False
+        DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
+        DateTime(timezone=True),
         server_default=func.current_timestamp(),
         onupdate=func.current_timestamp(),
         nullable=False,
     )
-    last_login: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    last_login: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     audit_logs: Mapped[list[AuditLog]] = relationship(
         "AuditLog", back_populates="user", cascade="all, delete"
+    )
+    assessments: Mapped[list[Assessment]] = relationship(
+        "Assessment", back_populates="user", cascade="all, delete"
+    )
+    progress: Mapped[UserProgress | None] = relationship(
+        "UserProgress", back_populates="user", uselist=False, cascade="all, delete"
     )
 
     __table_args__ = (
@@ -124,7 +133,7 @@ class AuditLog(Base):
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, server_default=func.current_timestamp(), nullable=False
+        DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False
     )
 
     user: Mapped[User | None] = relationship("User", back_populates="audit_logs")
@@ -141,4 +150,203 @@ class AuditLog(Base):
     )
 
 
-__all__ = ["AuditLog", "User"]
+# ---------------------------------------------------------------------------
+# Phase 2 — assessments, user_progress, content_metadata
+# ---------------------------------------------------------------------------
+
+
+class Assessment(Base):
+    __tablename__ = "assessments"
+
+    assessment_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
+    )
+
+    # Metadata
+    assessment_type: Mapped[str] = mapped_column(String(20), nullable=False)
+
+    # Responses + results
+    responses: Mapped[dict] = mapped_column(JSONType(), nullable=False)
+    total_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    # 5q/10q: 'Foundation' | 'Momentum' | 'Freedom' | 'Independence' | 'Abundance'
+    # gap_test: 'solid_plan' | 'meaningful_gaps' | 'wide_gaps'
+    calculated_stage: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    stage_change_from_previous: Mapped[str | None] = mapped_column(String(50), nullable=True)
+
+    # Engagement
+    completion_time_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    ip_address: Mapped[str | None] = mapped_column(INETType(), nullable=True)
+    user_agent: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Timestamps — Python-side default keeps microsecond precision under SQLite
+    # tests (server_default truncates to seconds), which is needed for
+    # deterministic ordering by created_at.
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        onupdate=utcnow,
+        nullable=False,
+    )
+
+    user: Mapped[User] = relationship("User", back_populates="assessments")
+
+    __table_args__ = (
+        CheckConstraint(
+            "assessment_type IN ('5q','10q','gap_test')",
+            name="ck_assessments_type",
+        ),
+        CheckConstraint(
+            "(assessment_type <> '5q') OR (total_score BETWEEN 5 AND 20)",
+            name="ck_assessments_score_5q",
+        ),
+        CheckConstraint(
+            "(assessment_type <> '10q') OR (total_score BETWEEN 10 AND 40)",
+            name="ck_assessments_score_10q",
+        ),
+        CheckConstraint(
+            "(assessment_type <> 'gap_test') OR (total_score BETWEEN 0 AND 24)",
+            name="ck_assessments_score_gap",
+        ),
+        Index("idx_assessments_user_id", "user_id"),
+        Index("idx_assessments_type", "assessment_type"),
+        Index("idx_assessments_stage", "calculated_stage"),
+        Index("idx_assessments_created_at", "created_at"),
+        # Composite (user, type, created_at) for the "latest 5q/10q" query.
+        Index("idx_assessments_user_type_created", "user_id", "assessment_type", "created_at"),
+    )
+
+
+class UserProgress(Base):
+    """Framework completion — schema only in Phase 2; populated by Phase 3+."""
+
+    __tablename__ = "user_progress"
+
+    progress_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(),
+        ForeignKey("users.user_id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
+    )
+
+    step_1_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    step_1_completion_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    step_2_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    step_2_completion_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    step_3_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    step_3_completion_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    step_4a_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    step_4a_completion_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    step_4b_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    step_4b_completion_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    step_5_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    step_5_completion_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    step_6_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    step_6_completion_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    overall_completion_percentage: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    last_accessed_step: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    current_focus_area: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        onupdate=func.current_timestamp(),
+        nullable=False,
+    )
+
+    user: Mapped[User] = relationship("User", back_populates="progress")
+
+    __table_args__ = (
+        CheckConstraint(
+            "overall_completion_percentage BETWEEN 0 AND 100",
+            name="ck_progress_completion_percentage",
+        ),
+        CheckConstraint(
+            "last_accessed_step IS NULL OR last_accessed_step BETWEEN 1 AND 6",
+            name="ck_progress_last_accessed_step",
+        ),
+        Index("idx_progress_user_id", "user_id"),
+    )
+
+
+class ContentMetadata(Base):
+    """Framework / examples / worksheets catalogue — schema only in Phase 2."""
+
+    __tablename__ = "content_metadata"
+
+    content_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+
+    content_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    content_code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    parent_step: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # related_chapters / stage_relevance / keywords are arrays in Postgres but
+    # we store them as JSONType for portability with the SQLite test database.
+    related_chapters: Mapped[list | None] = mapped_column(JSONType(), default=list, nullable=False)
+    stage_relevance: Mapped[list | None] = mapped_column(JSONType(), default=list, nullable=False)
+    keywords: Mapped[list | None] = mapped_column(JSONType(), default=list, nullable=False)
+    difficulty_level: Mapped[str | None] = mapped_column(String(20), nullable=True)
+
+    has_calculator: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    has_worksheet: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    has_example: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        onupdate=func.current_timestamp(),
+        nullable=False,
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "content_type IN ('step','example','worksheet','assessment','framework','case_study')",
+            name="ck_content_type",
+        ),
+        CheckConstraint(
+            "parent_step IS NULL OR parent_step BETWEEN 1 AND 6",
+            name="ck_content_parent_step",
+        ),
+        CheckConstraint(
+            "difficulty_level IS NULL OR difficulty_level IN ('beginner','intermediate','advanced')",
+            name="ck_content_difficulty_level",
+        ),
+        Index("idx_content_type", "content_type"),
+        Index("idx_content_code", "content_code"),
+        Index("idx_content_parent_step", "parent_step"),
+    )
+
+
+__all__ = ["Assessment", "AuditLog", "ContentMetadata", "User", "UserProgress"]

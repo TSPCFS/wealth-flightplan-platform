@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime
 from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+from app.schemas._base import ZuluDateTime, ZuluResponse
 
 # ---------- Register ----------
 
@@ -100,7 +101,7 @@ class PasswordResetConfirmRequest(BaseModel):
 # ---------- Profile ----------
 
 
-class UserProfile(BaseModel):
+class UserProfile(ZuluResponse):
     user_id: UUID
     email: EmailStr
     first_name: str
@@ -110,4 +111,6 @@ class UserProfile(BaseModel):
     household_size: int | None = None
     number_of_dependants: int | None = None
     subscription_tier: str
-    created_at: datetime
+    current_stage: str | None = None
+    latest_assessment_id: UUID | None = None
+    created_at: ZuluDateTime
