@@ -326,6 +326,16 @@ Stage → recommended worksheet baseline:
 
 A `user_progress` row is upserted on first call if absent. `time_spent_minutes` is best-effort (Phase 5 may return 0 for all steps; instrumented in Phase 6).
 
+**`steps_total` is conditional on `is_business_owner`:**
+- `is_business_owner: false` → `steps_total: 6`, the `steps[]` array excludes step `4b`
+- `is_business_owner: true` → `steps_total: 7`, the `steps[]` array includes step `4b`
+
+`overall_completion_pct` uses the conditional denominator. Rounding: half-up (`floor(x + 0.5)`), so 1/6 → 17%, 1/7 → 14%.
+
+`current_focus_step` auto-advances to the next incomplete step when a step is completed via POST. There is no explicit setter endpoint in Phase 5 — if the user wants to revisit an earlier step, they can navigate freely via the framework UI; the focus only auto-advances on completion.
+
+`stage_changed` events in the activity feed are emitted on ANY adjacent-stage difference (upward AND downward — regressions are meaningful information for the user).
+
 ### POST /users/progress/steps/{step_number}/complete
 **Auth required.** Marks the step complete; sets `completed_at = now`.
 **Response 200:** the full progress object (same shape as GET).
