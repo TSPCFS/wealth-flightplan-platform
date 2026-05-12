@@ -7,6 +7,12 @@ import { EmailVerificationPage } from './pages/EmailVerificationPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { AssessmentsPage } from './pages/AssessmentsPage';
+import { Assessment5QPage } from './pages/Assessment5QPage';
+import { Assessment10QPage } from './pages/Assessment10QPage';
+import { AssessmentGapPage } from './pages/AssessmentGapPage';
+import { AssessmentResultsPage } from './pages/AssessmentResultsPage';
+import { AssessmentHistoryPage } from './pages/AssessmentHistoryPage';
 
 function App() {
   return (
@@ -26,6 +32,54 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessments"
+            element={
+              <ProtectedRoute>
+                <AssessmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessments/5q"
+            element={
+              <ProtectedRoute>
+                <Assessment5QPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessments/10q"
+            element={
+              <ProtectedRoute>
+                <Assessment10QPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessments/gap"
+            element={
+              <ProtectedRoute>
+                <AssessmentGapPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessments/results/:id"
+            element={
+              <ProtectedRoute>
+                <AssessmentResultsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessments/history"
+            element={
+              <ProtectedRoute>
+                <AssessmentHistoryPage />
               </ProtectedRoute>
             }
           />
