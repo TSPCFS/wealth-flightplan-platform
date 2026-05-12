@@ -1,40 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Button } from '../components/common/Button';
 import { userService } from '../services/user.service';
-import type { ProfileResponse } from '../types/api.types';
+import type { DashboardResponse } from '../types/user.types';
+import { Button } from '../components/common/Button';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { FormError } from '../components/common/FormError';
+import { StageHero } from '../components/dashboard/StageHero';
+import { ProgressOverview } from '../components/dashboard/ProgressOverview';
+import { RecommendedActions } from '../components/dashboard/RecommendedActions';
+import { RecentActivity } from '../components/dashboard/RecentActivity';
+import { UpcomingMilestones } from '../components/dashboard/UpcomingMilestones';
+import { QuickStats } from '../components/dashboard/QuickStats';
+import { StageCelebration } from '../components/dashboard/StageCelebration';
+import { useDashboardStageCelebration } from '../hooks/useDashboardStageCelebration';
 
 export const DashboardPage: React.FC = () => {
   const { user, logout } = useAuth();
-  const [profile, setProfile] = useState<ProfileResponse | null>(null);
+  const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // We pull the profile freshly on each dashboard mount so that current_stage
-  // reflects the latest submission (the AuthContext snapshot can lag).
   useEffect(() => {
     let cancelled = false;
     userService
-      .getProfile()
-      .then((p) => {
-        if (!cancelled) setProfile(p);
-      })
-      .catch(() => {
-        // Silent — the header still works from the AuthContext user.
-      });
+      .getDashboard()
+      .then((d) => !cancelled && setDashboard(d))
+      .catch((err) => !cancelled && setError((err as Error).message || 'Could not load dashboard.'));
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const stage = profile?.current_stage ?? null;
-  const hasAssessment = Boolean(profile?.latest_assessment_id);
+  const { celebration, dismiss } = useDashboardStageCelebration(
+    dashboard?.current_stage ?? null
+  );
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-3xl mx-auto py-12 px-4">
+          <FormError error={error} />
+        </div>
+      </div>
+    );
+  }
+  if (!dashboard) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-6">
-        <header className="flex items-start justify-between">
+      {celebration && (
+        <StageCelebration
+          celebration={celebration}
+          description={dashboard.current_stage_details?.description}
+          onDismiss={dismiss}
+        />
+      )}
+
+      <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-6">
+        <header className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-1">
+            <h1 className="text-2xl font-bold text-gray-900">
               Welcome{user?.first_name ? `, ${user.first_name}` : ''}
             </h1>
             <p className="text-gray-600">Your Wealth FlightPlan™ dashboard.</p>
@@ -44,79 +68,23 @@ export const DashboardPage: React.FC = () => {
           </Button>
         </header>
 
-        <section className="bg-white shadow rounded-lg p-6">
-          {stage ? (
-            <>
-              <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-1">
-                Your current stage
-              </p>
-              <p className="text-3xl font-bold text-gray-900 mb-4">{stage}</p>
-              <div className="flex flex-wrap gap-3">
-                <Link to="/assessments">
-                  <Button>Take another assessment</Button>
-                </Link>
-                {hasAssessment && (
-                  <Link to="/assessments/history">
-                    <Button variant="secondary">View history</Button>
-                  </Link>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                Take your first assessment
-              </h2>
-              <p className="text-gray-600 mb-4">
-                Place yourself on the WealthFlightPlan™ stages in two minutes.
-              </p>
-              <Link to="/assessments">
-                <Button>Start an assessment</Button>
-              </Link>
-            </>
-          )}
-        </section>
+        <StageHero stageDetails={dashboard.current_stage_details} />
 
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Link
-            to="/framework"
-            className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition"
-          >
-            <h3 className="text-base font-semibold text-gray-900">Explore the framework</h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Seven steps from financial GPS to abundance.
-            </p>
-            <span className="inline-flex items-center text-sm font-medium text-blue-600 mt-3">
-              Open →
-            </span>
-          </Link>
-          <Link
-            to="/examples"
-            className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition"
-          >
-            <h3 className="text-base font-semibold text-gray-900">
-              Try an example calculator
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Worked examples with interactive compound interest, debt, budget and net worth tools.
-            </p>
-            <span className="inline-flex items-center text-sm font-medium text-blue-600 mt-3">
-              Browse →
-            </span>
-          </Link>
-          <Link
-            to="/worksheets"
-            className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition"
-          >
-            <h3 className="text-base font-semibold text-gray-900">Worksheets</h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Fillable forms (budget, net worth, debt and more) with autosaving drafts.
-            </p>
-            <span className="inline-flex items-center text-sm font-medium text-blue-600 mt-3">
-              Open →
-            </span>
-          </Link>
-        </section>
+        <ProgressOverview progress={dashboard.overall_progress} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <RecommendedActions
+            actions={dashboard.recommended_actions}
+            capAt={5}
+            showAllLink="/recommendations"
+          />
+          <div className="space-y-4">
+            <RecentActivity events={dashboard.recent_activity} capAt={5} />
+            <UpcomingMilestones milestones={dashboard.upcoming_milestones} capAt={5} />
+          </div>
+        </div>
+
+        <QuickStats stats={dashboard.quick_stats} />
       </div>
     </div>
   );
