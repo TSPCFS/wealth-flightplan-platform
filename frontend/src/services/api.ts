@@ -38,6 +38,16 @@ import type {
   StepDetail,
   StepNumber,
 } from '../types/content.types';
+import type {
+  WorksheetCode,
+  WorksheetDraftResponse,
+  WorksheetExportFormat,
+  WorksheetHistoryResponse,
+  WorksheetSaveDraftRequest,
+  WorksheetSchema,
+  WorksheetsListResponse,
+  WorksheetSubmission,
+} from '../types/worksheet.types';
 
 // localStorage token keys. HttpOnly cookies are post-MVP.
 export const ACCESS_TOKEN_KEY = 'wfp.access_token';
@@ -290,6 +300,78 @@ class ApiClient {
     return this.apiRequest<CaseStudyDetail>(
       `/content/case-studies/${encodeURIComponent(code)}`
     );
+  }
+
+  // Worksheet endpoints (Phase 4)
+  async listWorksheets(): Promise<WorksheetsListResponse> {
+    return this.apiRequest<WorksheetsListResponse>('/worksheets');
+  }
+
+  async getWorksheetSchema(code: WorksheetCode): Promise<WorksheetSchema> {
+    return this.apiRequest<WorksheetSchema>(
+      `/worksheets/${encodeURIComponent(code)}`
+    );
+  }
+
+  async saveWorksheetDraft(
+    code: WorksheetCode,
+    body: WorksheetSaveDraftRequest
+  ): Promise<WorksheetDraftResponse> {
+    return this.apiRequest<WorksheetDraftResponse>(
+      `/worksheets/${encodeURIComponent(code)}/draft`,
+      { method: 'POST', body: JSON.stringify(body) }
+    );
+  }
+
+  async submitWorksheet(
+    code: WorksheetCode,
+    body: WorksheetSaveDraftRequest
+  ): Promise<WorksheetSubmission> {
+    return this.apiRequest<WorksheetSubmission>(
+      `/worksheets/${encodeURIComponent(code)}/submit`,
+      { method: 'POST', body: JSON.stringify(body) }
+    );
+  }
+
+  async getWorksheetLatest(code: WorksheetCode): Promise<WorksheetSubmission | null> {
+    // The endpoint returns 204 when the user has nothing for this worksheet —
+    // apiRequest hands back undefined; normalise to null for downstream code.
+    const v = await this.apiRequest<WorksheetSubmission | undefined>(
+      `/worksheets/${encodeURIComponent(code)}/latest`
+    );
+    return v ?? null;
+  }
+
+  async getWorksheetHistory(code: WorksheetCode): Promise<WorksheetHistoryResponse> {
+    return this.apiRequest<WorksheetHistoryResponse>(
+      `/worksheets/${encodeURIComponent(code)}/history`
+    );
+  }
+
+  // Returns the file as a Blob. Caller is responsible for triggering the
+  // browser download. Uses raw fetch so we can read response.blob() directly.
+  async exportWorksheet(
+    worksheetId: string,
+    format: WorksheetExportFormat
+  ): Promise<{ blob: Blob; filename: string }> {
+    const url = `${this.baseURL}/worksheets/${encodeURIComponent(worksheetId)}/export/${encodeURIComponent(format)}`;
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      throw await this.parseError(response);
+    }
+    const blob = await response.blob();
+    // Pull the filename from Content-Disposition when present, otherwise
+    // synthesise a reasonable default.
+    const dispo = response.headers.get('Content-Disposition') ?? '';
+    const match = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(dispo);
+    const filename = match
+      ? decodeURIComponent(match[1].trim())
+      : `worksheet-${worksheetId}.${format}`;
+    return { blob, filename };
   }
 }
 
