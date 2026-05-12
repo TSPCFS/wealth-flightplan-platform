@@ -381,9 +381,28 @@ def _debt_inputs(default_debts: list[dict[str, Any]], surplus: float, method: st
                 "max_items": 20,
                 "item_schema": [
                     {"name": "name", "label": "Account", "type": "text"},
-                    {"name": "balance", "label": "Balance", "type": "number", "format": "currency", "min": 0},
-                    {"name": "annual_rate_pct", "label": "Rate", "type": "number", "format": "percent", "min": 0, "max": 50},
-                    {"name": "minimum_payment", "label": "Minimum", "type": "number", "format": "currency", "min": 0},
+                    {
+                        "name": "balance",
+                        "label": "Balance",
+                        "type": "number",
+                        "format": "currency",
+                        "min": 0,
+                    },
+                    {
+                        "name": "annual_rate_pct",
+                        "label": "Rate",
+                        "type": "number",
+                        "format": "percent",
+                        "min": 0,
+                        "max": 50,
+                    },
+                    {
+                        "name": "minimum_payment",
+                        "label": "Minimum",
+                        "type": "number",
+                        "format": "currency",
+                        "min": 0,
+                    },
                 ],
             },
             {
@@ -426,7 +445,13 @@ def _net_worth_inputs() -> dict:
                 "max_items": 20,
                 "item_schema": [
                     {"name": "name", "label": "Asset", "type": "text"},
-                    {"name": "value", "label": "Value", "type": "number", "format": "currency", "min": 0},
+                    {
+                        "name": "value",
+                        "label": "Value",
+                        "type": "number",
+                        "format": "currency",
+                        "min": 0,
+                    },
                 ],
             },
             {
@@ -441,7 +466,13 @@ def _net_worth_inputs() -> dict:
                 "max_items": 20,
                 "item_schema": [
                     {"name": "name", "label": "Asset", "type": "text"},
-                    {"name": "value", "label": "Value", "type": "number", "format": "currency", "min": 0},
+                    {
+                        "name": "value",
+                        "label": "Value",
+                        "type": "number",
+                        "format": "currency",
+                        "min": 0,
+                    },
                 ],
             },
             {
@@ -453,7 +484,13 @@ def _net_worth_inputs() -> dict:
                 "max_items": 20,
                 "item_schema": [
                     {"name": "name", "label": "Liability", "type": "text"},
-                    {"name": "value", "label": "Balance", "type": "number", "format": "currency", "min": 0},
+                    {
+                        "name": "value",
+                        "label": "Balance",
+                        "type": "number",
+                        "format": "currency",
+                        "min": 0,
+                    },
                 ],
             },
         ],
