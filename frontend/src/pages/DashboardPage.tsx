@@ -58,7 +58,7 @@ export const DashboardPage: React.FC = () => {
       <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-6">
         <header className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">
               Welcome{user?.first_name ? `, ${user.first_name}` : ''}
             </h1>
             <p className="text-gray-600">Your Wealth FlightPlan™ dashboard.</p>

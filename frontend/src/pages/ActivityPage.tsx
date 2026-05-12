@@ -131,7 +131,7 @@ export const ActivityPage: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-gray-900">Activity</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Activity</h1>
         <p className="text-gray-600 mt-1">
           Every assessment, worksheet, and step you've completed, newest first.
         </p>

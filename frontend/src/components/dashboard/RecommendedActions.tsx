@@ -27,16 +27,16 @@ export const RecommendedActions: React.FC<Props> = ({
   const shown = capAt ? actions.slice(0, capAt) : actions;
   return (
     <section className="bg-white rounded-lg shadow p-5">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+      <div className="flex items-baseline justify-between gap-3 mb-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 min-w-0">
           {title}
         </h2>
         {showAllLink && (
           <Link
             to={showAllLink}
-            className="text-xs font-medium text-blue-600 hover:text-blue-800"
+            className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-800"
           >
-            See all
+            See all →
           </Link>
         )}
       </div>

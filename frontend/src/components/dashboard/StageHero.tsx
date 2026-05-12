@@ -41,7 +41,7 @@ export const StageHero: React.FC<Props> = ({ stageDetails }) => {
           <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-1">
             Your current stage
           </p>
-          <h1 className="text-4xl font-bold text-gray-900">{stageDetails.name}</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 break-words">{stageDetails.name}</h1>
           <p className="text-gray-700 mt-2">{stageDetails.description}</p>
         </div>
         <span className="inline-flex items-center text-xs font-semibold bg-blue-50 text-blue-800 ring-1 ring-blue-100 px-2 py-1 rounded">

@@ -49,8 +49,9 @@ describe('StepDetailPage', () => {
     // Related example chips link to /examples/:code
     const chip = screen.getByText('WE-3');
     expect(chip.closest('a')).toHaveAttribute('href', '/examples/WE-3');
-    // Phase-4 worksheets render in a disabled style.
-    expect(screen.getByText(/APP-B \(Phase 4\)/)).toBeInTheDocument();
+    // Related worksheets render as live links to /worksheets/:code.
+    const worksheetLink = screen.getByText(/APP-B/);
+    expect(worksheetLink.closest('a')).toHaveAttribute('href', '/worksheets/APP-B');
   });
 
   it('rejects an unknown step number', async () => {

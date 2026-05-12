@@ -18,16 +18,16 @@ export const RecentActivity: React.FC<Props> = ({
   const shown = capAt ? events.slice(0, capAt) : events;
   return (
     <section className="bg-white rounded-lg shadow p-5">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+      <div className="flex items-baseline justify-between gap-3 mb-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 min-w-0">
           Recent activity
         </h2>
         {showAllLink && (
           <Link
             to={showAllLink}
-            className="text-xs font-medium text-blue-600 hover:text-blue-800"
+            className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-800"
           >
-            See all
+            See all →
           </Link>
         )}
       </div>
@@ -48,7 +48,7 @@ export const RecentActivity: React.FC<Props> = ({
                   {visual.symbol}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{event.title}</p>
+                  <p className="text-sm text-gray-900 break-words">{event.title}</p>
                   <p className="text-xs text-gray-500">
                     {relativeTimeFromIso(event.timestamp)}
                   </p>

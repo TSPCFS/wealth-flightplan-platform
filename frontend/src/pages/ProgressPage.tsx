@@ -114,7 +114,7 @@ export const ProgressPage: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-gray-900">Your framework progress</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Your framework progress</h1>
         <p className="text-gray-600 mt-1">
           Mark each step complete as you work through it. Step 4b (Business owners) appears when
           your profile reflects that you own a business.

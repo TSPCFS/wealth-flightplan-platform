@@ -47,8 +47,11 @@ export const ArrayInput: React.FC<Props> = ({ spec, value, onChange }) => {
   return (
     <fieldset className="sm:col-span-2 space-y-2">
       <legend className="text-sm font-medium text-gray-700">{spec.label}</legend>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm" aria-label={spec.label}>
+      {/* Right-edge gradient mask hints at horizontal scroll when the table
+          overflows on narrow viewports. Pure CSS — no JS scroll detection. */}
+      <div className="relative">
+        <div className="overflow-x-auto" data-testid="array-input-scroll">
+          <table className="min-w-full text-sm" aria-label={spec.label}>
           <thead>
             <tr className="text-left text-xs text-gray-500 uppercase">
               {columns.map((col) => (
@@ -93,6 +96,13 @@ export const ArrayInput: React.FC<Props> = ({ spec, value, onChange }) => {
             ))}
           </tbody>
         </table>
+        </div>
+        {/* Right-edge fade — purely decorative scroll affordance. pointer-events-none
+            so the underlying inputs stay clickable. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-white"
+        />
       </div>
       <div className="flex items-center gap-3">
         <Button type="button" variant="secondary" onClick={addRow} disabled={!canAdd}>

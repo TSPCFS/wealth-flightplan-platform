@@ -54,7 +54,7 @@ export const StageDisplay: React.FC<StageDisplayProps> = ({
         </span>
       </div>
 
-      <h1 className="text-4xl font-bold text-gray-900 mb-2">{calculatedStage}</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 break-words">{calculatedStage}</h1>
       <p className="text-gray-700 mb-4">{stageDetails.description}</p>
 
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">

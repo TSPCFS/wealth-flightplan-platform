@@ -55,7 +55,7 @@ export const StepDetailPage: React.FC = () => {
           <span className="inline-flex items-center justify-center text-sm font-semibold text-white bg-blue-600 rounded-full w-8 h-8">
             {step.step_number}
           </span>
-          <h1 className="text-3xl font-bold text-gray-900">{step.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">{step.title}</h1>
         </div>
         <p className="text-lg text-gray-600 mt-1">{step.subtitle}</p>
       </header>
@@ -115,13 +115,13 @@ export const StepDetailPage: React.FC = () => {
           </h2>
           <ul className="flex flex-wrap gap-2">
             {step.related_worksheet_codes.map((code) => (
-              <li
-                key={code}
-                title="Worksheets arrive in Phase 4"
-                className="inline-flex items-center text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full"
-                aria-disabled="true"
-              >
-                {code} (Phase 4)
+              <li key={code}>
+                <Link
+                  to={`/worksheets/${encodeURIComponent(code)}`}
+                  className="inline-flex items-center text-sm font-medium text-blue-700 bg-blue-50 ring-1 ring-blue-100 hover:bg-blue-100 px-3 py-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {code} →
+                </Link>
               </li>
             ))}
           </ul>

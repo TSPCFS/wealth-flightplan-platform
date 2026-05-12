@@ -60,7 +60,7 @@ export const CaseStudiesPage: React.FC = () => {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
       <header className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Case studies</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Case studies</h1>
           <p className="text-gray-600 mt-1">
             Real-household scenarios that show the framework in motion.
           </p>

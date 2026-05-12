@@ -59,7 +59,7 @@ export const WorksheetsCataloguePage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-gray-900">Worksheets</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Worksheets</h1>
         <p className="text-gray-600 mt-1">
           Fillable forms that turn the framework into a plan. Drafts autosave as you go.
         </p>

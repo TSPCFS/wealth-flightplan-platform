@@ -76,7 +76,7 @@ export const WorksheetHistoryPage: React.FC = () => {
           <Link to="/worksheets" className="text-sm text-blue-600 underline">
             ← Worksheets
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1 break-words">
             {data.worksheet_code} history
           </h1>
         </div>

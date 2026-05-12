@@ -47,7 +47,7 @@ export const ExampleDetailPage: React.FC = () => {
         <Link to="/examples" className="text-sm text-blue-600 underline">
           ← Examples
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900 mt-2">{example.title}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2 break-words">{example.title}</h1>
         <p className="text-sm text-gray-500 mt-1">
           {example.example_code} · {example.chapter}
         </p>
