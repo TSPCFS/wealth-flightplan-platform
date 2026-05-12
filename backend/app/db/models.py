@@ -409,6 +409,59 @@ class ExampleInteraction(Base):
     )
 
 
+class WorksheetResponse(Base):
+    """Phase 4 — per-user worksheet draft / submission rows.
+
+    Draft uniqueness ("at most one draft per (user, worksheet_code)") is
+    enforced at the DB level by a partial unique index in migration 0004.
+    Submissions (is_draft=False) are unconstrained — each submit inserts a
+    new row, preserving history.
+    """
+
+    __tablename__ = "worksheet_responses"
+
+    worksheet_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
+    )
+
+    worksheet_code: Mapped[str] = mapped_column(String(20), nullable=False)
+    response_data: Mapped[dict] = mapped_column(JSONType(), nullable=False)
+    calculated_values: Mapped[dict | None] = mapped_column(JSONType(), nullable=True)
+    feedback: Mapped[dict | None] = mapped_column(JSONType(), nullable=True)
+
+    completion_percentage: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    is_draft: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        onupdate=utcnow,
+        nullable=False,
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "worksheet_code IN ('APP-A','APP-B','APP-C','APP-D','APP-E','APP-F','APP-G')",
+            name="ck_worksheets_code",
+        ),
+        CheckConstraint(
+            "completion_percentage BETWEEN 0 AND 100",
+            name="ck_worksheets_completion_percentage",
+        ),
+        Index("idx_worksheets_user_id", "user_id"),
+        Index("idx_worksheets_code", "worksheet_code"),
+        Index("idx_worksheets_created_at", "created_at"),
+    )
+
+
 __all__ = [
     "Assessment",
     "AuditLog",
@@ -416,4 +469,5 @@ __all__ = [
     "ExampleInteraction",
     "User",
     "UserProgress",
+    "WorksheetResponse",
 ]
