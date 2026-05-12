@@ -25,6 +25,19 @@ import type {
   SubmitGapAssessmentRequest,
   SubmitLetterAssessmentRequest,
 } from '../types/assessment.types';
+import type {
+  CalculateInputs,
+  CalculateResponse,
+  CaseStudyDetail,
+  CaseStudyFilters,
+  CaseStudiesListResponse,
+  ExampleDetail,
+  ExampleFilters,
+  ExamplesListResponse,
+  FrameworkResponse,
+  StepDetail,
+  StepNumber,
+} from '../types/content.types';
 
 // localStorage token keys. HttpOnly cookies are post-MVP.
 export const ACCESS_TOKEN_KEY = 'wfp.access_token';
@@ -238,6 +251,56 @@ class ApiClient {
   async getAssessment(id: string): Promise<AssessmentDetail> {
     return this.apiRequest<AssessmentDetail>(`/assessments/${encodeURIComponent(id)}`);
   }
+
+  // Content endpoints (Phase 3)
+  async getFramework(): Promise<FrameworkResponse> {
+    return this.apiRequest<FrameworkResponse>('/content/framework');
+  }
+
+  async getStep(stepNumber: StepNumber): Promise<StepDetail> {
+    return this.apiRequest<StepDetail>(
+      `/content/steps/${encodeURIComponent(stepNumber)}`
+    );
+  }
+
+  async listExamples(filters: ExampleFilters = {}): Promise<ExamplesListResponse> {
+    const query = buildQuery(filters);
+    return this.apiRequest<ExamplesListResponse>(`/content/examples${query}`);
+  }
+
+  async getExample(code: string): Promise<ExampleDetail> {
+    return this.apiRequest<ExampleDetail>(
+      `/content/examples/${encodeURIComponent(code)}`
+    );
+  }
+
+  async calculateExample(code: string, inputs: CalculateInputs): Promise<CalculateResponse> {
+    return this.apiRequest<CalculateResponse>(
+      `/content/examples/${encodeURIComponent(code)}/calculate`,
+      { method: 'POST', body: JSON.stringify(inputs) }
+    );
+  }
+
+  async listCaseStudies(filters: CaseStudyFilters = {}): Promise<CaseStudiesListResponse> {
+    const query = buildQuery(filters);
+    return this.apiRequest<CaseStudiesListResponse>(`/content/case-studies${query}`);
+  }
+
+  async getCaseStudy(code: string): Promise<CaseStudyDetail> {
+    return this.apiRequest<CaseStudyDetail>(
+      `/content/case-studies/${encodeURIComponent(code)}`
+    );
+  }
 }
+
+const buildQuery = (filters: object): string => {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters as Record<string, unknown>)) {
+    if (value === undefined || value === null || value === '') continue;
+    params.set(key, String(value));
+  }
+  const qs = params.toString();
+  return qs ? `?${qs}` : '';
+};
 
 export const apiClient = new ApiClient(API_BASE_URL);
