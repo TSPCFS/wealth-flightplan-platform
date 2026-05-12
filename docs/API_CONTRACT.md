@@ -809,12 +809,73 @@ Returns the user's most recent submission OR draft for this worksheet (whichever
 - `submissions`: completed (non-draft) only, newest first
 - `calculated_values_summary`: 2-4 headline values per worksheet (defined in seed)
 
-### GET /worksheets/{worksheet_id}/export/{format}
+### Path-shape note: id-based vs code-based routes
+
+To prevent a `{worksheet_code}` route from matching a UUID (or vice versa), id-based routes are namespaced under `/worksheets/submissions/`. The path-parameter type tells you which is which:
+
+- `{worksheet_code}` matches the pattern `^APP-[A-G]$` (7 fixed values)
+- `{worksheet_id}` matches a UUID v4
+
+### GET /worksheets/submissions/{worksheet_id}
+Owner-only. Returns a single submission (or draft) by id — used for deep-linking to results pages and refresh-after-submit flows.
+**Response 200:**
+```json
+{
+  "worksheet_id": "uuid",
+  "worksheet_code": "APP-A",
+  "is_draft": false,
+  "response_data": { /* ... */ },
+  "calculated_values": { /* ... */ },
+  "feedback": { /* ... */ },
+  "completion_percentage": 100,
+  "created_at": "2026-05-12T10:30:00Z",
+  "updated_at": "2026-05-12T10:30:00Z"
+}
+```
+**Errors:** 404 `NOT_FOUND` for both unknown ids and other-user ids (no enumeration).
+
+### GET /worksheets/submissions/{worksheet_id}/export/{format}
 - `format`: `"pdf" | "csv"`
 - Returns the binary file with `Content-Disposition: attachment; filename=...`
 - PDF generated server-side (ReportLab) using worksheet-specific templates
 - CSV is a flat key/value of `response_data` + `calculated_values`
-**Errors:** 404 `NOT_FOUND` if worksheet_id doesn't belong to user OR doesn't exist (no enumeration), 400 if `is_draft: true` (cannot export drafts).
+**Errors:** 404 `NOT_FOUND` if worksheet_id doesn't belong to user or doesn't exist (no enumeration), 400 if `is_draft: true` (cannot export drafts).
+
+### response_data shape for array sections
+
+Worksheets with `type: "array"` sections (e.g. APP-D Debt Disclosure) emit/accept the section as an array of row objects whose keys match the section's `item_schema[].name`. Example APP-D submit body:
+
+```json
+{
+  "response_data": {
+    "debts": [
+      { "creditor": "Credit Card", "balance": 30000, "annual_rate_pct": 24, "minimum_payment": 1500, "account_type": "credit_card" },
+      { "creditor": "Store Card",  "balance":  8000, "annual_rate_pct": 28, "minimum_payment":  400, "account_type": "store_account" }
+    ]
+  },
+  "completion_percentage": 100
+}
+```
+
+### Completion percentage algorithm
+
+Both `/draft` (FE-computed) and `/submit` (BE-recomputed) MUST use the same algorithm so progress badges and submission percentages agree:
+
+1. Enumerate all leaf fields across all sections from the schema. A scalar section field counts as one leaf. An array section counts as one leaf that is "filled" when the row count is ≥ `min_items` (default 1) AND every row has all its `item_schema` fields non-empty.
+2. A scalar leaf is "filled" if its value is non-null AND (for `type: number`) is a finite number AND (for `type: text` or `type: select`) is a non-empty string.
+3. `completion_percentage = round(100 × filled_leaves / total_leaves)`.
+
+Fields marked `optional: true` in the schema are excluded from the denominator. (Default is required.)
+
+### feedback.status for non-calculator worksheets
+
+APP-C, APP-E, APP-F have `calculated_values: null`. Their `feedback.status` derives purely from completion:
+
+- `completion_percentage == 100` → `on_track`
+- `50 ≤ completion_percentage < 100` → `needs_attention`
+- `completion_percentage < 50` → `critical`
+
+`feedback.recommendations` for these worksheets surfaces the section labels of any incomplete sections.
 
 ---
 
