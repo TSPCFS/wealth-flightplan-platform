@@ -16,6 +16,7 @@ from app.api import assessments as assessments_routes
 from app.api import auth as auth_routes
 from app.api import content as content_routes
 from app.api import users as users_routes
+from app.api import worksheets as worksheets_routes
 from app.api.deps import limiter
 from app.core.config import get_settings
 from app.core.errors import (
@@ -53,9 +54,10 @@ def create_app() -> FastAPI:
             "Phase 1: Authentication & user management. "
             "Phase 2: Assessments. "
             "Phase 3: Framework, examples, calculators, case studies. "
+            "Phase 4: Worksheets (drafts, submissions, exports). "
             "Source of truth: docs/API_CONTRACT.md."
         ),
-        version="0.3.0",
+        version="0.4.0",
         lifespan=lifespan,
     )
 
@@ -84,6 +86,7 @@ def create_app() -> FastAPI:
     app.include_router(users_routes.router)
     app.include_router(assessments_routes.router)
     app.include_router(content_routes.router)
+    app.include_router(worksheets_routes.router)
 
     @app.get("/health", tags=["meta"], status_code=status.HTTP_200_OK)
     async def health() -> dict[str, str]:
