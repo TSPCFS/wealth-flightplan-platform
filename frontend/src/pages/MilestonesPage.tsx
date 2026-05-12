@@ -55,8 +55,10 @@ export const MilestonesPage: React.FC = () => {
           </p>
         ) : (
           <ol className="border-l-2 border-blue-200 pl-6 space-y-5">
-            {data.achieved.map((m) => (
-              <li key={m.code} className="relative">
+            {data.achieved.map((m, idx) => (
+              // Compose key with idx + date — codes like `framework_step_completed`
+              // legitimately repeat once per step completion.
+              <li key={`${m.code}-${m.date}-${idx}`} className="relative">
                 <span
                   aria-hidden="true"
                   className="absolute -left-[33px] top-1 inline-block w-4 h-4 rounded-full bg-blue-500 ring-2 ring-white"

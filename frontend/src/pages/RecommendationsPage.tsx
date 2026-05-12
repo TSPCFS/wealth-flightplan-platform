@@ -7,13 +7,17 @@ import { FormError } from '../components/common/FormError';
 import { RecommendedActions } from '../components/dashboard/RecommendedActions';
 import { WorksheetCard } from '../components/worksheets/WorksheetCard';
 
-const readingStatusStyle: Record<
-  'next' | 'upcoming' | 'done',
-  { tone: string; label: string }
-> = {
+// Accept all status values the backend may emit. `completed` is the canonical
+// value; `done` is tolerated as an alias for forward-compat.
+const readingStatusStyle: Record<string, { tone: string; label: string }> = {
   next: { tone: 'bg-blue-50 text-blue-700 ring-blue-200', label: 'Next' },
   upcoming: { tone: 'bg-gray-50 text-gray-700 ring-gray-200', label: 'Upcoming' },
+  completed: { tone: 'bg-emerald-50 text-emerald-700 ring-emerald-200', label: 'Done' },
   done: { tone: 'bg-emerald-50 text-emerald-700 ring-emerald-200', label: 'Done' },
+};
+const _fallbackStatusStyle = {
+  tone: 'bg-gray-50 text-gray-700 ring-gray-200',
+  label: '',
 };
 
 export const RecommendationsPage: React.FC = () => {
@@ -64,7 +68,7 @@ export const RecommendationsPage: React.FC = () => {
           </h2>
           <ol className="space-y-3 list-decimal list-inside">
             {data.reading_path.map((entry) => {
-              const style = readingStatusStyle[entry.status];
+              const style = readingStatusStyle[entry.status] ?? _fallbackStatusStyle;
               return (
                 <li key={entry.order} className="text-gray-900">
                   <Link
