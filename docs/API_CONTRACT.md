@@ -299,13 +299,15 @@ Same shape with `q1..q10`. Total 10-40. 5 stage bands.
 - `gap_plan_eligible`: true if total < 20 OR any answer is `no`
 - `gaps_identified`: any `no` (priority `high`) or `partially` (priority `medium`) answer. `yes` excluded. Sorted: `no` first then `partially`, then by question number ascending.
 - `recommendation` strings authored by backend, one per gap
+- `advisor_recommendation`: `string | null` — ALWAYS present in the response object. Non-null when `gap_plan_eligible` is true; `null` otherwise. Never omitted.
 
 ### GET /assessments/history
 **Response 200:**
 ```json
 {
   "assessments": [
-    { "assessment_id": "uuid", "assessment_type": "10q", "total_score": 28, "calculated_stage": "Freedom", "created_at": "2026-05-12T10:30:00Z" }
+    { "assessment_id": "uuid", "assessment_type": "10q", "total_score": 28, "calculated_stage": "Freedom", "band": null, "created_at": "2026-05-12T10:30:00Z" },
+    { "assessment_id": "uuid", "assessment_type": "gap_test", "total_score": 13, "calculated_stage": null, "band": "meaningful_gaps", "created_at": "2026-05-10T08:00:00Z" }
   ],
   "current_stage": "Freedom",
   "stage_progression": [
@@ -315,9 +317,9 @@ Same shape with `q1..q10`. Total 10-40. 5 stage bands.
   ]
 }
 ```
-- `assessments`: all submissions for the user, newest first, all types. Each entry includes type-appropriate score field (`calculated_stage` for 5Q/10Q, `band` for gap_test — use `null` for fields that don't apply).
+- `assessments`: all submissions for the user, newest first, all types. Every entry includes BOTH `calculated_stage` and `band` keys — exactly one is non-null per row (`calculated_stage` for 5Q/10Q; `band` for gap_test). Keys are always present so the frontend can discriminate without re-fetching.
 - `current_stage`: most recent 5Q or 10Q `calculated_stage`. null if none.
-- `stage_progression`: one entry per 5Q/10Q submission, oldest first.
+- `stage_progression`: one entry per 5Q/10Q submission, oldest first. Verbatim audit trail — consecutive same-stage submissions are NOT deduplicated (useful for charting velocity/regression). gap_test submissions are excluded from this array.
 
 ### GET /assessments/{assessment_id}
 Owner-only.
