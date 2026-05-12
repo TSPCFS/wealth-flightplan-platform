@@ -133,6 +133,13 @@ def register_payload(email: str = "alice@example.com", **overrides):
     return payload
 
 
+async def seed_phase3_content() -> dict:
+    """Run the Phase 3 content seed against the current test DB (idempotent)."""
+    from app.db.seeds.phase3_content import seed
+
+    return await seed()
+
+
 async def authed_session(client, email: str) -> tuple[str, str]:
     """Register a user and return (access_token, user_id)."""
     r = await client.post("/auth/register", json=register_payload(email))
