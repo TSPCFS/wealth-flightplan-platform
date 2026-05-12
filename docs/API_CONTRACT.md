@@ -191,6 +191,8 @@ All require Bearer auth. Each submission inserts a new row in `assessments` (no 
 
 ### Question catalogue
 
+The prompts below are **reference text** — they define the question intent and answer mapping. The frontend may polish wording for readability so long as: (a) the `qN` keys are unchanged, (b) the option values (`a/b/c/d` for 5Q/10Q, `yes/partially/no` for GAP) are unchanged, and (c) the intent of each option remains the same. The backend is authoritative for scoring; it must accept the values exactly as listed.
+
 **5Q (also Q1-Q5 of 10Q):**
 1. **q1** — *If both earners stopped today, how long could you maintain current lifestyle?* — a: <1mo · b: 1-3mo · c: 3-12mo · d: indefinite (passive covers)
 2. **q2** — *How is your household budget structured?* — a: none · b: rough mental tally · c: written · d: zero-based
