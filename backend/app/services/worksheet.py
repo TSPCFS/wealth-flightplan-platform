@@ -226,9 +226,10 @@ def _field_is_filled(field_spec: dict[str, Any], value: Any) -> bool:
     if f_type == "number":
         if value is None or isinstance(value, bool):
             return False
-        if not isinstance(value, (int, float)):
+        if not isinstance(value, int | float):
             return False
         import math
+
         return math.isfinite(value)
     if f_type == "select":
         return isinstance(value, str) and value != ""
