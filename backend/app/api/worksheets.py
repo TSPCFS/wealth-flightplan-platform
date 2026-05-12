@@ -169,15 +169,40 @@ async def get_history(
 
 
 # ---------------------------------------------------------------------------
-# Export
+# Submissions (id-based) — namespaced under /submissions/ to disambiguate
+# from /{worksheet_code}/... routes (code matches ^APP-[A-G]$, id is UUID v4).
 # ---------------------------------------------------------------------------
+
+
+@router.get("/submissions/{worksheet_id}")
+async def get_submission(
+    worksheet_id: UUID,
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> WorksheetLatestResponse:
+    """Owner-only fetch-by-id. Enables deep-linking to results pages and
+    refresh-after-submit flows. 404 for both unknown and cross-user ids."""
+    row = await worksheet_service.get_by_id(
+        session, user_id=current_user.user_id, worksheet_id=worksheet_id
+    )
+    return WorksheetLatestResponse(
+        worksheet_id=row.worksheet_id,
+        worksheet_code=row.worksheet_code,
+        is_draft=row.is_draft,
+        response_data=row.response_data,
+        calculated_values=row.calculated_values,
+        feedback=row.feedback,
+        completion_percentage=row.completion_percentage,
+        created_at=row.created_at,
+        updated_at=row.updated_at,
+    )
 
 
 def _slugify(name: str) -> str:
     return "".join(c if c.isalnum() else "_" for c in name).strip("_") or "worksheet"
 
 
-@router.get("/{worksheet_id}/export/{fmt}")
+@router.get("/submissions/{worksheet_id}/export/{fmt}")
 async def export_worksheet(
     worksheet_id: UUID,
     fmt: Literal["pdf", "csv"],

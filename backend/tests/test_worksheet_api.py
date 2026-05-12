@@ -310,7 +310,7 @@ async def _submit_app_b(client: AsyncClient, access: str) -> str:
 async def test_export_pdf_returns_pdf_bytes(client: AsyncClient) -> None:
     access, _ = await authed_session(client, "wk-pdf@example.com")
     wid = await _submit_app_b(client, access)
-    r = await client.get(f"/worksheets/{wid}/export/pdf", headers=bearer(access))
+    r = await client.get(f"/worksheets/submissions/{wid}/export/pdf", headers=bearer(access))
     assert r.status_code == 200
     assert r.headers["content-type"].startswith("application/pdf")
     assert "attachment" in r.headers.get("content-disposition", "")
@@ -323,7 +323,7 @@ async def test_export_pdf_returns_pdf_bytes(client: AsyncClient) -> None:
 async def test_export_csv_returns_csv_with_calculated_values(client: AsyncClient) -> None:
     access, _ = await authed_session(client, "wk-csv@example.com")
     wid = await _submit_app_b(client, access)
-    r = await client.get(f"/worksheets/{wid}/export/csv", headers=bearer(access))
+    r = await client.get(f"/worksheets/submissions/{wid}/export/csv", headers=bearer(access))
     assert r.status_code == 200
     assert r.headers["content-type"].startswith("text/csv")
     rows = list(csv.reader(io.StringIO(r.content.decode("utf-8"))))
@@ -339,7 +339,7 @@ async def test_export_owner_only_returns_404_for_other_user(client: AsyncClient)
     access_a, _ = await authed_session(client, "wk-owner@example.com")
     wid = await _submit_app_b(client, access_a)
     access_b, _ = await authed_session(client, "wk-intruder@example.com")
-    r = await client.get(f"/worksheets/{wid}/export/pdf", headers=bearer(access_b))
+    r = await client.get(f"/worksheets/submissions/{wid}/export/pdf", headers=bearer(access_b))
     assert r.status_code == 404
     assert r.json()["error"]["code"] == "NOT_FOUND"
 
@@ -353,7 +353,7 @@ async def test_export_draft_rejected(client: AsyncClient) -> None:
         headers=bearer(access),
     )
     wid = r1.json()["worksheet_id"]
-    r2 = await client.get(f"/worksheets/{wid}/export/pdf", headers=bearer(access))
+    r2 = await client.get(f"/worksheets/submissions/{wid}/export/pdf", headers=bearer(access))
     assert r2.status_code == 400
     assert r2.json()["error"]["code"] == "DRAFT_NOT_EXPORTABLE"
 

@@ -348,13 +348,30 @@ class ApiClient {
     );
   }
 
+  // Owner-only fetch-by-id (under /submissions/ to disambiguate from
+  // {worksheet_code} routes). Returns null on 404 so the results page can
+  // render a friendly fallback for stale links.
+  async getWorksheetSubmission(
+    worksheetId: string
+  ): Promise<WorksheetSubmission | null> {
+    try {
+      return await this.apiRequest<WorksheetSubmission>(
+        `/worksheets/submissions/${encodeURIComponent(worksheetId)}`
+      );
+    } catch (err) {
+      const apiErr = err as { status?: number };
+      if (apiErr.status === 404) return null;
+      throw err;
+    }
+  }
+
   // Returns the file as a Blob. Caller is responsible for triggering the
   // browser download. Uses raw fetch so we can read response.blob() directly.
   async exportWorksheet(
     worksheetId: string,
     format: WorksheetExportFormat
   ): Promise<{ blob: Blob; filename: string }> {
-    const url = `${this.baseURL}/worksheets/${encodeURIComponent(worksheetId)}/export/${encodeURIComponent(format)}`;
+    const url = `${this.baseURL}/worksheets/submissions/${encodeURIComponent(worksheetId)}/export/${encodeURIComponent(format)}`;
     const token = localStorage.getItem(ACCESS_TOKEN_KEY);
     const headers: Record<string, string> = {};
     if (token) headers['Authorization'] = `Bearer ${token}`;

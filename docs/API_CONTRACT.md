@@ -869,13 +869,25 @@ Fields marked `optional: true` in the schema are excluded from the denominator. 
 
 ### feedback.status for non-calculator worksheets
 
-APP-C, APP-E, APP-F have `calculated_values: null`. Their `feedback.status` derives purely from completion:
-
+APP-E and APP-F (text-only worksheets) derive `feedback.status` purely from completion:
 - `completion_percentage == 100` → `on_track`
 - `50 ≤ completion_percentage < 100` → `needs_attention`
 - `completion_percentage < 50` → `critical`
 
-`feedback.recommendations` for these worksheets surfaces the section labels of any incomplete sections.
+**APP-C uses content-aware status** (the checklist answers carry meaning):
+- Any `no` on a critical item (life cover, income protection, will/estate) → `critical`
+- Any other `no` → `needs_attention`
+- All items answered (`yes`/`partial`/`na`) with no remaining `no` → `on_track`
+
+`feedback.recommendations` lists the unchecked critical items (APP-C) or the incomplete section labels (APP-E/F).
+
+### completion_percentage authority
+
+The backend is the single source of truth. Both `/draft` and `/submit` re-derive `completion_percentage` server-side using the algorithm above. The FE MAY pass a `completion_percentage` value on `/draft` as an optimistic hint, but the BE replaces it with the recomputed value in the response. This guarantees the catalogue badge ("Draft 65% saved") and the form's live progress bar agree.
+
+### APP-G (self-assessment) — out-of-band submission
+
+APP-G appears in the worksheet catalogue and supports `GET /worksheets/APP-G` (schema) for completeness. However, **`POST /worksheets/APP-G/submit` returns 400 with `code: "USE_ASSESSMENTS_ENDPOINT"`** — APP-G's submissions land in the `assessments` table via `POST /assessments/10q`, not in `worksheet_responses`. The FE should redirect to `/assessments/10q` on encountering this code. Drafts (`POST /worksheets/APP-G/draft`) and `GET /worksheets/APP-G/latest|history` operate normally but only ever return draft state — there's never a completed APP-G `worksheet_response` row.
 
 ---
 

@@ -218,13 +218,22 @@ def _raise_validation_error(errors: dict[str, list[str]]) -> None:
 
 
 def _field_is_filled(field_spec: dict[str, Any], value: Any) -> bool:
+    """Per API contract: a scalar leaf is 'filled' if its value is non-null AND
+    (for type:number) is a finite number, (for type:text|select) is a non-empty
+    string. Note: 0 IS a filled number — many worksheet fields legitimately have
+    zero values (no secondary earner, no store account, etc.)."""
     f_type = field_spec.get("type", "number")
     if f_type == "number":
-        return value not in (None, "", 0, 0.0)
+        if value is None or isinstance(value, bool):
+            return False
+        if not isinstance(value, (int, float)):
+            return False
+        import math
+        return math.isfinite(value)
     if f_type == "select":
-        default = field_spec.get("default")
-        return value not in (None, "") and value != default
-    return bool(value) if isinstance(value, str) else value is not None
+        return isinstance(value, str) and value != ""
+    # text and anything else
+    return isinstance(value, str) and value != ""
 
 
 def derive_completion_percentage(schema: dict[str, Any], response_data: dict[str, Any]) -> int:

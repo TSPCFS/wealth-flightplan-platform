@@ -60,6 +60,13 @@ export const worksheetService = {
     return apiClient.getWorksheetLatest(code);
   },
 
+  // Owner-only fetch-by-id. Enables deep-linking / refresh on /worksheets/results/:id.
+  // Returns null when the id is unknown or belongs to another user (the backend
+  // returns the same 404 for both — no enumeration).
+  getSubmission(worksheetId: string): Promise<WorksheetSubmission | null> {
+    return apiClient.getWorksheetSubmission(worksheetId);
+  },
+
   getHistory(code: WorksheetCode): Promise<WorksheetHistoryResponse> {
     return apiClient.getWorksheetHistory(code);
   },

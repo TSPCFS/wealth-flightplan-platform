@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import type { WorksheetSubmission } from '../types/worksheet.types';
+import { worksheetService } from '../services/worksheet.service';
 import { FormError } from '../components/common/FormError';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { WorksheetSubmissionResult } from '../components/worksheets/WorksheetSubmissionResult';
 
 interface ResultsLocationState {
@@ -12,22 +14,54 @@ export const WorksheetResultsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const state = (location.state ?? {}) as ResultsLocationState;
-  const submission = state.submission ?? null;
 
-  // The contract doesn't expose a GET /worksheets/{worksheet_id} detail
-  // endpoint, so deep-links / refreshes can't refetch by id on their own.
-  // Send the user back to the catalogue with a clear next step rather than
-  // showing a confusing blank state.
-  if (!submission) {
+  // Prefer the submission passed in via router state (just-submitted /
+  // navigated-from-history), fall back to refetching by id for deep links
+  // and refreshes.
+  const [submission, setSubmission] = useState<WorksheetSubmission | null>(
+    state.submission ?? null
+  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (submission || !id) return;
+    let cancelled = false;
+    setLoading(true);
+    worksheetService
+      .getSubmission(id)
+      .then((res) => {
+        if (cancelled) return;
+        if (res === null) {
+          setError('Submission not found. It may have been deleted.');
+        } else {
+          setSubmission(res);
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setError('Could not load this submission. Try opening it from the worksheet history.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, submission]);
+
+  if (loading) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (error || !submission) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 space-y-6">
-        <FormError
-          error={
-            id
-              ? `This view needs fresh submission data — please re-open submission ${id} from the worksheet history.`
-              : 'Missing submission.'
-          }
-        />
+        <FormError error={error || 'Missing submission.'} />
         <div className="text-center">
           <Link to="/worksheets" className="text-blue-600 underline">
             Back to worksheets

@@ -1,13 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { WorksheetResultsPage } from './WorksheetResultsPage';
 
 vi.mock('../services/worksheet.service', () => ({
   worksheetService: {
     exportFile: vi.fn(),
+    getSubmission: vi.fn(),
   },
 }));
+
+import { worksheetService } from '../services/worksheet.service';
 
 const submission = {
   worksheet_id: 'sub-1',
@@ -37,7 +40,7 @@ describe('WorksheetResultsPage', () => {
     vi.resetAllMocks();
   });
 
-  it('renders the submission from router state', () => {
+  it('renders the submission from router state without refetching', async () => {
     render(
       <MemoryRouter initialEntries={[{ pathname: '/worksheets/results/sub-1', state: { submission } }]}>
         <Routes>
@@ -47,9 +50,12 @@ describe('WorksheetResultsPage', () => {
     );
     expect(screen.getByText(/APP-A results/)).toBeInTheDocument();
     expect(screen.getByText('Great work.')).toBeInTheDocument();
+    expect(worksheetService.getSubmission).not.toHaveBeenCalled();
   });
 
-  it('shows a friendly fallback when state is missing (deep-link)', () => {
+  it('refetches by id on deep-link / refresh and renders the submission', async () => {
+    vi.mocked(worksheetService.getSubmission).mockResolvedValue(submission);
+
     render(
       <MemoryRouter initialEntries={['/worksheets/results/sub-1']}>
         <Routes>
@@ -57,8 +63,26 @@ describe('WorksheetResultsPage', () => {
         </Routes>
       </MemoryRouter>
     );
-    expect(
-      screen.getByText(/re-open submission sub-1 from the worksheet history/i)
-    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Great work.')).toBeInTheDocument();
+    });
+    expect(worksheetService.getSubmission).toHaveBeenCalledWith('sub-1');
+  });
+
+  it('shows a not-found message when the id is unknown or cross-user', async () => {
+    vi.mocked(worksheetService.getSubmission).mockResolvedValue(null);
+
+    render(
+      <MemoryRouter initialEntries={['/worksheets/results/ghost-id']}>
+        <Routes>
+          <Route path="/worksheets/results/:id" element={<WorksheetResultsPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Submission not found/i)).toBeInTheDocument();
+    });
   });
 });
