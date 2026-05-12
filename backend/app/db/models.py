@@ -320,6 +320,20 @@ class ContentMetadata(Base):
     has_worksheet: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     has_example: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
+    # Phase 3 additions — keep all rich content on the same row.
+    #
+    # Decision: option (a) from the Phase 3 prompt — add JSONB columns rather
+    # than a sibling content_details table. Reasoning: (1) reads are 1:1 with
+    # the metadata row, so a join buys nothing; (2) the shape varies by
+    # content_type and is read-heavy, write-once, which JSONB handles cleanly;
+    # (3) the API contract already organises detail fields nested under
+    # ``calculator_config`` etc, so JSON storage maps directly onto the wire
+    # format without an extra mapping layer.
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    calculator_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    detail: Mapped[dict | None] = mapped_column(JSONType(), default=dict, nullable=False)
+    calculator_config: Mapped[dict | None] = mapped_column(JSONType(), nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False
     )
@@ -343,10 +357,63 @@ class ContentMetadata(Base):
             "difficulty_level IS NULL OR difficulty_level IN ('beginner','intermediate','advanced')",
             name="ck_content_difficulty_level",
         ),
+        CheckConstraint(
+            "calculator_type IS NULL OR calculator_type IN "
+            "('compound_interest','debt_analysis','budget_allocator','net_worth_analyzer')",
+            name="ck_content_calculator_type",
+        ),
         Index("idx_content_type", "content_type"),
         Index("idx_content_code", "content_code"),
         Index("idx_content_parent_step", "parent_step"),
+        Index("idx_content_calculator_type", "calculator_type"),
     )
 
 
-__all__ = ["Assessment", "AuditLog", "ContentMetadata", "User", "UserProgress"]
+class ExampleInteraction(Base):
+    """Per-user calculator run log — for analytics + replay."""
+
+    __tablename__ = "example_interactions"
+
+    interaction_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
+    )
+
+    example_code: Mapped[str] = mapped_column(String(50), nullable=False)
+    example_title: Mapped[str] = mapped_column(String(200), nullable=False)
+    chapter: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    input_parameters: Mapped[dict] = mapped_column(JSONType(), nullable=False)
+    calculated_output: Mapped[dict] = mapped_column(JSONType(), nullable=False)
+
+    time_spent_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    modification_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    export_requested: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    export_format: Mapped[str | None] = mapped_column(String(20), nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        nullable=False,
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "export_format IS NULL OR export_format IN ('pdf','csv','image')",
+            name="ck_interactions_export_format",
+        ),
+        Index("idx_interactions_user_id", "user_id"),
+        Index("idx_interactions_example_code", "example_code"),
+        Index("idx_interactions_created_at", "created_at"),
+    )
+
+
+__all__ = [
+    "Assessment",
+    "AuditLog",
+    "ContentMetadata",
+    "ExampleInteraction",
+    "User",
+    "UserProgress",
+]
