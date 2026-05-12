@@ -17,6 +17,14 @@ import type {
   PasswordResetConfirmResponse,
   ProfileResponse,
 } from '../types/api.types';
+import type {
+  AssessmentDetail,
+  AssessmentHistoryResponse,
+  GapAssessmentResult,
+  StageAssessmentResult,
+  SubmitGapAssessmentRequest,
+  SubmitLetterAssessmentRequest,
+} from '../types/assessment.types';
 
 // localStorage token keys. HttpOnly cookies are post-MVP.
 export const ACCESS_TOKEN_KEY = 'wfp.access_token';
@@ -199,6 +207,36 @@ class ApiClient {
   // User endpoints
   async getProfile(): Promise<ProfileResponse> {
     return this.apiRequest<ProfileResponse>('/users/profile');
+  }
+
+  // Assessment endpoints
+  async submit5q(data: SubmitLetterAssessmentRequest): Promise<StageAssessmentResult> {
+    return this.apiRequest<StageAssessmentResult>('/assessments/5q', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async submit10q(data: SubmitLetterAssessmentRequest): Promise<StageAssessmentResult> {
+    return this.apiRequest<StageAssessmentResult>('/assessments/10q', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async submitGap(data: SubmitGapAssessmentRequest): Promise<GapAssessmentResult> {
+    return this.apiRequest<GapAssessmentResult>('/assessments/gap-test', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getAssessmentHistory(): Promise<AssessmentHistoryResponse> {
+    return this.apiRequest<AssessmentHistoryResponse>('/assessments/history');
+  }
+
+  async getAssessment(id: string): Promise<AssessmentDetail> {
+    return this.apiRequest<AssessmentDetail>(`/assessments/${encodeURIComponent(id)}`);
   }
 }
 

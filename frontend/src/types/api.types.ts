@@ -8,17 +8,22 @@ export interface ApiError {
   };
 }
 
+import type { Stage } from './assessment.types';
+
 export interface User {
   user_id: string;
   email: string;
   first_name: string;
   last_name: string;
   email_verified: boolean;
-  household_income_monthly_after_tax?: number;
-  household_size?: number;
-  number_of_dependants?: number;
+  household_income_monthly_after_tax?: number | null;
+  household_size?: number | null;
+  number_of_dependants?: number | null;
   subscription_tier: string;
-  created_at: string;
+  // Populated only on /users/profile. Login's nested user payload omits these.
+  current_stage?: Stage | null;
+  latest_assessment_id?: string | null;
+  created_at?: string;
 }
 
 export interface RegisterRequest {
@@ -90,4 +95,8 @@ export interface PasswordResetConfirmResponse {
   message: string;
 }
 
-export interface ProfileResponse extends User {}
+export interface ProfileResponse extends User {
+  current_stage: Stage | null;
+  latest_assessment_id: string | null;
+  created_at: string;
+}
