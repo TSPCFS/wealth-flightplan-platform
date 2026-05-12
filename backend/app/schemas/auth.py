@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-from app.schemas._base import ZuluDateTime, ZuluResponse
+from app.schemas._base import MoneyAmount, ZuluDateTime, ZuluResponse
 
 # ---------- Register ----------
 
@@ -107,7 +107,7 @@ class UserProfile(ZuluResponse):
     first_name: str
     last_name: str
     email_verified: bool
-    household_income_monthly_after_tax: Decimal | None = None
+    household_income_monthly_after_tax: MoneyAmount | None = None
     household_size: int | None = None
     number_of_dependants: int | None = None
     subscription_tier: str
