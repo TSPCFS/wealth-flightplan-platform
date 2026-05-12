@@ -159,6 +159,232 @@ All authenticated endpoints expect: `Authorization: Bearer <access_token>`.
 - `current_stage`: string | null — stage from most recent 5Q or 10Q (null if user has never taken one)
 - `latest_assessment_id`: string | null — most recent assessment of any type (null if none)
 
+### PATCH /users/profile
+**Auth required.** Partial update.
+**Request:**
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "household_income_monthly_after_tax": 90000,
+  "household_size": 5,
+  "number_of_dependants": 3,
+  "is_business_owner": true,
+  "primary_language": "en",
+  "timezone": "SAST"
+}
+```
+All fields optional. Missing fields untouched. `email` is not editable here (separate flow not in Phase 5).
+**Response 200:** the full profile (same shape as GET).
+**Errors:** 400 `VALIDATION_ERROR`.
+
+### GET /users/dashboard (Phase 5)
+**Auth required.** One-shot aggregator for the dashboard view.
+**Response 200:**
+```json
+{
+  "current_stage": "Freedom",
+  "current_stage_details": {
+    "name": "Freedom",
+    "description": "Mostly debt-free; consistently investing 20%+ of income.",
+    "income_runway": "3-12 months",
+    "progress_to_next_stage_pct": 45,
+    "next_stage": "Independence"
+  },
+  "overall_progress": {
+    "framework_completion_pct": 35,
+    "steps_completed": 2,
+    "steps_total": 7,
+    "current_focus_step": "3",
+    "next_step": { "step_number": "3", "title": "Money Matrix" }
+  },
+  "recommended_actions": [
+    {
+      "priority": "high",
+      "title": "Complete the Net Worth Statement (Appendix B)",
+      "reason": "Foundation for Step 3 — Money Matrix.",
+      "action_url": "/worksheets/APP-B",
+      "estimated_time_minutes": 45,
+      "source": "stage_gap"
+    }
+  ],
+  "recent_activity": [
+    {
+      "event_type": "assessment_submitted",
+      "title": "Completed 10Q assessment — placed at Freedom",
+      "timestamp": "2026-05-12T10:30:00Z",
+      "link": "/assessments/results/uuid"
+    }
+  ],
+  "upcoming_milestones": [
+    {
+      "code": "monthly_money_conversation",
+      "title": "Monthly Money Conversation",
+      "due_date": "2026-05-31",
+      "category": "review",
+      "urgency": "soon"
+    }
+  ],
+  "quick_stats": {
+    "net_worth": 2600000,
+    "monthly_surplus": 5000,
+    "total_consumer_debt": 0,
+    "income_generating_pct": 46.2
+  }
+}
+```
+
+Field rules:
+- `current_stage` / `current_stage_details`: null when no 5Q/10Q yet
+- `progress_to_next_stage_pct`: linear within the stage's score band (e.g. 10Q score 27 in Freedom band [24, 30] → (27-24)/(30-24)·100 = 50%)
+- `recommended_actions[].source`: `"stage_gap"|"missing_worksheet"|"stale_review"|"high_priority_gap"|"first_step"` — for analytics
+- `recommended_actions`: max 5, ordered by priority
+- `recent_activity`: max 10, newest first
+- `upcoming_milestones[].urgency`: `"overdue"|"soon"|"upcoming"` (within 7 days / within 30 days / later)
+- `quick_stats.*`: null when the underlying worksheet hasn't been submitted
+
+### GET /users/recommendations
+Deeper view of recommendations + reading path + suggested content.
+**Response 200:**
+```json
+{
+  "current_stage": "Freedom",
+  "immediate_actions": [ /* same shape as dashboard.recommended_actions */ ],
+  "reading_path": [
+    { "order": 1, "step_number": "3", "title": "Money Matrix", "status": "next" },
+    { "order": 2, "step_number": "4a", "title": "Risk Cover — Households", "status": "upcoming" }
+  ],
+  "suggested_examples": [
+    { "example_code": "WE-8", "title": "Hennie's Net Worth", "reason": "Illustrates Step 3's central question" }
+  ],
+  "suggested_worksheets": [
+    { "worksheet_code": "APP-B", "title": "Net Worth Statement", "reason": "Required for Step 3" }
+  ]
+}
+```
+
+### Recommendation engine — rules
+
+The engine composes signals into the action list. Apply rules in order; stop when 5 actions selected.
+
+1. **No assessment yet** → ONE action: "Take the 5-Question Quick Assessment". Source `first_step`.
+2. **Critical GAP test items** (any `no` on q1 will / q4 emergency fund / q5 life cover / q6 income protection from latest gap_test, taken within 90 days) → one action per critical item, source `high_priority_gap`. Stop after these.
+3. **Stage-specific recommended worksheet** (from table below), if the user hasn't submitted it → source `missing_worksheet`.
+4. **Stale annual review** (last APP-C / APP-B submission > 11 months ago) → "Refresh the annual review", source `stale_review`.
+5. **Stage-specific next-step content**:
+   - Foundation: complete Step 2 (Zero-Based Budget)
+   - Momentum: take GAP test if none in 90 days; complete Step 4a (Risk Cover)
+   - Freedom: complete Step 6 (Investment) optimisation
+   - Independence: estate planning (APP-F)
+   - Abundance: succession planning content
+   Source `stage_gap`.
+6. **Backfill** with "Continue Step N" where N is the user's `current_focus_step` (or step 1 if none).
+
+Stage → recommended worksheet baseline:
+| Stage | Worksheet |
+|---|---|
+| Foundation | APP-A (Zero-Based Budget) |
+| Momentum | APP-D (Debt Disclosure) → then APP-C (Risk Cover Review) |
+| Freedom | APP-B (Net Worth Statement) |
+| Independence | APP-F (attooh! Life File) |
+| Abundance | APP-F refresh + advisor review |
+
+### GET /users/progress
+**Auth required.**
+**Response 200:**
+```json
+{
+  "overall_completion_pct": 35,
+  "steps_completed": 2,
+  "steps_total": 7,
+  "current_focus_step": "3",
+  "steps": [
+    {
+      "step_number": "1",
+      "title": "Financial GPS",
+      "is_completed": true,
+      "completed_at": "2026-04-15T10:00:00Z",
+      "time_spent_minutes": 92
+    },
+    {
+      "step_number": "2",
+      "title": "Zero-Based Budget",
+      "is_completed": true,
+      "completed_at": "2026-04-20T15:30:00Z",
+      "time_spent_minutes": 110
+    },
+    {
+      "step_number": "3",
+      "title": "Money Matrix",
+      "is_completed": false,
+      "completed_at": null,
+      "time_spent_minutes": 0
+    }
+  ]
+}
+```
+
+A `user_progress` row is upserted on first call if absent. `time_spent_minutes` is best-effort (Phase 5 may return 0 for all steps; instrumented in Phase 6).
+
+### POST /users/progress/steps/{step_number}/complete
+**Auth required.** Marks the step complete; sets `completed_at = now`.
+**Response 200:** the full progress object (same shape as GET).
+**Errors:** 400 if `step_number` invalid.
+
+### POST /users/progress/steps/{step_number}/incomplete
+Undo. **Response 200:** same shape.
+
+### GET /users/activity
+**Auth required.** Cursor-paginated activity feed.
+**Query params:** `limit` (default 20, max 100), `cursor` (opaque, omit for first page)
+**Response 200:**
+```json
+{
+  "events": [
+    {
+      "event_type": "assessment_submitted",
+      "title": "Completed 10Q assessment — placed at Freedom",
+      "details": { "assessment_id": "uuid", "stage": "Freedom", "score": 28 },
+      "timestamp": "2026-05-12T10:30:00Z",
+      "link": "/assessments/results/uuid"
+    },
+    {
+      "event_type": "worksheet_submitted",
+      "title": "Submitted Zero-Based Budget — 71/8/21 split",
+      "details": { "worksheet_id": "uuid", "worksheet_code": "APP-A" },
+      "timestamp": "2026-05-12T10:25:00Z",
+      "link": "/worksheets/results/uuid"
+    }
+  ],
+  "next_cursor": "opaque-string",
+  "has_more": true
+}
+```
+
+Event types (Phase 5): `assessment_submitted`, `worksheet_submitted`, `step_completed`, `stage_changed`.
+`stage_changed` is derived (consecutive 5Q/10Q assessments where calculated_stage differs) — never stored, computed on read.
+Aggregations like calculator use are out of scope for Phase 5.
+
+### GET /users/milestones
+Standalone endpoint when the dashboard summary isn't enough.
+**Response 200:**
+```json
+{
+  "achieved": [
+    { "code": "first_assessment", "title": "First assessment completed", "date": "2026-01-15T10:00:00Z" },
+    { "code": "stage_progression", "title": "Moved from Foundation → Momentum", "date": "2026-03-20T10:00:00Z" }
+  ],
+  "upcoming": [
+    { "code": "monthly_money_conversation", "title": "Monthly Money Conversation", "due_date": "2026-05-31", "category": "review", "urgency": "soon" },
+    { "code": "annual_cover_review", "title": "Annual cover review", "due_date": "2026-12-15", "category": "review", "urgency": "upcoming" }
+  ]
+}
+```
+
+Milestone codes (Phase 5):
+- `first_assessment`, `first_worksheet`, `stage_progression`, `framework_step_completed` (per step), `worksheet_streak_3` (3 in a month)
+- Upcoming: `monthly_money_conversation` (last day of each month), `annual_cover_review` (12mo after last APP-C OR today+30 if none), `annual_net_worth_review` (12mo after last APP-B), `quarterly_assessment_refresh` (3mo after last 5Q/10Q)
+
 ---
 
 ## Assessment Endpoints (Phase 2)
