@@ -16,6 +16,7 @@ from app.api import assessments as assessments_routes
 from app.api import auth as auth_routes
 from app.api import content as content_routes
 from app.api import users as users_routes
+from app.api import users_dashboard as dashboard_routes
 from app.api import worksheets as worksheets_routes
 from app.api.deps import limiter
 from app.core.config import get_settings
@@ -55,9 +56,10 @@ def create_app() -> FastAPI:
             "Phase 2: Assessments. "
             "Phase 3: Framework, examples, calculators, case studies. "
             "Phase 4: Worksheets (drafts, submissions, exports). "
+            "Phase 5: Dashboard, recommendations, progress, activity, milestones. "
             "Source of truth: docs/API_CONTRACT.md."
         ),
-        version="0.4.0",
+        version="0.5.0",
         lifespan=lifespan,
     )
 
@@ -84,6 +86,7 @@ def create_app() -> FastAPI:
     # Routes
     app.include_router(auth_routes.router)
     app.include_router(users_routes.router)
+    app.include_router(dashboard_routes.router)
     app.include_router(assessments_routes.router)
     app.include_router(content_routes.router)
     app.include_router(worksheets_routes.router)
