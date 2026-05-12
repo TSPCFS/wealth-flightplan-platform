@@ -185,16 +185,17 @@ export interface ExamplesListResponse {
 export interface CalculatorInputSpec {
   name: string;
   label: string;
-  // `array` and `select` are accommodations the renderer accepts in addition to `number`.
-  type: 'number' | 'select' | 'array';
+  type: 'number' | 'text' | 'select' | 'array';
   default?: number | string | unknown[];
   min?: number;
   max?: number;
   step?: number;
   format?: CalculatorFormat;
-  options?: { value: string; label: string }[];
-  // For array inputs: schema of one row.
+  options?: { value: string; label: string }[] | string[];
+  // For array inputs: ordered column definitions; the renderer preserves the order.
   item_schema?: CalculatorInputSpec[];
+  min_items?: number;
+  max_items?: number;
   description?: string;
 }
 

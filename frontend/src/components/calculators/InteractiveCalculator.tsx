@@ -13,6 +13,18 @@ import { CompoundInterestResult } from './results/CompoundInterestResult';
 import { DebtAnalysisResult } from './results/DebtAnalysisResult';
 import { BudgetAllocatorResult } from './results/BudgetAllocatorResult';
 import { NetWorthAnalyzerResult } from './results/NetWorthAnalyzerResult';
+import { ArrayInput } from './ArrayInput';
+
+// Normalize `options` from either string[] (backend's compact form)
+// or {value,label}[] (contract's explicit form) into the explicit form.
+const normalizeOptions = (
+  options: { value: string; label: string }[] | string[] | undefined
+): { value: string; label: string }[] => {
+  if (!options) return [];
+  return options.map((o) =>
+    typeof o === 'string' ? { value: o, label: o } : o
+  );
+};
 
 interface Props {
   exampleDetail: ExampleDetail;
@@ -27,7 +39,11 @@ const initialFromSpec = (spec: CalculatorInputSpec): FieldValue => {
     return Array.isArray(spec.default) ? (spec.default as Record<string, unknown>[]) : [];
   }
   if (spec.type === 'select') {
-    return (spec.default as string) ?? spec.options?.[0]?.value ?? '';
+    const fallback = normalizeOptions(spec.options)[0]?.value ?? '';
+    return (spec.default as string) ?? fallback;
+  }
+  if (spec.type === 'text') {
+    return typeof spec.default === 'string' ? spec.default : '';
   }
   return typeof spec.default === 'number' ? spec.default : 0;
 };
@@ -193,21 +209,35 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
                   }
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 >
-                  {(spec.options ?? []).map((opt) => (
+                  {normalizeOptions(spec.options).map((opt) => (
                     <option key={opt.value} value={opt.value}>
                       {opt.label}
                     </option>
                   ))}
                 </select>
               </label>
-            ) : (
-              <div
+            ) : spec.type === 'array' ? (
+              <ArrayInput
                 key={spec.name}
-                className="sm:col-span-2 text-xs text-amber-700 bg-amber-50 ring-1 ring-amber-100 rounded p-2"
-              >
-                {spec.label}: array inputs aren't editable in this view yet.
-              </div>
-            )
+                spec={spec}
+                value={(values[spec.name] as Record<string, unknown>[]) ?? []}
+                onChange={(rows) =>
+                  setValues((prev) => ({ ...prev, [spec.name]: rows }))
+                }
+              />
+            ) : spec.type === 'text' ? (
+              <label key={spec.name} className="block">
+                <span className="text-sm font-medium text-gray-700">{spec.label}</span>
+                <input
+                  type="text"
+                  value={(values[spec.name] as string) ?? ''}
+                  onChange={(e) =>
+                    setValues((prev) => ({ ...prev, [spec.name]: e.target.value }))
+                  }
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                />
+              </label>
+            ) : null
           )}
         </div>
 

@@ -375,16 +375,16 @@ def _debt_inputs(default_debts: list[dict[str, Any]], surplus: float, method: st
             {
                 "name": "debts",
                 "label": "Debts",
-                "type": "list",
+                "type": "array",
                 "default": default_debts,
                 "min_items": 1,
                 "max_items": 20,
-                "item_schema": {
-                    "name": {"type": "text"},
-                    "balance": {"type": "number", "format": "currency", "min": 0},
-                    "annual_rate_pct": {"type": "number", "format": "percent", "min": 0, "max": 50},
-                    "minimum_payment": {"type": "number", "format": "currency", "min": 0},
-                },
+                "item_schema": [
+                    {"name": "name", "label": "Account", "type": "text"},
+                    {"name": "balance", "label": "Balance", "type": "number", "format": "currency", "min": 0},
+                    {"name": "annual_rate_pct", "label": "Rate", "type": "number", "format": "percent", "min": 0, "max": 50},
+                    {"name": "minimum_payment", "label": "Minimum", "type": "number", "format": "currency", "min": 0},
+                ],
             },
             {
                 "name": "surplus_available",
@@ -417,38 +417,44 @@ def _net_worth_inputs() -> dict:
             {
                 "name": "lifestyle_assets",
                 "label": "Lifestyle assets",
-                "type": "list",
+                "type": "array",
                 "default": [
                     {"name": "Primary home", "value": 4_500_000},
                     {"name": "Vehicles", "value": 850_000},
                 ],
-                "item_schema": {
-                    "name": {"type": "text"},
-                    "value": {"type": "number", "format": "currency", "min": 0},
-                },
+                "min_items": 0,
+                "max_items": 20,
+                "item_schema": [
+                    {"name": "name", "label": "Asset", "type": "text"},
+                    {"name": "value", "label": "Value", "type": "number", "format": "currency", "min": 0},
+                ],
             },
             {
                 "name": "income_generating_assets",
                 "label": "Income-generating assets",
-                "type": "list",
+                "type": "array",
                 "default": [
                     {"name": "Retirement annuity", "value": 1_200_000},
                     {"name": "TFSA", "value": 500_000},
                 ],
-                "item_schema": {
-                    "name": {"type": "text"},
-                    "value": {"type": "number", "format": "currency", "min": 0},
-                },
+                "min_items": 0,
+                "max_items": 20,
+                "item_schema": [
+                    {"name": "name", "label": "Asset", "type": "text"},
+                    {"name": "value", "label": "Value", "type": "number", "format": "currency", "min": 0},
+                ],
             },
             {
                 "name": "liabilities",
                 "label": "Liabilities",
-                "type": "list",
+                "type": "array",
                 "default": [{"name": "Bond", "value": 3_100_000}],
-                "item_schema": {
-                    "name": {"type": "text"},
-                    "value": {"type": "number", "format": "currency", "min": 0},
-                },
+                "min_items": 0,
+                "max_items": 20,
+                "item_schema": [
+                    {"name": "name", "label": "Liability", "type": "text"},
+                    {"name": "value", "label": "Balance", "type": "number", "format": "currency", "min": 0},
+                ],
             },
         ],
         "interpretation_template": (
