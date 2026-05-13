@@ -459,3 +459,49 @@ async def test_lead_capture_links_conversation_if_owned(
     )
     assert r.status_code == 201
     assert captured and captured[0]["trigger_event"] == "user_request"
+
+
+# ---------------------------------------------------------------------------
+# Manuscript env-var loader (Phase 7c — Railway deploy path)
+# ---------------------------------------------------------------------------
+
+
+def test_manuscript_loader_reads_single_env_var(monkeypatch: pytest.MonkeyPatch) -> None:
+    """MANUSCRIPT_GZB64 takes precedence over the on-disk file."""
+    import base64
+    import gzip
+
+    sample = "Once upon a Wealth FlightPlan, there was a Money Matrix."
+    payload = base64.b64encode(gzip.compress(sample.encode("utf-8"))).decode("ascii")
+    monkeypatch.setenv("MANUSCRIPT_GZB64", payload)
+    # File path is whatever the dev box has; the env path should win.
+    assert chatbot_prompts._load_manuscript_from_env() == sample
+
+
+def test_manuscript_loader_reads_chunked_env_vars(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Chunked MANUSCRIPT_GZB64_<N> envs reassemble in order."""
+    import base64
+    import gzip
+
+    sample = "Chapter 1. The Financial GPS. Chapter 2. The Zero-Based Budget."
+    payload = base64.b64encode(gzip.compress(sample.encode("utf-8"))).decode("ascii")
+    mid = len(payload) // 2
+    monkeypatch.delenv("MANUSCRIPT_GZB64", raising=False)
+    monkeypatch.setenv("MANUSCRIPT_GZB64_1", payload[:mid])
+    monkeypatch.setenv("MANUSCRIPT_GZB64_2", payload[mid:])
+    assert chatbot_prompts._load_manuscript_from_env() == sample
+
+
+def test_manuscript_loader_returns_none_when_no_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Empty env → falls through so the file-path loader can try."""
+    monkeypatch.delenv("MANUSCRIPT_GZB64", raising=False)
+    monkeypatch.delenv("MANUSCRIPT_GZB64_1", raising=False)
+    assert chatbot_prompts._load_manuscript_from_env() is None
+
+
+def test_manuscript_loader_returns_none_on_decode_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Bad payload → logs and falls through (does not crash)."""
+    monkeypatch.setenv("MANUSCRIPT_GZB64", "this-is-not-base64-encoded-gzip")
+    assert chatbot_prompts._load_manuscript_from_env() is None

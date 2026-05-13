@@ -90,13 +90,77 @@ _DEGRADED_MANUSCRIPT_BANNER = (
 )
 
 
+def _load_manuscript_from_env() -> str | None:
+    """Try loading the manuscript from env vars.
+
+    Two shapes supported:
+
+    1. ``MANUSCRIPT_GZB64`` — single env var holding the gzip-then-base64
+       encoded manuscript. Use this when your hosting tier permits env vars
+       large enough (Railway Pro: 256 KiB; the encoded payload is ~73 KB).
+
+    2. ``MANUSCRIPT_GZB64_1``, ``MANUSCRIPT_GZB64_2``, ... — split across
+       multiple env vars when a single 32 KiB cap forces chunking. The
+       loader concatenates the chunks in order before decoding.
+
+    Returns ``None`` when no env var is set; logs and returns ``None`` if
+    decoding fails so the caller can fall back to the file path.
+    """
+    import base64
+    import gzip
+    import os
+
+    single = os.environ.get("MANUSCRIPT_GZB64", "").strip()
+    if single:
+        try:
+            return gzip.decompress(base64.b64decode(single)).decode("utf-8").strip()
+        except Exception as exc:  # noqa: BLE001
+            logger.error("MANUSCRIPT_GZB64 decode failed: %s — falling through.", exc)
+            return None
+
+    chunks: list[str] = []
+    i = 1
+    while True:
+        chunk = os.environ.get(f"MANUSCRIPT_GZB64_{i}", "").strip()
+        if not chunk:
+            break
+        chunks.append(chunk)
+        i += 1
+    if not chunks:
+        return None
+
+    try:
+        return gzip.decompress(base64.b64decode("".join(chunks))).decode("utf-8").strip()
+    except Exception as exc:  # noqa: BLE001
+        logger.error(
+            "MANUSCRIPT_GZB64_* chunk decode failed (%d chunks): %s — falling through.",
+            len(chunks),
+            exc,
+        )
+        return None
+
+
 def _load_manuscript() -> str:
-    """Read the manuscript file at startup. Fail loud-but-soft on absence."""
+    """Resolve the manuscript text.
+
+    Resolution order:
+
+    1. ``MANUSCRIPT_GZB64`` / ``MANUSCRIPT_GZB64_<N>`` env vars (production
+       on Railway — file is gitignored so the binary needs another path in).
+    2. ``backend/data/manuscript.txt`` on local disk (dev + CI).
+    3. Degraded-mode banner (chatbot still answers, but tells the user the
+       source book is missing and offers an advisor handoff).
+    """
+    from_env = _load_manuscript_from_env()
+    if from_env:
+        logger.info("Manuscript loaded from MANUSCRIPT_GZB64 env (%d chars).", len(from_env))
+        return from_env
+
     try:
         text = MANUSCRIPT_PATH.read_text(encoding="utf-8")
     except FileNotFoundError:
         logger.error(
-            "Manuscript file missing at %s — chatbot will run in degraded mode.",
+            "Manuscript file missing at %s and no MANUSCRIPT_GZB64 env set — degraded mode.",
             MANUSCRIPT_PATH,
         )
         return _DEGRADED_MANUSCRIPT_BANNER
