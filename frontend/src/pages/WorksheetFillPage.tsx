@@ -10,6 +10,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
 import { WorksheetForm } from '../components/worksheets/WorksheetForm';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const VALID_CODES: WorksheetCode[] = ['APP-A', 'APP-B', 'APP-C', 'APP-D', 'APP-E', 'APP-F', 'APP-G'];
 
@@ -22,6 +23,7 @@ export const WorksheetFillPage: React.FC = () => {
   const [initialData, setInitialData] = useState<WorksheetResponseData | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  useDocumentTitle(schema ? `${schema.title} (worksheet)` : null);
 
   useEffect(() => {
     if (!isWorksheetCode(code)) {

@@ -8,6 +8,7 @@ import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { FormError } from '../components/common/FormError';
 import { AuthLayout } from '../components/common/AuthLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const resetPasswordSchema = z.object({
   new_password: z.string()
@@ -25,6 +26,7 @@ const resetPasswordSchema = z.object({
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export const ResetPasswordPage: React.FC = () => {
+  useDocumentTitle('Reset password');
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { confirmPasswordReset } = useAuth();

@@ -9,6 +9,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
 import { formatCurrency, formatPercent } from '../utils/format';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const VALID_CODES: WorksheetCode[] = ['APP-A', 'APP-B', 'APP-C', 'APP-D', 'APP-E', 'APP-F', 'APP-G'];
 
@@ -38,6 +39,7 @@ const humaniseKey = (k: string): string =>
 
 export const WorksheetHistoryPage: React.FC = () => {
   const { code } = useParams<{ code: string }>();
+  useDocumentTitle(code ? `${code} · history` : null);
   const [data, setData] = useState<WorksheetHistoryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 

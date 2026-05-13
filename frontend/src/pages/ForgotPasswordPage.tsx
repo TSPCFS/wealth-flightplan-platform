@@ -8,6 +8,7 @@ import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { FormError } from '../components/common/FormError';
 import { AuthLayout } from '../components/common/AuthLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -16,6 +17,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export const ForgotPasswordPage: React.FC = () => {
+  useDocumentTitle('Forgot password');
   const { requestPasswordReset } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);

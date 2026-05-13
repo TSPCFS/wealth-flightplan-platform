@@ -6,12 +6,14 @@ import { FormError } from '../components/common/FormError';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { AppLayout } from '../components/common/AppLayout';
 import { WorksheetSubmissionResult } from '../components/worksheets/WorksheetSubmissionResult';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 interface ResultsLocationState {
   submission?: WorksheetSubmission;
 }
 
 export const WorksheetResultsPage: React.FC = () => {
+  useDocumentTitle('Worksheet results');
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const state = (location.state ?? {}) as ResultsLocationState;

@@ -15,8 +15,10 @@ import { StageCelebration } from '../components/dashboard/StageCelebration';
 import { FirstRunIntro } from '../components/dashboard/FirstRunIntro';
 import { AppLayout } from '../components/common/AppLayout';
 import { useDashboardStageCelebration } from '../hooks/useDashboardStageCelebration';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const DashboardPage: React.FC = () => {
+  useDocumentTitle('Dashboard');
   const { user, logout } = useAuth();
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [error, setError] = useState<string | null>(null);

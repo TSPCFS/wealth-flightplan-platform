@@ -3,10 +3,12 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth.service';
 import { Button } from '../components/common/Button';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 type VerifyStatus = 'loading' | 'success' | 'error';
 
 export const EmailVerificationPage: React.FC = () => {
+  useDocumentTitle('Verify email');
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [status, setStatus] = useState<VerifyStatus>('loading');

@@ -9,8 +9,10 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
 import { WorksheetCard } from '../components/worksheets/WorksheetCard';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const WorksheetsCataloguePage: React.FC = () => {
+  useDocumentTitle('Worksheets');
   const [list, setList] = useState<WorksheetsListResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [latestByCode, setLatestByCode] = useState<

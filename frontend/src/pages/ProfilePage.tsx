@@ -8,8 +8,10 @@ import { Button } from '../components/common/Button';
 import { formatShortDate } from '../utils/relativeTime';
 import { ResetProgressModal } from '../components/user/ResetProgressModal';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const ProfilePage: React.FC = () => {
+  useDocumentTitle('Profile');
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [resetOpen, setResetOpen] = useState(false);

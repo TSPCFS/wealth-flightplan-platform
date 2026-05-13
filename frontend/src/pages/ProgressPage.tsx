@@ -7,6 +7,7 @@ import { FormError } from '../components/common/FormError';
 import { Button } from '../components/common/Button';
 import { formatShortDate } from '../utils/relativeTime';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const recomputeOverall = (steps: StepProgress[]): {
   steps_completed: number;
@@ -57,6 +58,7 @@ const StepRow: React.FC<StepRowProps> = ({ step, pending, onToggle }) => (
 );
 
 export const ProgressPage: React.FC = () => {
+  useDocumentTitle('Framework progress');
   const [progress, setProgress] = useState<ProgressResponse | null>(null);
   // `loadError` blocks the initial render; `toggleError` is an inline notice
   // so a failed mark-complete doesn't take the page away from the user.

@@ -7,6 +7,7 @@ import { FormError } from '../components/common/FormError';
 import { RecommendedActions } from '../components/dashboard/RecommendedActions';
 import { WorksheetCard } from '../components/worksheets/WorksheetCard';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 // Accept all status values the backend may emit. `completed` is the canonical
 // value; `done` is tolerated as an alias for forward-compat.
@@ -22,6 +23,7 @@ const _fallbackStatusStyle = {
 };
 
 export const RecommendationsPage: React.FC = () => {
+  useDocumentTitle('Recommendations');
   const [data, setData] = useState<RecommendationsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
