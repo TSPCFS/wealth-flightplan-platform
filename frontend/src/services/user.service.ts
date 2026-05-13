@@ -8,6 +8,7 @@ import type {
   ProfilePatch,
   ProgressResponse,
   RecommendationsResponse,
+  ResetProgressResponse,
 } from '../types/user.types';
 
 export const userService = {
@@ -43,5 +44,9 @@ export const userService = {
     return completed
       ? apiClient.setStepComplete(stepNumber)
       : apiClient.setStepIncomplete(stepNumber);
+  },
+
+  resetProgress(): Promise<ResetProgressResponse> {
+    return apiClient.resetProgress();
   },
 };

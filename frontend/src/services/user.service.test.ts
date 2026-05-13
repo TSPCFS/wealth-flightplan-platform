@@ -12,6 +12,7 @@ vi.mock('./api', () => ({
     getMilestones: vi.fn(),
     setStepComplete: vi.fn(),
     setStepIncomplete: vi.fn(),
+    resetProgress: vi.fn(),
   },
 }));
 
@@ -66,6 +67,17 @@ describe('userService', () => {
     expect(apiClient.getUserProgress).toHaveBeenCalled();
     expect(apiClient.getActivity).toHaveBeenCalledWith('cursor-1', 20);
     expect(apiClient.getMilestones).toHaveBeenCalled();
+  });
+
+  it('resetProgress delegates to apiClient', async () => {
+    const { apiClient } = await import('./api');
+    vi.mocked(apiClient.resetProgress).mockResolvedValue({
+      deleted: { assessments: 1, worksheet_responses: 0, example_interactions: 0, user_progress_rows: 1 },
+      preserved: ['user_account'],
+      message: 'ok',
+    });
+    await userService.resetProgress();
+    expect(apiClient.resetProgress).toHaveBeenCalled();
   });
 
   it('setStepComplete branches to setStepComplete vs setStepIncomplete', async () => {

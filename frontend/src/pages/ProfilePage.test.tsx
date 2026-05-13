@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { ProfilePage } from './ProfilePage';
 import type { ProfileResponse } from '../types/api.types';
@@ -8,6 +8,7 @@ vi.mock('../services/user.service', () => ({
   userService: {
     getProfile: vi.fn(),
     updateProfile: vi.fn(),
+    resetProgress: vi.fn(),
   },
 }));
 
@@ -47,6 +48,25 @@ describe('ProfilePage', () => {
     expect(screen.getByRole('form', { name: /profile/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /download my data/i })).toBeDisabled();
     expect(screen.getByRole('button', { name: /delete my account/i })).toBeDisabled();
+  });
+
+  it('opens the reset modal when "Reset progress" is clicked', async () => {
+    vi.mocked(userService.getProfile).mockResolvedValue(profile);
+    render(
+      <MemoryRouter>
+        <ProfilePage />
+      </MemoryRouter>
+    );
+    await waitFor(() => expect(screen.getByText('ada@b.co')).toBeInTheDocument());
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: /open reset progress confirmation/i })
+      );
+    });
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText(/Reset all your testing data\?/)).toBeInTheDocument();
   });
 
   it('shows the error block when the profile fetch fails', async () => {

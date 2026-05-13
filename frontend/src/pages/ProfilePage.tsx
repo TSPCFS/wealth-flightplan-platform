@@ -6,10 +6,13 @@ import { FormError } from '../components/common/FormError';
 import { ProfileForm } from '../components/user/ProfileForm';
 import { Button } from '../components/common/Button';
 import { formatShortDate } from '../utils/relativeTime';
+import { ResetProgressModal } from '../components/user/ResetProgressModal';
+import { AppLayout } from '../components/common/AppLayout';
 
 export const ProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -24,15 +27,15 @@ export const ProfilePage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
-      </div>
+      </AppLayout>
     );
   }
   if (!profile) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <AppLayout maxWidth="narrow" className="space-y-8">
       <header>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Profile</h1>
         <p className="text-gray-600 mt-1">
@@ -65,6 +68,36 @@ export const ProfilePage: React.FC = () => {
         </div>
       </section>
 
+      <section
+        aria-labelledby="reset-section-title"
+        className="bg-white rounded-lg shadow p-5 ring-1 ring-red-100"
+      >
+        <h2
+          id="reset-section-title"
+          className="text-sm font-semibold uppercase tracking-wide text-red-700 mb-2"
+        >
+          Reset my testing data
+        </h2>
+        <p className="text-sm text-gray-700 mb-4">
+          Wipes your assessments, worksheets, and progress so you can re-run the
+          recommendation cascade from a clean state. Your account, profile, and
+          password are kept.
+        </p>
+        <Button
+          type="button"
+          variant="danger"
+          onClick={() => setResetOpen(true)}
+          aria-label="Open reset progress confirmation"
+        >
+          Reset progress
+        </Button>
+      </section>
+
+      <ResetProgressModal
+        open={resetOpen}
+        onClose={() => setResetOpen(false)}
+      />
+
       <section className="bg-white rounded-lg shadow p-5">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
           Privacy
@@ -91,6 +124,6 @@ export const ProfilePage: React.FC = () => {
           </Button>
         </div>
       </section>
-    </div>
+    </AppLayout>
   );
 };

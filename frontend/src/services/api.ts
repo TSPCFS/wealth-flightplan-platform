@@ -55,6 +55,7 @@ import type {
   ProfilePatch,
   ProgressResponse,
   RecommendationsResponse,
+  ResetProgressResponse,
 } from '../types/user.types';
 
 // localStorage token keys. HttpOnly cookies are post-MVP.
@@ -440,6 +441,15 @@ class ApiClient {
 
   async getMilestones(): Promise<MilestonesResponse> {
     return this.apiRequest<MilestonesResponse>('/users/milestones');
+  }
+
+  // Account utilities (Phase 6b). Backend requires the `confirm` field;
+  // value is ignored but presence prevents accidental resets.
+  async resetProgress(): Promise<ResetProgressResponse> {
+    return this.apiRequest<ResetProgressResponse>('/users/me/reset-progress', {
+      method: 'POST',
+      body: JSON.stringify({ confirm: 'RESET' }),
+    });
   }
 }
 

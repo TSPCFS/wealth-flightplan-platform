@@ -139,6 +139,17 @@ export interface MilestonesResponse {
   upcoming: MilestoneUpcoming[];
 }
 
+export interface ResetProgressResponse {
+  deleted: {
+    assessments: number;
+    worksheet_responses: number;
+    example_interactions: number;
+    user_progress_rows: number;
+  };
+  preserved: string[];
+  message: string;
+}
+
 export interface ProfilePatch {
   first_name?: string;
   last_name?: string;
