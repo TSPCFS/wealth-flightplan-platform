@@ -240,9 +240,7 @@ async def _load_conversation(
     return conv
 
 
-async def create_conversation(
-    session: AsyncSession, *, user_id: uuid.UUID
-) -> ChatbotConversation:
+async def create_conversation(session: AsyncSession, *, user_id: uuid.UUID) -> ChatbotConversation:
     conv = ChatbotConversation(
         user_id=user_id,
         created_at=utcnow(),
@@ -276,9 +274,7 @@ async def get_conversation_with_messages(
     user_id: uuid.UUID,
     conversation_id: uuid.UUID,
 ) -> tuple[ChatbotConversation, list[ChatbotMessage]]:
-    conv = await _load_conversation(
-        session, user_id=user_id, conversation_id=conversation_id
-    )
+    conv = await _load_conversation(session, user_id=user_id, conversation_id=conversation_id)
     res = await session.execute(
         select(ChatbotMessage)
         .where(ChatbotMessage.conversation_id == conv.conversation_id)
@@ -298,9 +294,7 @@ async def delete_conversation(
 
     ``ondelete=CASCADE`` on chatbot_messages drops the message rows too.
     """
-    conv = await _load_conversation(
-        session, user_id=user_id, conversation_id=conversation_id
-    )
+    conv = await _load_conversation(session, user_id=user_id, conversation_id=conversation_id)
     await session.delete(conv)
     await session.commit()
 
@@ -403,9 +397,7 @@ async def send_message(
             message=f"Message exceeds {MAX_USER_CONTENT_CHARS} characters.",
         )
 
-    conv = await _load_conversation(
-        session, user_id=user.user_id, conversation_id=conversation_id
-    )
+    conv = await _load_conversation(session, user_id=user.user_id, conversation_id=conversation_id)
 
     # Daily per-user rate limit. Bucket key is per-user, period is one day —
     # this is independent of the per-IP/auth rate limit on the API.

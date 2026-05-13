@@ -51,9 +51,7 @@ async def create_conversation(
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ConversationOut:
-    conv = await chatbot_service.create_conversation(
-        session, user_id=current_user.user_id
-    )
+    conv = await chatbot_service.create_conversation(session, user_id=current_user.user_id)
     return ConversationOut(
         conversation_id=conv.conversation_id,
         created_at=conv.created_at,
@@ -72,9 +70,7 @@ async def list_conversations(
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ConversationListOut:
-    rows = await chatbot_service.list_conversations(
-        session, user_id=current_user.user_id
-    )
+    rows = await chatbot_service.list_conversations(session, user_id=current_user.user_id)
     return ConversationListOut(
         conversations=[
             ConversationOut(

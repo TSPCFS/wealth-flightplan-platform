@@ -30,9 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 # Resolves to ``<repo>/backend/data/manuscript.txt`` regardless of CWD.
-MANUSCRIPT_PATH: Path = (
-    Path(__file__).resolve().parent.parent.parent / "data" / "manuscript.txt"
-)
+MANUSCRIPT_PATH: Path = Path(__file__).resolve().parent.parent.parent / "data" / "manuscript.txt"
 
 
 _BASE_PROMPT = """You are the Wealth FlightPlan Assistant, an informational helper inside the
@@ -157,9 +155,7 @@ def _headline(values: dict | None) -> dict:
     return {k: values[k] for k in _WORKSHEET_HEADLINE_FIELDS if k in values}
 
 
-async def build_user_context(
-    session: AsyncSession, *, user: User
-) -> str:
+async def build_user_context(session: AsyncSession, *, user: User) -> str:
     """Compose a small, focused per-message user context block.
 
     Kept under ~500 tokens by design. Includes:
@@ -194,9 +190,7 @@ async def build_user_context(
         lines.append("Latest assessment: none yet")
 
     # Framework progress.
-    res = await session.execute(
-        select(UserProgress).where(UserProgress.user_id == user.user_id)
-    )
+    res = await session.execute(select(UserProgress).where(UserProgress.user_id == user.user_id))
     progress: UserProgress | None = res.scalar_one_or_none()
     if progress is not None:
         completed: list[str] = []
@@ -231,9 +225,7 @@ async def build_user_context(
         seen_codes.add(row.worksheet_code)
         headline = _headline(row.calculated_values)
         headline_str = (
-            " ".join(f"{k}={v}" for k, v in headline.items())
-            if headline
-            else "no_headline"
+            " ".join(f"{k}={v}" for k, v in headline.items()) if headline else "no_headline"
         )
         submissions.append(
             f"  - {row.worksheet_code}: pct={row.completion_percentage} {headline_str}"

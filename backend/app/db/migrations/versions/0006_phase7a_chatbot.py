@@ -91,9 +91,7 @@ def upgrade() -> None:
         sa.Column(
             "conversation_id",
             postgresql.UUID(as_uuid=True),
-            sa.ForeignKey(
-                "chatbot_conversations.conversation_id", ondelete="CASCADE"
-            ),
+            sa.ForeignKey("chatbot_conversations.conversation_id", ondelete="CASCADE"),
             nullable=False,
         ),
         sa.Column("role", sa.String(20), nullable=False),
@@ -143,9 +141,7 @@ def upgrade() -> None:
         sa.Column(
             "conversation_id",
             postgresql.UUID(as_uuid=True),
-            sa.ForeignKey(
-                "chatbot_conversations.conversation_id", ondelete="SET NULL"
-            ),
+            sa.ForeignKey("chatbot_conversations.conversation_id", ondelete="SET NULL"),
             nullable=True,
         ),
         sa.Column("trigger_event", sa.String(64), nullable=False),
@@ -188,12 +184,8 @@ def downgrade() -> None:
     op.drop_index("ix_chatbot_leads_user_id", table_name="chatbot_leads")
     op.drop_table("chatbot_leads")
 
-    op.drop_index(
-        "ix_chatbot_messages_conversation_id", table_name="chatbot_messages"
-    )
+    op.drop_index("ix_chatbot_messages_conversation_id", table_name="chatbot_messages")
     op.drop_table("chatbot_messages")
 
-    op.drop_index(
-        "ix_chatbot_conversations_user_id", table_name="chatbot_conversations"
-    )
+    op.drop_index("ix_chatbot_conversations_user_id", table_name="chatbot_conversations")
     op.drop_table("chatbot_conversations")

@@ -91,9 +91,7 @@ async def test_chatbot_endpoints_require_auth(client: AsyncClient) -> None:
     )
     assert r.status_code == 401
 
-    r = await client.delete(
-        "/chatbot/conversations/00000000-0000-0000-0000-000000000001"
-    )
+    r = await client.delete("/chatbot/conversations/00000000-0000-0000-0000-000000000001")
     assert r.status_code == 401
 
     r = await client.post(
@@ -109,9 +107,7 @@ async def test_chatbot_endpoints_require_auth(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_conversation_lifecycle(
-    client: AsyncClient, claude_stub
-) -> None:
+async def test_conversation_lifecycle(client: AsyncClient, claude_stub) -> None:
     access, _ = await authed_session(client, "lifecycle@example.com")
     H = bearer(access)
 
@@ -245,9 +241,7 @@ async def test_no_api_key_returns_friendly_not_configured_stub(
 
 
 @pytest.mark.asyncio
-async def test_handoff_signal_sets_intent_metadata(
-    client: AsyncClient, claude_stub
-) -> None:
+async def test_handoff_signal_sets_intent_metadata(client: AsyncClient, claude_stub) -> None:
     access, _ = await authed_session(client, "handoff@example.com")
     H = bearer(access)
     r = await client.post("/chatbot/conversations", headers=H)
@@ -274,9 +268,7 @@ async def test_handoff_signal_sets_intent_metadata(
 
 
 @pytest.mark.asyncio
-async def test_oversize_message_rejected_at_validation(
-    client: AsyncClient, claude_stub
-) -> None:
+async def test_oversize_message_rejected_at_validation(client: AsyncClient, claude_stub) -> None:
     access, _ = await authed_session(client, "oversize@example.com")
     H = bearer(access)
     r = await client.post("/chatbot/conversations", headers=H)
@@ -336,9 +328,7 @@ async def test_chatbot_per_user_daily_rate_limit(
 
 
 @pytest.mark.asyncio
-async def test_cross_user_conversation_isolation(
-    client: AsyncClient, claude_stub
-) -> None:
+async def test_cross_user_conversation_isolation(client: AsyncClient, claude_stub) -> None:
     access_a, _ = await authed_session(client, "iso-a@example.com")
     access_b, _ = await authed_session(client, "iso-b@example.com")
 
@@ -352,9 +342,7 @@ async def test_cross_user_conversation_isolation(
     )
 
     # User B cannot GET it.
-    r = await client.get(
-        f"/chatbot/conversations/{a_cid}", headers=bearer(access_b)
-    )
+    r = await client.get(f"/chatbot/conversations/{a_cid}", headers=bearer(access_b))
     assert r.status_code == 404
 
     # User B cannot POST messages to it.
@@ -366,9 +354,7 @@ async def test_cross_user_conversation_isolation(
     assert r.status_code == 404
 
     # User B cannot DELETE it.
-    r = await client.delete(
-        f"/chatbot/conversations/{a_cid}", headers=bearer(access_b)
-    )
+    r = await client.delete(f"/chatbot/conversations/{a_cid}", headers=bearer(access_b))
     assert r.status_code == 404
 
     # User B's conversation list is empty.
@@ -455,9 +441,7 @@ async def test_lead_capture_links_conversation_if_owned(
     async def fake_email(**kwargs):
         captured.append(kwargs)
 
-    monkeypatch.setattr(
-        "app.api.chatbot.send_lead_notification_email", fake_email
-    )
+    monkeypatch.setattr("app.api.chatbot.send_lead_notification_email", fake_email)
 
     access, _ = await authed_session(client, "linkedlead@example.com")
     H = bearer(access)

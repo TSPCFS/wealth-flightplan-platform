@@ -71,9 +71,7 @@ class Settings(BaseSettings):
     # fallback in app.services.chatbot rather than a 500.
     anthropic_api_key: str = Field(default="", validation_alias="ANTHROPIC_API_KEY")
     chatbot_model: str = Field(default="claude-sonnet-4-5", validation_alias="CHATBOT_MODEL")
-    chatbot_max_tokens: int = Field(
-        default=1024, validation_alias="CHATBOT_MAX_TOKENS"
-    )
+    chatbot_max_tokens: int = Field(default=1024, validation_alias="CHATBOT_MAX_TOKENS")
     chatbot_daily_limit_per_user: int = Field(
         default=50, validation_alias="CHATBOT_DAILY_LIMIT_PER_USER"
     )
