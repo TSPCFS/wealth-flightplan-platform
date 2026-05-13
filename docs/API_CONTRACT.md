@@ -897,6 +897,47 @@ All monetary fields (`household_income_monthly_after_tax`, all `total_*`/`balanc
 
 ---
 
+## Account utilities (Phase 6b)
+
+### POST /users/me/reset-progress
+
+**Auth required.** Wipes the calling user's testing data — useful for demo accounts who want to re-run the platform from a clean state without re-registering.
+
+**What it deletes (for the authenticated user only):**
+- All rows in `assessments` (5Q, 10Q, gap_test submissions)
+- All rows in `worksheet_responses` (drafts + submissions)
+- All rows in `example_interactions`
+- The user's `user_progress` row (recreated empty on next read)
+
+**What it preserves:**
+- The user account itself (email, password, profile fields, `is_business_owner`)
+- `audit_logs` (compliance trail — never deleted by this endpoint)
+- `content_metadata` (read-only seeded content; not user-owned)
+
+**Request:** no body required, but accepts `{ "confirm": "RESET" }` for symmetry with destructive endpoints. The backend ignores the value but rejects requests without the field to prevent accidental deletion.
+
+```json
+{ "confirm": "RESET" }
+```
+
+**Response 200:**
+```json
+{
+  "deleted": {
+    "assessments": 7,
+    "worksheet_responses": 4,
+    "example_interactions": 19,
+    "user_progress_rows": 1
+  },
+  "preserved": ["user_account", "audit_logs"],
+  "message": "Progress reset. Reload to see the empty-state dashboard."
+}
+```
+
+**Errors:** 400 `MISSING_CONFIRM` if request body lacks `confirm`. 401 if unauthenticated. Always writes an `audit_logs` row capturing the reset.
+
+---
+
 ## Worksheet Endpoints (Phase 4)
 
 All require Bearer auth. Worksheets are user-data forms with backend validation and calculation. Each submission inserts a row into `worksheet_responses` (per DATABASE_SCHEMA.md). Drafts (`is_draft: true`) are autosaved as the user types; submits (`is_draft: false`) trigger validation and calculation.
