@@ -1,6 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
+import { LoadingSpinner } from './components/common/LoadingSpinner';
+
+// Eager: auth flow + most-trafficked hub pages (no heavy deps).
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { EmailVerificationPage } from './pages/EmailVerificationPage';
@@ -11,23 +15,52 @@ import { AssessmentsPage } from './pages/AssessmentsPage';
 import { Assessment5QPage } from './pages/Assessment5QPage';
 import { Assessment10QPage } from './pages/Assessment10QPage';
 import { AssessmentGapPage } from './pages/AssessmentGapPage';
-import { AssessmentResultsPage } from './pages/AssessmentResultsPage';
-import { AssessmentHistoryPage } from './pages/AssessmentHistoryPage';
 import { FrameworkOverviewPage } from './pages/FrameworkOverviewPage';
-import { StepDetailPage } from './pages/StepDetailPage';
 import { ExamplesPage } from './pages/ExamplesPage';
-import { ExampleDetailPage } from './pages/ExampleDetailPage';
 import { CaseStudiesPage } from './pages/CaseStudiesPage';
-import { CaseStudyDetailPage } from './pages/CaseStudyDetailPage';
 import { WorksheetsCataloguePage } from './pages/WorksheetsCataloguePage';
-import { WorksheetFillPage } from './pages/WorksheetFillPage';
-import { WorksheetHistoryPage } from './pages/WorksheetHistoryPage';
-import { WorksheetResultsPage } from './pages/WorksheetResultsPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { ProgressPage } from './pages/ProgressPage';
-import { RecommendationsPage } from './pages/RecommendationsPage';
-import { ActivityPage } from './pages/ActivityPage';
-import { MilestonesPage } from './pages/MilestonesPage';
+
+// Lazy: heavy pages pulling Recharts and/or react-markdown.
+// Recharts alone is ~400KB of the JS bundle; react-markdown adds ~100KB.
+const StepDetailPage = lazy(() =>
+  import('./pages/StepDetailPage').then((m) => ({ default: m.StepDetailPage }))
+);
+const ExampleDetailPage = lazy(() =>
+  import('./pages/ExampleDetailPage').then((m) => ({ default: m.ExampleDetailPage }))
+);
+const CaseStudyDetailPage = lazy(() =>
+  import('./pages/CaseStudyDetailPage').then((m) => ({ default: m.CaseStudyDetailPage }))
+);
+const AssessmentResultsPage = lazy(() =>
+  import('./pages/AssessmentResultsPage').then((m) => ({ default: m.AssessmentResultsPage }))
+);
+const AssessmentHistoryPage = lazy(() =>
+  import('./pages/AssessmentHistoryPage').then((m) => ({ default: m.AssessmentHistoryPage }))
+);
+const WorksheetFillPage = lazy(() =>
+  import('./pages/WorksheetFillPage').then((m) => ({ default: m.WorksheetFillPage }))
+);
+const WorksheetResultsPage = lazy(() =>
+  import('./pages/WorksheetResultsPage').then((m) => ({ default: m.WorksheetResultsPage }))
+);
+const WorksheetHistoryPage = lazy(() =>
+  import('./pages/WorksheetHistoryPage').then((m) => ({ default: m.WorksheetHistoryPage }))
+);
+const ProfilePage = lazy(() =>
+  import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage }))
+);
+const ProgressPage = lazy(() =>
+  import('./pages/ProgressPage').then((m) => ({ default: m.ProgressPage }))
+);
+const RecommendationsPage = lazy(() =>
+  import('./pages/RecommendationsPage').then((m) => ({ default: m.RecommendationsPage }))
+);
+const ActivityPage = lazy(() =>
+  import('./pages/ActivityPage').then((m) => ({ default: m.ActivityPage }))
+);
+const MilestonesPage = lazy(() =>
+  import('./pages/MilestonesPage').then((m) => ({ default: m.MilestonesPage }))
+);
 
 const protect = (element: React.ReactNode) => (
   <ProtectedRoute>{element}</ProtectedRoute>
@@ -37,48 +70,50 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify-email" element={<EmailVerificationPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/verify-email" element={<EmailVerificationPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Protected routes */}
-          <Route path="/dashboard" element={protect(<DashboardPage />)} />
+            {/* Protected routes */}
+            <Route path="/dashboard" element={protect(<DashboardPage />)} />
 
-          <Route path="/assessments" element={protect(<AssessmentsPage />)} />
-          <Route path="/assessments/5q" element={protect(<Assessment5QPage />)} />
-          <Route path="/assessments/10q" element={protect(<Assessment10QPage />)} />
-          <Route path="/assessments/gap" element={protect(<AssessmentGapPage />)} />
-          <Route path="/assessments/results/:id" element={protect(<AssessmentResultsPage />)} />
-          <Route path="/assessments/history" element={protect(<AssessmentHistoryPage />)} />
+            <Route path="/assessments" element={protect(<AssessmentsPage />)} />
+            <Route path="/assessments/5q" element={protect(<Assessment5QPage />)} />
+            <Route path="/assessments/10q" element={protect(<Assessment10QPage />)} />
+            <Route path="/assessments/gap" element={protect(<AssessmentGapPage />)} />
+            <Route path="/assessments/results/:id" element={protect(<AssessmentResultsPage />)} />
+            <Route path="/assessments/history" element={protect(<AssessmentHistoryPage />)} />
 
-          <Route path="/framework" element={protect(<FrameworkOverviewPage />)} />
-          <Route path="/framework/:stepNumber" element={protect(<StepDetailPage />)} />
+            <Route path="/framework" element={protect(<FrameworkOverviewPage />)} />
+            <Route path="/framework/:stepNumber" element={protect(<StepDetailPage />)} />
 
-          <Route path="/examples" element={protect(<ExamplesPage />)} />
-          <Route path="/examples/:exampleCode" element={protect(<ExampleDetailPage />)} />
+            <Route path="/examples" element={protect(<ExamplesPage />)} />
+            <Route path="/examples/:exampleCode" element={protect(<ExampleDetailPage />)} />
 
-          <Route path="/case-studies" element={protect(<CaseStudiesPage />)} />
-          <Route path="/case-studies/:studyCode" element={protect(<CaseStudyDetailPage />)} />
+            <Route path="/case-studies" element={protect(<CaseStudiesPage />)} />
+            <Route path="/case-studies/:studyCode" element={protect(<CaseStudyDetailPage />)} />
 
-          <Route path="/worksheets" element={protect(<WorksheetsCataloguePage />)} />
-          <Route path="/worksheets/:code" element={protect(<WorksheetFillPage />)} />
-          <Route path="/worksheets/:code/history" element={protect(<WorksheetHistoryPage />)} />
-          <Route path="/worksheets/results/:id" element={protect(<WorksheetResultsPage />)} />
+            <Route path="/worksheets" element={protect(<WorksheetsCataloguePage />)} />
+            <Route path="/worksheets/:code" element={protect(<WorksheetFillPage />)} />
+            <Route path="/worksheets/:code/history" element={protect(<WorksheetHistoryPage />)} />
+            <Route path="/worksheets/results/:id" element={protect(<WorksheetResultsPage />)} />
 
-          <Route path="/profile" element={protect(<ProfilePage />)} />
-          <Route path="/progress" element={protect(<ProgressPage />)} />
-          <Route path="/recommendations" element={protect(<RecommendationsPage />)} />
-          <Route path="/activity" element={protect(<ActivityPage />)} />
-          <Route path="/milestones" element={protect(<MilestonesPage />)} />
+            <Route path="/profile" element={protect(<ProfilePage />)} />
+            <Route path="/progress" element={protect(<ProgressPage />)} />
+            <Route path="/recommendations" element={protect(<RecommendationsPage />)} />
+            <Route path="/activity" element={protect(<ActivityPage />)} />
+            <Route path="/milestones" element={protect(<MilestonesPage />)} />
 
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </Suspense>
       </Router>
     </AuthProvider>
   );
