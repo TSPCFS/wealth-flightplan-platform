@@ -10,6 +10,7 @@ import { relativeTimeFromIso } from '../utils/relativeTime';
 import { compareStages } from '../hooks/useDashboardStageCelebration';
 import type { Stage } from '../types/assessment.types';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 // Derive direction from the backend's stage_changed payload
 // (`details.from_stage` + `details.to_stage`). Tolerates a legacy
@@ -88,6 +89,7 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
 const PAGE_SIZE = 20;
 
 export const ActivityPage: React.FC = () => {
+  useDocumentTitle('Activity');
   const [events, setEvents] = useState<ActivityEvent[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
@@ -141,7 +143,18 @@ export const ActivityPage: React.FC = () => {
       {error && <FormError error={error} />}
 
       {events.length === 0 ? (
-        <p className="text-center text-gray-600 py-8">Nothing here yet.</p>
+        <div
+          data-testid="activity-empty"
+          className="bg-white rounded-lg shadow p-6 text-center space-y-3"
+        >
+          <p className="text-gray-700">Nothing here yet.</p>
+          <p className="text-sm text-gray-500">
+            Take an assessment to start the timeline.
+          </p>
+          <Link to="/assessments" className="inline-block">
+            <Button type="button">Take an assessment</Button>
+          </Link>
+        </div>
       ) : (
         <ul className="space-y-3">
           {events.map((event, idx) => (

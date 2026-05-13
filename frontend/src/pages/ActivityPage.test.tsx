@@ -48,4 +48,28 @@ describe('ActivityPage', () => {
     // No more pages → Load more button gone
     expect(screen.queryByRole('button', { name: /load more/i })).not.toBeInTheDocument();
   });
+
+  it('renders an empty-state CTA when there is no activity yet', async () => {
+    vi.mocked(userService.getActivity).mockResolvedValue({
+      events: [],
+      next_cursor: null,
+      has_more: false,
+    });
+    renderPage();
+    await waitFor(() => expect(screen.getByTestId('activity-empty')).toBeInTheDocument());
+    expect(screen.getByRole('link', { name: /take an assessment/i })).toHaveAttribute(
+      'href',
+      '/assessments'
+    );
+  });
+
+  it('mounts inside <main id="main">', async () => {
+    vi.mocked(userService.getActivity).mockResolvedValue({
+      events: [],
+      next_cursor: null,
+      has_more: false,
+    });
+    renderPage();
+    await waitFor(() => expect(screen.getByRole('main')).toHaveAttribute('id', 'main'));
+  });
 });

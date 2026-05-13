@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { userService } from '../services/user.service';
 import type { MilestonesResponse } from '../types/user.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
+import { Button } from '../components/common/Button';
 import { formatShortDate } from '../utils/relativeTime';
 import { urgencyLabel, urgencyStyle } from '../components/dashboard/urgency';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const MilestonesPage: React.FC = () => {
+  useDocumentTitle('Milestones');
   const [data, setData] = useState<MilestonesResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,9 +55,17 @@ export const MilestonesPage: React.FC = () => {
           Achieved
         </h2>
         {data.achieved.length === 0 ? (
-          <p className="text-sm text-gray-600">
-            Nothing achieved yet — take an assessment or complete a worksheet to start.
-          </p>
+          <div
+            data-testid="milestones-achieved-empty"
+            className="bg-white rounded-lg shadow p-6 text-center space-y-3"
+          >
+            <p className="text-gray-700">
+              Complete your first assessment to earn your first milestone.
+            </p>
+            <Link to="/assessments" className="inline-block">
+              <Button type="button">Start an assessment</Button>
+            </Link>
+          </div>
         ) : (
           <ol className="border-l-2 border-blue-200 pl-6 space-y-5">
             {data.achieved.map((m, idx) => (

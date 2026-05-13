@@ -31,4 +31,33 @@ describe('MilestonesPage', () => {
     const list = screen.getAllByRole('listitem');
     expect(list.length).toBeGreaterThanOrEqual(3);
   });
+
+  it('renders an empty-state CTA when achieved is empty', async () => {
+    vi.mocked(userService.getMilestones).mockResolvedValue({
+      achieved: [],
+      upcoming: milestonesFixture.upcoming,
+    });
+    render(
+      <MemoryRouter>
+        <MilestonesPage />
+      </MemoryRouter>
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('milestones-achieved-empty')).toBeInTheDocument()
+    );
+    expect(screen.getByRole('link', { name: /start an assessment/i })).toHaveAttribute(
+      'href',
+      '/assessments'
+    );
+  });
+
+  it('mounts inside <main id="main">', async () => {
+    vi.mocked(userService.getMilestones).mockResolvedValue(milestonesFixture);
+    render(
+      <MemoryRouter>
+        <MilestonesPage />
+      </MemoryRouter>
+    );
+    await waitFor(() => expect(screen.getByRole('main')).toHaveAttribute('id', 'main'));
+  });
 });
