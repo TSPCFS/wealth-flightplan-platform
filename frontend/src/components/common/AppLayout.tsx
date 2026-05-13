@@ -1,5 +1,6 @@
 import React from 'react';
 import { TopNav } from './TopNav';
+import { ChatbotWidget } from '../chatbot/ChatbotWidget';
 
 interface Props {
   children: React.ReactNode;
@@ -39,5 +40,9 @@ export const AppLayout: React.FC<Props> = ({
     >
       {children}
     </main>
+    {/* Floating chatbot launcher. The widget itself hides on auth routes and
+        when the user is unauthenticated, so it's safe to mount it on every
+        AppLayout pass; portal-mounted so it sits above page content. */}
+    {showNav && <ChatbotWidget />}
   </>
 );
