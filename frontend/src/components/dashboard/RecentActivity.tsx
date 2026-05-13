@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import type { ActivityEvent } from '../../types/user.types';
 import { eventVisuals } from './eventIcon';
 import { relativeTimeFromIso } from '../../utils/relativeTime';
+import { SectionLabel } from '../common/SectionLabel';
 
 interface Props {
   events: ActivityEvent[];
@@ -17,22 +18,20 @@ export const RecentActivity: React.FC<Props> = ({
 }) => {
   const shown = capAt ? events.slice(0, capAt) : events;
   return (
-    <section className="bg-white rounded-lg shadow p-5">
-      <div className="flex items-baseline justify-between gap-3 mb-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 min-w-0">
-          Recent activity
-        </h2>
+    <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-6">
+      <div className="flex items-baseline justify-between gap-3 mb-4">
+        <SectionLabel underline={false}>Recent activity</SectionLabel>
         {showAllLink && (
           <Link
             to={showAllLink}
-            className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-800"
+            className="shrink-0 font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
           >
             See all →
           </Link>
         )}
       </div>
       {shown.length === 0 ? (
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-attooh-muted">
           Nothing here yet. Finish an assessment or worksheet to start the timeline.
         </p>
       ) : (
@@ -48,8 +47,8 @@ export const RecentActivity: React.FC<Props> = ({
                   {visual.symbol}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 break-words">{event.title}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm text-attooh-charcoal break-words">{event.title}</p>
+                  <p className="text-xs text-attooh-muted">
                     {relativeTimeFromIso(event.timestamp)}
                   </p>
                 </div>
@@ -60,7 +59,7 @@ export const RecentActivity: React.FC<Props> = ({
                 {event.link ? (
                   <Link
                     to={event.link}
-                    className="block hover:bg-gray-50 -mx-2 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block hover:bg-attooh-lime-pale -mx-2 px-2 py-1 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-attooh-lime"
                   >
                     {inner}
                   </Link>

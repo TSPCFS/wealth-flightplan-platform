@@ -39,17 +39,15 @@ export const DashboardPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <AppLayout maxWidth="narrow" className="py-12">
-          <FormError error={error} />
-        </AppLayout>
-      </div>
+      <AppLayout maxWidth="narrow" className="py-12">
+        <FormError error={error} />
+      </AppLayout>
     );
   }
   if (!dashboard) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       {celebration && (
         <StageCelebration
           celebration={celebration}
@@ -58,12 +56,14 @@ export const DashboardPage: React.FC = () => {
         />
       )}
 
-      <AppLayout maxWidth="wide" className="space-y-6">
+      <AppLayout maxWidth="wide" className="space-y-7">
         <header>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">
-            Welcome{user?.first_name ? `, ${user.first_name}` : ''}
+          <h1 className="font-montserrat text-3xl sm:text-[36px] font-bold text-attooh-charcoal break-words tracking-tight mb-1.5">
+            Welcome back{user?.first_name ? `, ${user.first_name}` : ''}
           </h1>
-          <p className="text-gray-600">Your Wealth FlightPlan™ dashboard.</p>
+          <p className="text-base text-attooh-muted">
+            Your Wealth FlightPlan™ dashboard. Pick up where you left off.
+          </p>
         </header>
 
         {dashboard.current_stage === null && dashboard.recent_activity.length === 0 && (
@@ -74,13 +74,13 @@ export const DashboardPage: React.FC = () => {
 
         <ProgressOverview progress={dashboard.overall_progress} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <RecommendedActions
             actions={dashboard.recommended_actions}
             capAt={5}
             showAllLink="/recommendations"
           />
-          <div className="space-y-4">
+          <div className="space-y-5">
             <RecentActivity events={dashboard.recent_activity} capAt={5} />
             <UpcomingMilestones milestones={dashboard.upcoming_milestones} capAt={5} />
           </div>
@@ -88,6 +88,6 @@ export const DashboardPage: React.FC = () => {
 
         <QuickStats stats={dashboard.quick_stats} />
       </AppLayout>
-    </div>
+    </>
   );
 };

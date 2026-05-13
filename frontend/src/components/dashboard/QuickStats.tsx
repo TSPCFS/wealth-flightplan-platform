@@ -10,23 +10,32 @@ interface StatProps {
   emptyHint: { text: string; to: string };
 }
 
+// attooh!-style "huge green number" stat treatment. Lato uppercase label
+// on top, 32px Montserrat 700 lime number, optional supporting caption.
+// Zero values render in charcoal to avoid a sea of green when the user
+// has no consumer debt etc.
 const StatCard: React.FC<StatProps> = ({ label, value, format, emptyHint }) => {
   const empty = value === null || value === undefined;
+  const isZero = value === 0;
   return (
     <div
       data-testid={`quick-stat-${label.toLowerCase().replace(/\s+/g, '-')}`}
-      className="bg-white rounded-lg shadow p-4"
+      className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-6 text-center"
     >
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+      <p className="font-lato font-bold text-[10px] uppercase tracking-[0.16em] text-attooh-slate mb-2">
         {label}
       </p>
-      <p className="text-2xl font-bold text-gray-900 mt-1">
+      <p
+        className={`font-montserrat font-bold text-[32px] leading-none mb-1 ${
+          empty || isZero ? 'text-attooh-charcoal' : 'text-attooh-lime'
+        }`}
+      >
         {empty ? '–' : format === 'currency' ? formatCurrency(value) : formatPercent(value)}
       </p>
       {empty && (
         <Link
           to={emptyHint.to}
-          className="text-xs text-blue-600 hover:text-blue-800 underline mt-2 inline-block"
+          className="text-[11px] text-attooh-slate underline hover:text-attooh-lime-hover mt-2 inline-block"
         >
           {emptyHint.text}
         </Link>
@@ -42,7 +51,7 @@ interface Props {
 export const QuickStats: React.FC<Props> = ({ stats }) => (
   <section
     aria-label="Quick stats"
-    className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+    className="grid grid-cols-2 sm:grid-cols-4 gap-4"
   >
     <StatCard
       label="Net worth"

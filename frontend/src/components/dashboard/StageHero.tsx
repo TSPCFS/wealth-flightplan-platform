@@ -7,27 +7,44 @@ interface Props {
   stageDetails: CurrentStageDetails | null;
 }
 
+// attooh!-branded hero. Full-bleed sunset image with a graduated overlay,
+// uppercase Montserrat 800 headline, white subtitle, and a lime + ghost
+// CTA pair. Tracks MOCKUP.html exactly.
+const HERO_BG_IMAGE =
+  'https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/AqJpNjLZr8GgtLAFmqa0/media/637ba93453cbe1febe4828e4.png';
+const HERO_OVERLAY =
+  'linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.1) 100%)';
+
 export const StageHero: React.FC<Props> = ({ stageDetails }) => {
   if (!stageDetails) {
+    // Empty state: same dramatic photographic hero, with the empty-state
+    // CTA promoted to the primary button.
     return (
       <section
         data-testid="stage-hero-empty"
-        className="bg-white rounded-lg shadow p-6 sm:p-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        className="relative overflow-hidden rounded-2xl text-white shadow-attooh-md min-h-[380px] p-8 sm:p-14"
+        style={{
+          backgroundImage: `${HERO_OVERLAY}, url("${HERO_BG_IMAGE}")`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 35%',
+          backgroundColor: 'var(--attooh-charcoal)',
+        }}
       >
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-1">
-            Welcome
-          </p>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Take your first assessment
-          </h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Place yourself on the WealthFlightPlan™ stages in two minutes.
-          </p>
+        <p className="font-lato font-bold text-[11px] uppercase tracking-[0.2em] text-attooh-lime mb-4 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]">
+          Step 0 · Start here
+        </p>
+        <h2 className="font-montserrat font-extrabold text-3xl sm:text-5xl uppercase leading-[1.05] tracking-tight mb-4 max-w-[760px] [text-shadow:0_2px_8px_rgba(0,0,0,0.4)]">
+          Design your financial masterpiece on your life's canvas!
+        </h2>
+        <p className="text-base sm:text-[17px] text-white/90 max-w-[560px] mb-7 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]">
+          Place yourself on the six steps in under two minutes. The 5-Question
+          Quick Check anchors every recommendation we make.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link to="/assessments" aria-label="Start an assessment">
+            <Button variant="primary">Start an assessment →</Button>
+          </Link>
         </div>
-        <Link to="/assessments">
-          <Button>Start an assessment</Button>
-        </Link>
       </section>
     );
   }
@@ -35,23 +52,32 @@ export const StageHero: React.FC<Props> = ({ stageDetails }) => {
   const pct = Math.min(100, Math.max(0, stageDetails.progress_to_next_stage_pct ?? 0));
 
   return (
-    <section className="bg-white rounded-lg shadow p-6 sm:p-8">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-4">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-1">
-            Your current stage
-          </p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 break-words">{stageDetails.name}</h1>
-          <p className="text-gray-700 mt-2">{stageDetails.description}</p>
-        </div>
-        <span className="inline-flex items-center text-xs font-semibold bg-blue-50 text-blue-800 ring-1 ring-blue-100 px-2 py-1 rounded">
-          Income runway: {stageDetails.income_runway}
-        </span>
-      </div>
+    <section
+      className="relative overflow-hidden rounded-2xl text-white shadow-attooh-md min-h-[320px] p-8 sm:p-14"
+      style={{
+        backgroundImage: `${HERO_OVERLAY}, url("${HERO_BG_IMAGE}")`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 35%',
+        backgroundColor: 'var(--attooh-charcoal)',
+      }}
+    >
+      <p className="font-lato font-bold text-[11px] uppercase tracking-[0.2em] text-attooh-lime mb-3 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]">
+        Your current stage
+      </p>
+      <h1 className="font-montserrat font-extrabold text-3xl sm:text-5xl uppercase leading-[1.05] tracking-tight mb-3 max-w-[760px] break-words [text-shadow:0_2px_8px_rgba(0,0,0,0.4)]">
+        {stageDetails.name}
+      </h1>
+      <p className="text-base sm:text-[17px] text-white/90 max-w-[560px] mb-4 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]">
+        {stageDetails.description}
+      </p>
+
+      <span className="inline-flex items-center font-lato font-bold text-[11px] uppercase tracking-[0.14em] bg-white/15 text-white px-3 py-1.5 rounded-full backdrop-blur-sm">
+        Income runway: {stageDetails.income_runway}
+      </span>
 
       {stageDetails.next_stage && (
-        <div className="space-y-1">
-          <div className="flex items-center justify-between text-xs text-gray-600">
+        <div className="mt-6 max-w-[560px]">
+          <div className="flex items-center justify-between text-xs text-white/85 mb-1.5">
             <span>Progress to {stageDetails.next_stage}</span>
             <span>{pct}%</span>
           </div>
@@ -61,10 +87,10 @@ export const StageHero: React.FC<Props> = ({ stageDetails }) => {
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={pct}
-            className="w-full bg-gray-200 rounded-full h-2"
+            className="w-full bg-white/25 rounded-full h-2 overflow-hidden"
           >
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all"
+              className="bg-attooh-lime h-2 rounded-full transition-all"
               style={{ width: `${pct}%` }}
             />
           </div>

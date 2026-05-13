@@ -22,7 +22,7 @@ describe('ProgressOverview', () => {
     expect(screen.getByText(/Step 3 · Money Matrix/)).toBeInTheDocument();
     const segments = screen.getAllByTestId('progress-segment');
     expect(segments).toHaveLength(7);
-    const filled = segments.filter((s) => s.className.includes('bg-blue-600'));
+    const filled = segments.filter((s) => s.className.includes('bg-attooh-lime'));
     expect(filled).toHaveLength(2);
   });
 });

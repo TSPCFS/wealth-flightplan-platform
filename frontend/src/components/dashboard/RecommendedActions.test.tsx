@@ -35,9 +35,9 @@ describe('RecommendedActions', () => {
     expect(screen.getByText('Complete Net Worth Statement')).toBeInTheDocument();
     const highLink = screen.getByText('Complete Net Worth Statement').closest('a');
     expect(highLink).toHaveAttribute('href', '/worksheets/APP-B');
-    expect(screen.getByText('high')).toBeInTheDocument();
-    expect(screen.getByText('medium')).toBeInTheDocument();
-    expect(screen.getByText('low')).toBeInTheDocument();
+    expect(screen.getByText(/High priority/i)).toBeInTheDocument();
+    expect(screen.getByText(/Medium priority/i)).toBeInTheDocument();
+    expect(screen.getByText(/Low priority/i)).toBeInTheDocument();
   });
 
   it('caps the visible list at capAt', () => {
