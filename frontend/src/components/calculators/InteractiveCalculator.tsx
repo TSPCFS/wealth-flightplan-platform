@@ -8,6 +8,7 @@ import type {
 import { contentService } from '../../services/content.service';
 import { Button } from '../common/Button';
 import { FormError } from '../common/FormError';
+import { SectionLabel } from '../common/SectionLabel';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { CompoundInterestResult } from './results/CompoundInterestResult';
 import { DebtAnalysisResult } from './results/DebtAnalysisResult';
@@ -75,6 +76,13 @@ const renderInterpretation = (
   });
 };
 
+// attooh!-styled form field. 1.5px border, lime focus border + lime-pale
+// focus ring. Used for the calculator inputs that drive the live chart.
+const inputClass =
+  'mt-1.5 block w-full px-3.5 py-2.5 border-[1.5px] border-attooh-border rounded-lg text-sm text-attooh-charcoal bg-white transition focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale';
+const labelClass =
+  'block font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate';
+
 export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
   const config = exampleDetail.calculator_config;
   const initial = useMemo(
@@ -131,7 +139,7 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
 
   if (!config) {
     return (
-      <div className="bg-amber-50 ring-1 ring-amber-100 rounded-lg p-4 text-sm text-amber-900">
+      <div className="bg-attooh-lime-pale border-l-4 border-attooh-warn rounded-r-lg p-4 text-sm text-attooh-charcoal">
         This example is educational only. No calculator is configured.
       </div>
     );
@@ -172,14 +180,15 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
     <div className="space-y-6">
       <form
         onSubmit={onSubmit}
-        className="bg-white rounded-lg shadow p-4 space-y-4"
+        className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7 space-y-5"
         aria-label="Calculator inputs"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <SectionLabel>Try it</SectionLabel>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {config.inputs.map((spec) =>
             isNumberInput(spec) ? (
               <label key={spec.name} className="block">
-                <span className="text-sm font-medium text-gray-700">{spec.label}</span>
+                <span className={labelClass}>{spec.label}</span>
                 <input
                   type="number"
                   value={(values[spec.name] as number) ?? 0}
@@ -193,21 +202,21 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
                         e.target.value === '' ? 0 : Number(e.target.value),
                     }))
                   }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className={inputClass}
                 />
                 {spec.description && (
-                  <p className="text-xs text-gray-500 mt-1">{spec.description}</p>
+                  <p className="text-xs text-attooh-muted mt-1">{spec.description}</p>
                 )}
               </label>
             ) : spec.type === 'select' ? (
               <label key={spec.name} className="block">
-                <span className="text-sm font-medium text-gray-700">{spec.label}</span>
+                <span className={labelClass}>{spec.label}</span>
                 <select
                   value={(values[spec.name] as string) ?? ''}
                   onChange={(e) =>
                     setValues((prev) => ({ ...prev, [spec.name]: e.target.value }))
                   }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className={`${inputClass} bg-white`}
                 >
                   {normalizeOptions(spec.options).map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -227,33 +236,33 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
               />
             ) : spec.type === 'text' ? (
               <label key={spec.name} className="block">
-                <span className="text-sm font-medium text-gray-700">{spec.label}</span>
+                <span className={labelClass}>{spec.label}</span>
                 <input
                   type="text"
                   value={(values[spec.name] as string) ?? ''}
                   onChange={(e) =>
                     setValues((prev) => ({ ...prev, [spec.name]: e.target.value }))
                   }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className={inputClass}
                 />
               </label>
             ) : null
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 pt-1">
           <Button type="submit" disabled={loading}>
             {loading ? 'Calculating…' : hasSubmitted ? 'Recalculate' : 'Calculate'}
           </Button>
-          <Button type="button" variant="secondary" onClick={onReset} disabled={loading}>
+          <Button type="button" variant="secondary" size="sm" onClick={onReset} disabled={loading}>
             Reset to defaults
           </Button>
           {response && (
-            <Button type="button" variant="secondary" onClick={onCopyInterpretation}>
+            <Button type="button" variant="secondary" size="sm" onClick={onCopyInterpretation}>
               Copy interpretation
             </Button>
           )}
-          {copiedMsg && <span className="text-xs text-gray-500">{copiedMsg}</span>}
+          {copiedMsg && <span className="text-xs text-attooh-muted">{copiedMsg}</span>}
         </div>
       </form>
 
@@ -273,7 +282,7 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
       )}
 
       {response?.interpretation && (
-        <div className="bg-white rounded-lg shadow p-4 text-sm text-gray-800">
+        <div className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-5 text-sm text-attooh-charcoal">
           {response.interpretation}
         </div>
       )}

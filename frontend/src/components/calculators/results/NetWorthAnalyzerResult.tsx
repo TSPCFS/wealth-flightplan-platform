@@ -25,8 +25,8 @@ export const NetWorthAnalyzerResult: React.FC<Props> = ({ outputs }) => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <KpiCard label="Net worth" value={formatCurrency(outputs.net_worth)} tone="primary" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <KpiCard label="Net worth" value={formatCurrency(outputs.net_worth)} featured />
         <KpiCard
           label="Income-generating share"
           value={formatPercent(outputs.income_generating_pct_of_net_worth)}
@@ -36,8 +36,9 @@ export const NetWorthAnalyzerResult: React.FC<Props> = ({ outputs }) => {
       </div>
 
       {data.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Asset mix</h3>
+        <div className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+          <h3 className="text-sm font-bold text-attooh-charcoal mb-1">Asset mix</h3>
+          <p className="text-xs text-attooh-muted mb-5">Lifestyle vs income-generating split</p>
           <div className="h-64">
             <ResponsiveContainer>
               <PieChart>
@@ -63,8 +64,11 @@ export const NetWorthAnalyzerResult: React.FC<Props> = ({ outputs }) => {
       )}
 
       {outputs.interpretation && (
-        <div className="bg-blue-50 ring-1 ring-blue-100 rounded-lg p-4 text-sm text-blue-900">
-          {outputs.interpretation}
+        <div className="bg-attooh-lime-pale border-l-4 border-attooh-lime rounded-r-xl p-5">
+          <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-success mb-1">
+            What this means
+          </p>
+          <p className="text-sm text-attooh-charcoal">{outputs.interpretation}</p>
         </div>
       )}
     </div>

@@ -2,12 +2,18 @@ import React from 'react';
 
 type Tone = 'primary' | 'secondary' | 'warn' | 'danger' | 'neutral';
 
+// Featured = the attooh!-branded "hero result" treatment: lime-pale to
+// white gradient with a 4px lime accent strip down the left. Use it on
+// the single value that's the headline of the calculation (e.g.
+// "Monthly passive income" for compound interest, "Debt-free in" for
+// the debt analyser). Non-featured cards use a quieter neutral tone so
+// the contrast does the storytelling.
 const toneStyle: Record<Tone, string> = {
-  primary: 'bg-blue-50 text-blue-900 ring-blue-100',
-  secondary: 'bg-emerald-50 text-emerald-900 ring-emerald-100',
-  warn: 'bg-amber-50 text-amber-900 ring-amber-100',
-  danger: 'bg-red-50 text-red-900 ring-red-100',
-  neutral: 'bg-gray-50 text-gray-900 ring-gray-100',
+  primary: 'text-attooh-charcoal',
+  secondary: 'text-attooh-success',
+  warn: 'text-[#B07A12]',
+  danger: 'text-attooh-danger',
+  neutral: 'text-attooh-charcoal',
 };
 
 interface KpiCardProps {
@@ -15,12 +21,40 @@ interface KpiCardProps {
   value: string;
   tone?: Tone;
   sublabel?: string;
+  featured?: boolean;
 }
 
-export const KpiCard: React.FC<KpiCardProps> = ({ label, value, tone = 'neutral', sublabel }) => (
-  <div className={`rounded-lg p-4 ring-1 ${toneStyle[tone]}`}>
-    <p className="text-xs font-medium uppercase tracking-wide opacity-70">{label}</p>
-    <p className="text-2xl font-bold mt-1">{value}</p>
-    {sublabel && <p className="text-xs opacity-70 mt-1">{sublabel}</p>}
+export const KpiCard: React.FC<KpiCardProps> = ({
+  label,
+  value,
+  tone = 'neutral',
+  sublabel,
+  featured = false,
+}) => (
+  <div
+    className={[
+      'relative rounded-xl border p-6 shadow-attooh-sm overflow-hidden',
+      featured
+        ? 'bg-gradient-to-br from-attooh-lime-pale to-white border-attooh-lime'
+        : 'bg-attooh-card border-attooh-border',
+    ].join(' ')}
+  >
+    {featured && (
+      <span
+        aria-hidden="true"
+        className="absolute left-0 top-3 bottom-3 w-1 bg-attooh-lime rounded-r"
+      />
+    )}
+    <p className="font-lato font-bold text-[10px] uppercase tracking-[0.16em] text-attooh-slate mb-1.5">
+      {label}
+    </p>
+    <p
+      className={`font-montserrat font-bold text-[28px] leading-none ${
+        featured ? 'text-attooh-lime-hover' : toneStyle[tone]
+      }`}
+    >
+      {value}
+    </p>
+    {sublabel && <p className="text-xs text-attooh-muted mt-1.5">{sublabel}</p>}
   </div>
 );

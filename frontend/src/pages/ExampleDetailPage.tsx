@@ -35,8 +35,11 @@ export const ExampleDetailPage: React.FC = () => {
       <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
         <div className="mt-6 text-center">
-          <Link to="/examples" className="text-blue-600 underline">
-            Back to examples
+          <Link
+            to="/examples"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to examples
           </Link>
         </div>
       </AppLayout>
@@ -47,19 +50,24 @@ export const ExampleDetailPage: React.FC = () => {
   return (
     <AppLayout maxWidth="narrow" className="space-y-8">
       <header>
-        <Link to="/examples" className="text-sm text-blue-600 underline">
-          ← Examples
+        <Link
+          to="/examples"
+          className="inline-flex items-center font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal mb-3"
+        >
+          ← Worked examples
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2 break-words">{example.title}</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal break-words tracking-tight">
+          {example.title}
+        </h1>
+        <p className="text-sm text-attooh-muted mt-1">
           {example.example_code} · {example.chapter}
         </p>
         {example.stage_relevance.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="flex flex-wrap gap-2 mt-4">
             {example.stage_relevance.map((s) => (
               <span
                 key={s}
-                className="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-1 rounded"
+                className="font-lato text-[11px] font-bold uppercase tracking-[0.1em] bg-attooh-lime-pale text-attooh-success px-3.5 py-1.5 rounded-full"
               >
                 {s}
               </span>
@@ -68,50 +76,49 @@ export const ExampleDetailPage: React.FC = () => {
         )}
       </header>
 
-      <section className="bg-blue-50 ring-1 ring-blue-100 rounded-lg p-4 text-sm text-blue-900">
-        <p className="font-semibold mb-1">Key principle</p>
-        <p>{example.key_principle}</p>
+      <section className="bg-attooh-lime-pale border-l-4 border-attooh-lime rounded-r-xl p-5">
+        <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-success mb-1">
+          Key principle
+        </p>
+        <p className="text-[15px] font-medium text-attooh-charcoal">{example.key_principle}</p>
       </section>
 
       {example.description && (
         <section>
-          <p className="text-gray-800">{example.description}</p>
+          <p className="text-attooh-charcoal">{example.description}</p>
         </section>
       )}
 
       {example.educational_text && (
-        <section data-testid="example-educational" className="prose prose-blue max-w-none">
+        <section data-testid="example-educational" className="prose max-w-none prose-headings:font-montserrat prose-headings:text-attooh-charcoal prose-p:text-attooh-charcoal">
           <ReactMarkdown>{example.educational_text}</ReactMarkdown>
         </section>
       )}
 
       <section>
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
-          Try it
-        </h2>
         <InteractiveCalculator exampleDetail={example} />
       </section>
 
       {example.key_takeaway && (
-        <section className="bg-emerald-50 ring-1 ring-emerald-100 rounded-lg p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800 mb-1">
+        <section className="bg-attooh-lime-pale border-l-4 border-attooh-lime rounded-r-xl p-5">
+          <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-success mb-1">
             Key takeaway
           </p>
-          <p className="text-sm text-emerald-900">{example.key_takeaway}</p>
+          <p className="text-sm text-attooh-charcoal">{example.key_takeaway}</p>
         </section>
       )}
 
       {example.related_example_codes.length > 0 && (
         <section>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-2">
+          <p className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-3">
             Related examples
-          </h2>
+          </p>
           <ul className="flex flex-wrap gap-2">
             {example.related_example_codes.map((code) => (
               <li key={code}>
                 <Link
                   to={`/examples/${encodeURIComponent(code)}`}
-                  className="inline-flex items-center text-sm font-medium text-blue-700 bg-blue-50 px-3 py-1 rounded-full hover:bg-blue-100"
+                  className="inline-flex items-center text-sm font-medium text-attooh-success bg-attooh-lime-pale hover:bg-attooh-lime hover:text-attooh-charcoal px-3 py-1 rounded-full transition-colors"
                 >
                   {code}
                 </Link>

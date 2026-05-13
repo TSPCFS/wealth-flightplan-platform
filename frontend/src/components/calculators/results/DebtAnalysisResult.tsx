@@ -19,11 +19,11 @@ interface Props {
 
 export const DebtAnalysisResult: React.FC<Props> = ({ outputs }) => (
   <div className="space-y-6">
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <KpiCard
         label="Debt-free in"
         value={`${formatInteger(outputs.debt_free_months)} months`}
-        tone="primary"
+        featured
       />
       <KpiCard
         label="Total interest paid"
@@ -37,15 +37,16 @@ export const DebtAnalysisResult: React.FC<Props> = ({ outputs }) => (
       />
     </div>
 
-    <div className="bg-white rounded-lg shadow p-4">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">Total balance over time</h3>
+    <div className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+      <h3 className="text-sm font-bold text-attooh-charcoal mb-1">Total balance over time</h3>
+      <p className="text-xs text-attooh-muted mb-5">Projected outstanding balance month-by-month</p>
       <div className="h-64">
         <ResponsiveContainer>
           <LineChart data={outputs.monthly_projection}>
             <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" />
-            <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+            <XAxis dataKey="month" tick={{ fontSize: 12, fill: chartColors.neutral }} />
             <YAxis
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: chartColors.neutral }}
               tickFormatter={(v) => `R${Math.round(v / 1000)}k`}
             />
             <Tooltip
@@ -55,8 +56,8 @@ export const DebtAnalysisResult: React.FC<Props> = ({ outputs }) => (
             <Line
               type="monotone"
               dataKey="total_balance"
-              stroke={chartColors.primary}
-              strokeWidth={2}
+              stroke="#7AB016"
+              strokeWidth={3}
               dot={false}
               name="Balance"
             />
@@ -65,18 +66,18 @@ export const DebtAnalysisResult: React.FC<Props> = ({ outputs }) => (
       </div>
     </div>
 
-    <div className="bg-white rounded-lg shadow p-4">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">Payment order</h3>
-      <ol className="space-y-2 list-decimal list-inside">
+    <div className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+      <h3 className="text-sm font-bold text-attooh-charcoal mb-4">Payment order</h3>
+      <ol className="space-y-2.5 list-decimal list-inside marker:text-attooh-lime-hover marker:font-bold">
         {outputs.payment_order.map((row, idx) => (
-          <li key={`${row.name}-${idx}`} className="text-sm text-gray-800">
+          <li key={`${row.name}-${idx}`} className="text-sm text-attooh-charcoal">
             <span className="font-medium">{row.name}</span>
-            <span className="text-gray-500">
+            <span className="text-attooh-muted">
               {' '}
               · {formatCurrency(row.balance)} @ {formatPercent(row.annual_rate_pct)}
             </span>
-            <span className="text-gray-500"> · closes month {row.expected_close_month}</span>
-            <p className="text-xs text-gray-500 mt-0.5">{row.reason}</p>
+            <span className="text-attooh-muted"> · closes month {row.expected_close_month}</span>
+            <p className="text-xs text-attooh-muted mt-0.5 ml-6">{row.reason}</p>
           </li>
         ))}
       </ol>
