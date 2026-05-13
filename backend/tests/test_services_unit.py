@@ -132,7 +132,7 @@ async def test_is_password_pwned_fails_open_on_network_error(
 async def test_email_falls_back_to_stdout_when_no_api_key(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    """Without SENDGRID_API_KEY the link is logged so dev can copy it."""
+    """Without RESEND_API_KEY the link is logged so dev can copy it."""
     caplog.set_level(logging.INFO, logger="app.services.email")
     await email_svc.send_verification_email(
         to_email="x@example.com",
@@ -142,52 +142,26 @@ async def test_email_falls_back_to_stdout_when_no_api_key(
     )
     msgs = "\n".join(r.message for r in caplog.records)
     assert "verify-email?token=abc.def.ghi" in msgs
-
-
-class _CapturingSendGrid:
-    """Stub httpx.AsyncClient that captures POSTs to SendGrid."""
-
-    instance: list[_CapturingSendGrid] = []
-
-    def __init__(self, *_a, **_kw) -> None:
-        self.calls: list[tuple[str, dict]] = []
-        _CapturingSendGrid.instance.append(self)
-        self._status = 202
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, *exc):
-        return False
-
-    def set_status(self, status_code: int) -> None:
-        self._status = status_code
-
-    async def post(self, url, *, headers=None, json=None):
-        self.calls.append((url, json))
-
-        class _R:
-            status_code = self._status
-            text = ""
-
-            def raise_for_status(_self) -> None:
-                if _self.status_code >= 400:
-                    raise httpx.HTTPStatusError(
-                        "boom", request=None, response=None  # type: ignore[arg-type]
-                    )
-
-        return _R()
+    assert "RESEND_API_KEY" in msgs
 
 
 @pytest.mark.asyncio
-async def test_email_sends_via_sendgrid_when_api_key_set(
+async def test_email_sends_via_resend_when_api_key_set(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("SENDGRID_API_KEY", "SG.test-key")
+    """With RESEND_API_KEY set, the Resend SDK is called with the right payload."""
+    monkeypatch.setenv("RESEND_API_KEY", "re_test_key")
     get_settings.cache_clear()  # type: ignore[attr-defined]
 
-    _CapturingSendGrid.instance.clear()
-    monkeypatch.setattr(httpx, "AsyncClient", _CapturingSendGrid)
+    captured: list[dict] = []
+
+    def fake_send(params: dict) -> dict:
+        captured.append(params)
+        return {"id": "stub-id"}
+
+    import resend
+
+    monkeypatch.setattr(resend.Emails, "send", staticmethod(fake_send))
 
     await email_svc.send_verification_email(
         to_email="real@example.com",
@@ -195,32 +169,30 @@ async def test_email_sends_via_sendgrid_when_api_key_set(
         token="xyz",
         settings=get_settings(),
     )
-    assert _CapturingSendGrid.instance, "AsyncClient was never instantiated"
-    captured = _CapturingSendGrid.instance[-1]
-    assert captured.calls, "no SendGrid call was made"
-    url, body = captured.calls[-1]
-    assert "sendgrid.com" in url
-    rendered = str(body)
-    assert "real@example.com" in rendered
-    assert "verify-email?token=xyz" in rendered
+    assert captured, "Resend SDK was not invoked"
+    params = captured[-1]
+    assert params["to"] == ["real@example.com"]
+    assert "Verify" in params["subject"]
+    assert "verify-email?token=xyz" in params["html"]
+    assert "verify-email?token=xyz" in params["text"]
+    assert "@" in params["from"]
 
 
 @pytest.mark.asyncio
-async def test_email_swallows_sendgrid_5xx(
+async def test_email_swallows_resend_errors(
     monkeypatch: pytest.MonkeyPatch,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    """5xx from SendGrid must NOT crash the auth flow — log + continue."""
-    monkeypatch.setenv("SENDGRID_API_KEY", "SG.test-key")
+    """An exception from the Resend SDK must NOT crash the auth flow."""
+    monkeypatch.setenv("RESEND_API_KEY", "re_test_key")
     get_settings.cache_clear()  # type: ignore[attr-defined]
 
-    class _Failing(_CapturingSendGrid):
-        def __init__(self, *a, **kw):
-            super().__init__(*a, **kw)
-            self._status = 503
+    def boom(_params: dict) -> None:
+        raise RuntimeError("simulated outage")
 
-    _CapturingSendGrid.instance.clear()
-    monkeypatch.setattr(httpx, "AsyncClient", _Failing)
+    import resend
+
+    monkeypatch.setattr(resend.Emails, "send", staticmethod(boom))
 
     caplog.set_level(logging.ERROR, logger="app.services.email")
     await email_svc.send_password_reset_email(
@@ -229,7 +201,7 @@ async def test_email_swallows_sendgrid_5xx(
         token="t",
         settings=get_settings(),
     )
-    assert any("SendGrid send failed" in r.message for r in caplog.records)
+    assert any("Failed to send email" in r.message for r in caplog.records)
 
 
 # ---------- rate_limit module ----------
