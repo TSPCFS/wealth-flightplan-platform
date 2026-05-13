@@ -2,15 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pin a light surface for the whole app. The design system is light-mode-only
-   for Phase 5; dark mode support is queued for Phase 6. Without this, the body
+/* ──────────────────────────────────────────────────────────────────────
+   attooh! brand tokens. Mirrored in tailwind.config.js so callers can use
+   either utility classes (`bg-attooh-lime`) or CSS variables
+   (`var(--attooh-lime)`). One source of truth, two ergonomic surfaces.
+   ──────────────────────────────────────────────────────────────────── */
+:root {
+  --attooh-lime: #9CD31E;
+  --attooh-lime-hover: #7AB016;
+  --attooh-lime-pale: #F0F7DE;
+  --attooh-charcoal: #414042;
+  --attooh-slate: #505E6B;
+  --attooh-muted: #58595B;
+  --attooh-bg: #FAFAF7;
+  --attooh-card: #FFFFFF;
+  --attooh-border: #E8E8E4;
+  --attooh-success: #4F9C2C;
+  --attooh-warn: #E8A93A;
+  --attooh-danger: #C7363B;
+  --attooh-shadow-sm: 0 1px 2px rgba(65,64,66,0.04), 0 1px 3px rgba(65,64,66,0.06);
+  --attooh-shadow-md: 0 4px 8px rgba(65,64,66,0.06), 0 1px 3px rgba(65,64,66,0.04);
+}
+
+/* Pin a light paper-tone surface for the whole app. The design system is
+   light-mode-only for now; dark mode is queued. Without this pin, the body
    falls through to `prefers-color-scheme: dark` defaults on systems set to
    dark mode, producing a black canvas behind any page that doesn't set its
-   own background (most of the protected routes). */
+   own background. */
 html,
 body,
 #root {
-  background-color: #f9fafb; /* tailwind bg-gray-50 */
-  color: #111827;            /* tailwind text-gray-900 */
+  background-color: var(--attooh-bg);
+  color: var(--attooh-charcoal);
   min-height: 100vh;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle paper-texture overlay matching attooh.co.za's crumple. Pure
+   decorative noise, fixed-position so it stays put on scroll. Behind all
+   content, never intercepts pointer events. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0.04 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  opacity: 0.5;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
