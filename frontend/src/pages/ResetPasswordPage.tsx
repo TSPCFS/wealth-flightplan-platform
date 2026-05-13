@@ -64,10 +64,10 @@ export const ResetPasswordPage: React.FC = () => {
   if (showSuccess) {
     return (
       <AuthLayout title="Password reset">
-        <div role="status" className="rounded-md bg-green-50 p-4 text-center">
-          <div className="text-sm text-green-700">Password reset successfully!</div>
+        <div role="status" className="rounded-r-lg bg-attooh-lime-pale border-l-4 border-attooh-lime p-4 text-center">
+          <div className="text-sm text-attooh-charcoal">Password reset successfully!</div>
         </div>
-        <Button onClick={() => navigate('/login')} className="mt-4 w-full">
+        <Button onClick={() => navigate('/login')} className="mt-5 w-full">
           Go to Login
         </Button>
       </AuthLayout>
@@ -76,7 +76,7 @@ export const ResetPasswordPage: React.FC = () => {
 
   return (
     <AuthLayout title="Reset your password" subtitle="Enter your new password below.">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <FormError error={submitError || undefined} />
 
         <Input
@@ -94,12 +94,15 @@ export const ResetPasswordPage: React.FC = () => {
         />
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Resetting...' : 'Reset Password'}
+          {isLoading ? 'Resetting…' : 'Reset Password'}
         </Button>
 
         <div className="text-center">
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Back to Login
+          <Link
+            to="/login"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to login
           </Link>
         </div>
       </form>

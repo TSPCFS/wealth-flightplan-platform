@@ -21,7 +21,7 @@ describe('Input', () => {
   it('applies error styling when error is present', () => {
     render(<Input error="Error" />);
     const input = screen.getByRole('textbox');
-    expect(input.className).toContain('border-red-300');
+    expect(input.className).toContain('border-attooh-danger');
   });
 
   it('forwards ref correctly', () => {

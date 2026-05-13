@@ -69,10 +69,10 @@ export const RegisterForm: React.FC = () => {
     if (/[0-9]/.test(password)) score++;
     if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-    if (score <= 2) return { score, label: 'Weak', color: 'text-red-600' };
-    if (score <= 3) return { score, label: 'Fair', color: 'text-yellow-600' };
-    if (score <= 4) return { score, label: 'Good', color: 'text-blue-600' };
-    return { score, label: 'Strong', color: 'text-green-600' };
+    if (score <= 2) return { score, label: 'Weak', color: 'text-attooh-danger' };
+    if (score <= 3) return { score, label: 'Fair', color: 'text-attooh-warn' };
+    if (score <= 4) return { score, label: 'Good', color: 'text-attooh-slate' };
+    return { score, label: 'Strong', color: 'text-attooh-success' };
   };
 
   const passwordStrength = getPasswordStrength(password);
@@ -103,14 +103,17 @@ export const RegisterForm: React.FC = () => {
   if (showSuccess) {
     return (
       <div className="text-center">
-        <div className="rounded-md bg-green-50 p-4">
-          <div className="text-sm text-green-700">
+        <div className="rounded-r-lg bg-attooh-lime-pale border-l-4 border-attooh-lime p-4 text-left">
+          <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-success mb-1">
+            Success
+          </p>
+          <div className="text-sm text-attooh-charcoal">
             Registration successful! Please check your email for verification instructions.
           </div>
         </div>
         <Button
           onClick={() => navigate('/login')}
-          className="mt-4"
+          className="mt-5 w-full"
         >
           Go to Login
         </Button>
@@ -137,14 +140,14 @@ export const RegisterForm: React.FC = () => {
           error={errors.password?.message}
         />
         {password && (
-          <div className="mt-1">
+          <div className="mt-2">
             <div className="flex items-center space-x-2">
-              <div className="flex-1 bg-gray-200 rounded-full h-2">
+              <div className="flex-1 bg-attooh-border rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${
-                    passwordStrength.score <= 2 ? 'bg-red-500' :
-                    passwordStrength.score <= 3 ? 'bg-yellow-500' :
-                    passwordStrength.score <= 4 ? 'bg-blue-500' : 'bg-green-500'
+                    passwordStrength.score <= 2 ? 'bg-attooh-danger' :
+                    passwordStrength.score <= 3 ? 'bg-attooh-warn' :
+                    passwordStrength.score <= 4 ? 'bg-attooh-slate' : 'bg-attooh-lime'
                   }`}
                   style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
                 />
@@ -178,8 +181,10 @@ export const RegisterForm: React.FC = () => {
         />
       </div>
 
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900">Household Information (Optional)</h3>
+      <div className="space-y-4 pt-2 border-t border-attooh-border">
+        <h3 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate pt-3">
+          Household information (optional)
+        </h3>
 
         <Input
           label="Monthly Household Income (After Tax)"
@@ -209,15 +214,15 @@ export const RegisterForm: React.FC = () => {
           name="terms"
           type="checkbox"
           required
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          className="h-4 w-4 text-attooh-lime focus:ring-attooh-lime border-attooh-border rounded"
         />
-        <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
+        <label htmlFor="terms" className="ml-2 block text-sm text-attooh-charcoal">
           I agree to the{' '}
-          <a href="#" className="text-blue-600 hover:text-blue-500">
+          <a href="#" className="font-semibold text-attooh-lime-hover hover:text-attooh-charcoal">
             Terms of Service
           </a>{' '}
           and{' '}
-          <a href="#" className="text-blue-600 hover:text-blue-500">
+          <a href="#" className="font-semibold text-attooh-lime-hover hover:text-attooh-charcoal">
             Privacy Policy
           </a>
         </label>
@@ -228,7 +233,7 @@ export const RegisterForm: React.FC = () => {
         disabled={isLoading}
         className="w-full"
       >
-        {isLoading ? 'Creating Account...' : 'Create Account'}
+        {isLoading ? 'Creating Account…' : 'Create Account'}
       </Button>
     </form>
   );

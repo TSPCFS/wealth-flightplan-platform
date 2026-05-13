@@ -46,20 +46,32 @@ export const EmailVerificationPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
+    <div className="min-h-screen flex items-center justify-center bg-attooh-bg py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        <div className="bg-attooh-card border border-attooh-border rounded-2xl shadow-attooh-md p-8 text-center space-y-5">
           {status === 'success' ? (
-            <div role="status" className="rounded-md bg-green-50 p-4">
-              <div className="text-sm text-green-700">{message}</div>
+            <div
+              role="status"
+              className="rounded-r-lg bg-attooh-lime-pale border-l-4 border-attooh-lime p-4 text-left"
+            >
+              <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-success mb-1">
+                Verified
+              </p>
+              <div className="text-sm text-attooh-charcoal">{message}</div>
             </div>
           ) : (
-            <div role="alert" className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{message}</div>
+            <div
+              role="alert"
+              className="rounded-r-lg bg-[rgba(199,54,59,0.08)] border-l-4 border-attooh-danger p-4 text-left"
+            >
+              <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-danger mb-1">
+                Verification failed
+              </p>
+              <div className="text-sm text-attooh-charcoal">{message}</div>
             </div>
           )}
 
-          <Button onClick={() => navigate('/login')} className="mt-4">
+          <Button onClick={() => navigate('/login')} className="w-full">
             Go to Login
           </Button>
         </div>

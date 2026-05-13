@@ -44,7 +44,7 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <FormError error={submitError || undefined} />
 
       <Input
@@ -62,30 +62,24 @@ export const LoginForm: React.FC = () => {
       />
 
       <div className="flex items-center justify-between">
-        <div className="text-sm">
-          <Link
-            to="/forgot-password"
-            className="font-medium text-blue-600 hover:text-blue-500"
-          >
-            Forgot your password?
-          </Link>
-        </div>
+        <Link
+          to="/forgot-password"
+          className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+        >
+          Forgot your password?
+        </Link>
       </div>
 
-      <Button
-        type="submit"
-        disabled={isLoading}
-        className="w-full"
-      >
-        {isLoading ? 'Signing in...' : 'Sign in'}
+      <Button type="submit" disabled={isLoading} className="w-full">
+        {isLoading ? 'Signing in…' : 'Sign in'}
       </Button>
 
       <div className="text-center">
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-attooh-muted">
           Don't have an account?{' '}
           <Link
             to="/register"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-semibold text-attooh-lime-hover hover:text-attooh-charcoal"
           >
             Sign up
           </Link>

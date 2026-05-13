@@ -14,11 +14,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const errorId = error ? `${inputId}-error` : undefined;
 
     const baseClasses =
-      'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 ' +
-      'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ' +
-      'focus-visible:ring-2 focus-visible:ring-blue-500 sm:text-sm';
+      'block w-full px-3.5 py-2.5 border-[1.5px] border-attooh-border rounded-lg bg-white text-attooh-charcoal placeholder-attooh-muted text-sm transition ' +
+      'focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale ' +
+      'focus-visible:border-attooh-lime focus-visible:ring-[3px] focus-visible:ring-attooh-lime-pale';
     const errorClasses = error
-      ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
+      ? 'border-attooh-danger text-attooh-danger placeholder-attooh-danger focus:border-attooh-danger focus:ring-[rgba(199,54,59,0.15)]'
       : '';
     const classes = `${baseClasses} ${errorClasses} ${className}`;
 
@@ -27,7 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate mb-1.5"
           >
             {label}
           </label>
@@ -41,7 +41,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p id={errorId} className="mt-1 text-sm text-red-600">
+          <p id={errorId} className="mt-1.5 text-sm text-attooh-danger">
             {error}
           </p>
         )}

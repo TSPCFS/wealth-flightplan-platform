@@ -47,14 +47,17 @@ export const ForgotPasswordPage: React.FC = () => {
   if (showSuccess) {
     return (
       <AuthLayout title="Check your email">
-        <div role="status" className="rounded-md bg-green-50 p-4 text-center">
-          <div className="text-sm text-green-700">
+        <div role="status" className="rounded-r-lg bg-attooh-lime-pale border-l-4 border-attooh-lime p-4 text-center">
+          <div className="text-sm text-attooh-charcoal">
             If that email exists, a password reset link has been sent.
           </div>
         </div>
-        <div className="text-center mt-4">
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Back to Login
+        <div className="text-center mt-5">
+          <Link
+            to="/login"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to login
           </Link>
         </div>
       </AuthLayout>
@@ -66,7 +69,7 @@ export const ForgotPasswordPage: React.FC = () => {
       title="Forgot your password?"
       subtitle="Enter your email address and we'll send you a link to reset your password."
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <FormError error={submitError || undefined} />
 
         <Input
@@ -77,12 +80,15 @@ export const ForgotPasswordPage: React.FC = () => {
         />
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Sending...' : 'Send Reset Link'}
+          {isLoading ? 'Sending…' : 'Send Reset Link'}
         </Button>
 
         <div className="text-center">
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Back to Login
+          <Link
+            to="/login"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to login
           </Link>
         </div>
       </form>
