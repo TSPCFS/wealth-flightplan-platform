@@ -223,4 +223,120 @@ async def send_password_reset_email(
     )
 
 
-__all__ = ["send_password_reset_email", "send_verification_email"]
+# ---------------------------------------------------------------------------
+# Phase 7a: lead-capture notification to attooh!
+# ---------------------------------------------------------------------------
+
+
+def _lead_admin_link(lead_id: str) -> str:
+    # Admin UI not built yet; the URL is intentionally stable so when the UI
+    # ships, advisor email links keep working.
+    return f"https://wealth-flightplan-platform.vercel.app/admin/leads/{lead_id}"
+
+
+def _lead_html(
+    *,
+    user_name: str,
+    user_email: str,
+    topic: str | None,
+    trigger_event: str,
+    message: str | None,
+    admin_link: str,
+) -> str:
+    rows = [
+        f"<p><strong>User:</strong> {user_name} &lt;{user_email}&gt;</p>",
+        f"<p><strong>Trigger:</strong> {trigger_event}</p>",
+    ]
+    if topic:
+        rows.append(f"<p><strong>Topic:</strong> {topic}</p>")
+    if message:
+        rows.append(
+            "<p><strong>Their words:</strong></p>"
+            f'<blockquote style="margin:0 0 16px;padding:12px 16px;border-left:3px solid #1f7a3a;background:#f6f9f6">{message}</blockquote>'
+        )
+    rows.append(
+        f'<p style="margin-top:24px"><a href="{admin_link}" style="{_BUTTON_STYLE}">Open in admin</a></p>'
+    )
+    return _wrap_html(
+        "<p>A {brand} user has asked to speak to an advisor.</p>{rows}".format(
+            brand=BRAND, rows="".join(rows)
+        )
+    )
+
+
+def _lead_text(
+    *,
+    user_name: str,
+    user_email: str,
+    topic: str | None,
+    trigger_event: str,
+    message: str | None,
+    admin_link: str,
+) -> str:
+    lines = [
+        f"A {BRAND} user has asked to speak to an advisor.",
+        "",
+        f"User:    {user_name} <{user_email}>",
+        f"Trigger: {trigger_event}",
+    ]
+    if topic:
+        lines.append(f"Topic:   {topic}")
+    if message:
+        lines.extend(["", "Their words:", message])
+    lines.extend(["", f"Open in admin: {admin_link}", "", f"– {BRAND}"])
+    return "\n".join(lines)
+
+
+async def send_lead_notification_email(
+    *,
+    advisor_email: str,
+    lead_id: str,
+    user_first_name: str,
+    user_last_name: str,
+    user_email: str,
+    trigger_event: str,
+    topic: str | None,
+    message: str | None,
+    settings: Settings | None = None,
+) -> None:
+    """Notify the attooh! advisor inbox of a new lead.
+
+    Reuses ``_send_or_log`` so dev environments with no ``RESEND_API_KEY``
+    still log the payload to stdout. The Resend send is best-effort: lead
+    rows are persisted before this is called, so a transient email outage
+    never loses the lead.
+    """
+    settings = settings or get_settings()
+    user_name = f"{user_first_name} {user_last_name}".strip() or user_email
+    topic_subject = topic or "advisor handoff"
+    subject = f"New lead: {user_name} — {topic_subject}"
+    admin_link = _lead_admin_link(lead_id)
+    await _send_or_log(
+        settings,
+        to_email=advisor_email,
+        subject=subject,
+        link=admin_link,
+        html=_lead_html(
+            user_name=user_name,
+            user_email=user_email,
+            topic=topic,
+            trigger_event=trigger_event,
+            message=message,
+            admin_link=admin_link,
+        ),
+        text=_lead_text(
+            user_name=user_name,
+            user_email=user_email,
+            topic=topic,
+            trigger_event=trigger_event,
+            message=message,
+            admin_link=admin_link,
+        ),
+    )
+
+
+__all__ = [
+    "send_lead_notification_email",
+    "send_password_reset_email",
+    "send_verification_email",
+]
