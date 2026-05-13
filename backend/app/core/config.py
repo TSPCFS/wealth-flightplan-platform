@@ -67,6 +67,20 @@ class Settings(BaseSettings):
     rate_limit_password_reset: str = "3/hour"
     rate_limit_authed: str = "100/minute"
 
+    # Chatbot (Phase 7a). Empty ``anthropic_api_key`` triggers the stub-reply
+    # fallback in app.services.chatbot rather than a 500.
+    anthropic_api_key: str = Field(default="", validation_alias="ANTHROPIC_API_KEY")
+    chatbot_model: str = Field(default="claude-sonnet-4-5", validation_alias="CHATBOT_MODEL")
+    chatbot_max_tokens: int = Field(
+        default=1024, validation_alias="CHATBOT_MAX_TOKENS"
+    )
+    chatbot_daily_limit_per_user: int = Field(
+        default=50, validation_alias="CHATBOT_DAILY_LIMIT_PER_USER"
+    )
+    attooh_lead_email: str = Field(
+        default="wouter@attooh.co.za", validation_alias="ATTOOH_LEAD_EMAIL"
+    )
+
     # Test-only flag: skip live Redis / DB / outbound network when set.
     testing: bool = Field(default=False)
 
