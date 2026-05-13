@@ -934,7 +934,9 @@ All monetary fields (`household_income_monthly_after_tax`, all `total_*`/`balanc
 }
 ```
 
-**Errors:** 400 `MISSING_CONFIRM` if request body lacks `confirm`. 401 if unauthenticated. Always writes an `audit_logs` row capturing the reset.
+**Errors:** 400 `MISSING_CONFIRM` for any payload where `confirm` is absent, null, empty, or anything other than the exact string `"RESET"` (case-sensitive). The single code covers all rejection paths so the FE can show one consistent error message. 401 if unauthenticated. Always writes an `audit_logs` row capturing the reset.
+
+**`deleted.user_progress_rows` semantics:** always `0` or `1` — `user_progress` has a UNIQUE constraint on `user_id`. The row is created lazily on first `GET /users/progress`; a user who has never opened the progress page resets with `user_progress_rows: 0`, and that is correct.
 
 ---
 
