@@ -150,6 +150,19 @@ export const TopNav: React.FC = () => {
               >
                 Profile
               </Link>
+              {user?.is_admin && (
+                <Link
+                  to="/admin"
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                  className="block px-4 py-2 text-sm text-attooh-charcoal hover:bg-attooh-lime-pale no-underline"
+                >
+                  Admin
+                  <span className="ml-2 inline-block text-[10px] font-bold uppercase tracking-wider text-attooh-lime-hover">
+                    admin
+                  </span>
+                </Link>
+              )}
               <button
                 type="button"
                 role="menuitem"

@@ -62,8 +62,31 @@ const MilestonesPage = lazy(() =>
   import('./pages/MilestonesPage').then((m) => ({ default: m.MilestonesPage }))
 );
 
+// Admin (Phase 8b). Lazy-loaded so non-admins never pay for the chunk on
+// first paint. The ProtectedRoute requireAdmin gate hides them from
+// non-admins; non-admins who type the URL directly redirect to /dashboard.
+const AdminDashboardPage = lazy(() =>
+  import('./pages/admin/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage }))
+);
+const AdminUsersPage = lazy(() =>
+  import('./pages/admin/AdminUsersPage').then((m) => ({ default: m.AdminUsersPage }))
+);
+const AdminUserDetailPage = lazy(() =>
+  import('./pages/admin/AdminUserDetailPage').then((m) => ({ default: m.AdminUserDetailPage }))
+);
+const AdminLeadsPage = lazy(() =>
+  import('./pages/admin/AdminLeadsPage').then((m) => ({ default: m.AdminLeadsPage }))
+);
+const AdminAuditPage = lazy(() =>
+  import('./pages/admin/AdminAuditPage').then((m) => ({ default: m.AdminAuditPage }))
+);
+
 const protect = (element: React.ReactNode) => (
   <ProtectedRoute>{element}</ProtectedRoute>
+);
+
+const protectAdmin = (element: React.ReactNode) => (
+  <ProtectedRoute requireAdmin>{element}</ProtectedRoute>
 );
 
 function App() {
@@ -108,6 +131,13 @@ function App() {
             <Route path="/recommendations" element={protect(<RecommendationsPage />)} />
             <Route path="/activity" element={protect(<ActivityPage />)} />
             <Route path="/milestones" element={protect(<MilestonesPage />)} />
+
+            {/* Admin (Phase 8b) — gated by ProtectedRoute requireAdmin */}
+            <Route path="/admin" element={protectAdmin(<AdminDashboardPage />)} />
+            <Route path="/admin/users" element={protectAdmin(<AdminUsersPage />)} />
+            <Route path="/admin/users/:userId" element={protectAdmin(<AdminUserDetailPage />)} />
+            <Route path="/admin/leads" element={protectAdmin(<AdminLeadsPage />)} />
+            <Route path="/admin/audit" element={protectAdmin(<AdminAuditPage />)} />
 
             {/* Default redirect */}
             <Route path="/" element={<Navigate to="/login" replace />} />

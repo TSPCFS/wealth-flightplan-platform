@@ -24,6 +24,10 @@ export interface User {
   current_stage?: Stage | null;
   latest_assessment_id?: string | null;
   is_business_owner?: boolean;
+  // Phase 8a: admin role bit. Returned by /users/profile but omitted from
+  // login's nested user payload (the FE re-fetches profile after login if
+  // the admin nav surfaces matter).
+  is_admin?: boolean;
   primary_language?: string;
   timezone?: string;
   created_at?: string;

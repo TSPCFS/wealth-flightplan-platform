@@ -65,6 +65,19 @@ import type {
   LeadCreate as ChatbotLeadCreatePayload,
   SendMessageResponse as ChatbotSendMessageResponse,
 } from '../types/chatbot.types';
+import type {
+  AdminAuditFilters,
+  AdminAuditLogResponse,
+  AdminLeadsFilters,
+  AdminLeadsResponse,
+  AdminLeadStatus,
+  AdminStats,
+  AdminUserActionResponse,
+  AdminUserDeleteResponse,
+  AdminUserDetail,
+  AdminUserListResponse,
+  AdminUsersFilters,
+} from '../types/admin.types';
 
 // localStorage token keys. HttpOnly cookies are post-MVP.
 export const ACCESS_TOKEN_KEY = 'wfp.access_token';
@@ -503,6 +516,85 @@ class ApiClient {
       method: 'POST',
       body: JSON.stringify(payload),
     });
+  }
+
+  // ----- Admin (Phase 8a) -----------------------------------------------
+  // All endpoints gated by require_admin on the backend. Non-admin callers
+  // get 403 FORBIDDEN_NOT_ADMIN which the FE surfaces as a navigate-away.
+
+  async adminListUsers(filters: AdminUsersFilters = {}): Promise<AdminUserListResponse> {
+    return this.apiRequest<AdminUserListResponse>(`/admin/users${buildQuery(filters)}`);
+  }
+
+  async adminGetUser(userId: string): Promise<AdminUserDetail> {
+    return this.apiRequest<AdminUserDetail>(`/admin/users/${encodeURIComponent(userId)}`);
+  }
+
+  async adminSuspendUser(userId: string): Promise<AdminUserActionResponse> {
+    return this.apiRequest<AdminUserActionResponse>(
+      `/admin/users/${encodeURIComponent(userId)}/suspend`,
+      { method: 'POST' }
+    );
+  }
+
+  async adminUnsuspendUser(userId: string): Promise<AdminUserActionResponse> {
+    return this.apiRequest<AdminUserActionResponse>(
+      `/admin/users/${encodeURIComponent(userId)}/unsuspend`,
+      { method: 'POST' }
+    );
+  }
+
+  async adminResetPassword(userId: string): Promise<AdminUserActionResponse> {
+    return this.apiRequest<AdminUserActionResponse>(
+      `/admin/users/${encodeURIComponent(userId)}/reset-password`,
+      { method: 'POST' }
+    );
+  }
+
+  async adminPromoteUser(userId: string): Promise<AdminUserActionResponse> {
+    return this.apiRequest<AdminUserActionResponse>(
+      `/admin/users/${encodeURIComponent(userId)}/promote`,
+      { method: 'POST' }
+    );
+  }
+
+  async adminDemoteUser(userId: string): Promise<AdminUserActionResponse> {
+    return this.apiRequest<AdminUserActionResponse>(
+      `/admin/users/${encodeURIComponent(userId)}/demote`,
+      { method: 'POST' }
+    );
+  }
+
+  async adminDeleteUser(userId: string, confirmEmail: string): Promise<AdminUserDeleteResponse> {
+    return this.apiRequest<AdminUserDeleteResponse>(
+      `/admin/users/${encodeURIComponent(userId)}`,
+      {
+        method: 'DELETE',
+        body: JSON.stringify({ confirm_email: confirmEmail }),
+      }
+    );
+  }
+
+  async adminGetStats(): Promise<AdminStats> {
+    return this.apiRequest<AdminStats>('/admin/stats');
+  }
+
+  async adminGetAudit(filters: AdminAuditFilters = {}): Promise<AdminAuditLogResponse> {
+    return this.apiRequest<AdminAuditLogResponse>(`/admin/audit${buildQuery(filters)}`);
+  }
+
+  async adminListLeads(filters: AdminLeadsFilters = {}): Promise<AdminLeadsResponse> {
+    return this.apiRequest<AdminLeadsResponse>(`/admin/leads${buildQuery(filters)}`);
+  }
+
+  async adminUpdateLeadStatus(leadId: string, status: AdminLeadStatus): Promise<AdminLeadsResponse['leads'][number]> {
+    return this.apiRequest<AdminLeadsResponse['leads'][number]>(
+      `/admin/leads/${encodeURIComponent(leadId)}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ status }),
+      }
+    );
   }
 }
 

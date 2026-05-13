@@ -40,4 +40,30 @@ describe('ProtectedRoute', () => {
     );
     expect(screen.getByText('Protected content')).toBeInTheDocument();
   });
+
+  it('requireAdmin: redirects to /dashboard when user is not admin', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      status: 'authenticated',
+      user: { user_id: 'u1', email: 'a@b.co', is_admin: false },
+    } as any);
+    render(
+      <MemoryRouter initialEntries={['/admin']}>
+        <ProtectedRoute requireAdmin><div>Admin content</div></ProtectedRoute>
+      </MemoryRouter>
+    );
+    expect(screen.queryByText('Admin content')).not.toBeInTheDocument();
+  });
+
+  it('requireAdmin: renders children when user is admin', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      status: 'authenticated',
+      user: { user_id: 'u1', email: 'a@b.co', is_admin: true },
+    } as any);
+    render(
+      <MemoryRouter initialEntries={['/admin']}>
+        <ProtectedRoute requireAdmin><div>Admin content</div></ProtectedRoute>
+      </MemoryRouter>
+    );
+    expect(screen.getByText('Admin content')).toBeInTheDocument();
+  });
 });
