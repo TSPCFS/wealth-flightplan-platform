@@ -26,6 +26,10 @@ export const ChatbotWidget: React.FC = () => {
   const auth = useContext(AuthContext);
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  // Held at the widget level so the conversation persists across panel
+  // open/close within the same browser session. Cleared on logout (the whole
+  // widget unmounts when auth.status flips away from "authenticated").
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   if (!auth || auth.status !== 'authenticated') return null;
   if (isAuthRoute(location.pathname)) return null;
@@ -35,7 +39,11 @@ export const ChatbotWidget: React.FC = () => {
     <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 pointer-events-none">
       {open && (
         <div className="pointer-events-auto">
-          <ChatbotPanel onClose={() => setOpen(false)} />
+          <ChatbotPanel
+            onClose={() => setOpen(false)}
+            conversationId={conversationId}
+            onConversationStart={setConversationId}
+          />
         </div>
       )}
       <button

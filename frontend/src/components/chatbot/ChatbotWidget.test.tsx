@@ -9,12 +9,13 @@ vi.mock('../../services/chatbot.service', () => ({
   chatbotService: {
     startConversation: vi.fn().mockResolvedValue({
       conversation_id: 'c1',
-      title: null,
-      created_at: '',
-      updated_at: '',
+      created_at: '2026-05-13T00:00:00Z',
+      last_message_at: '2026-05-13T00:00:00Z',
+      summary: null,
+      message_count: 0,
     }),
     sendMessage: vi.fn(),
-    listConversations: vi.fn(),
+    listConversations: vi.fn().mockResolvedValue([]),
     getConversation: vi.fn(),
     deleteConversation: vi.fn(),
     createLead: vi.fn(),

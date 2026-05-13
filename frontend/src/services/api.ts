@@ -57,6 +57,14 @@ import type {
   RecommendationsResponse,
   ResetProgressResponse,
 } from '../types/user.types';
+import type {
+  Conversation as ChatbotConversation,
+  ConversationDetail as ChatbotConversationDetail,
+  ConversationListResponse as ChatbotConversationListResponse,
+  Lead as ChatbotLead,
+  LeadCreate as ChatbotLeadCreatePayload,
+  SendMessageResponse as ChatbotSendMessageResponse,
+} from '../types/chatbot.types';
 
 // localStorage token keys. HttpOnly cookies are post-MVP.
 export const ACCESS_TOKEN_KEY = 'wfp.access_token';
@@ -449,6 +457,51 @@ class ApiClient {
     return this.apiRequest<ResetProgressResponse>('/users/me/reset-progress', {
       method: 'POST',
       body: JSON.stringify({ confirm: 'RESET' }),
+    });
+  }
+
+  // ----- Chatbot (Phase 7a) ---------------------------------------------
+  // Endpoints documented in docs/API_CONTRACT.md. Anthropic backed; backend
+  // gracefully degrades to a stub reply when ANTHROPIC_API_KEY is unset.
+
+  async startChatbotConversation(): Promise<ChatbotConversation> {
+    return this.apiRequest<ChatbotConversation>('/chatbot/conversations', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+  }
+
+  async listChatbotConversations(): Promise<ChatbotConversationListResponse> {
+    return this.apiRequest<ChatbotConversationListResponse>('/chatbot/conversations');
+  }
+
+  async getChatbotConversation(conversationId: string): Promise<ChatbotConversationDetail> {
+    return this.apiRequest<ChatbotConversationDetail>(
+      `/chatbot/conversations/${encodeURIComponent(conversationId)}`
+    );
+  }
+
+  async deleteChatbotConversation(conversationId: string): Promise<void> {
+    await this.apiRequest<void>(
+      `/chatbot/conversations/${encodeURIComponent(conversationId)}`,
+      { method: 'DELETE' }
+    );
+  }
+
+  async sendChatbotMessage(
+    conversationId: string,
+    content: string
+  ): Promise<ChatbotSendMessageResponse> {
+    return this.apiRequest<ChatbotSendMessageResponse>(
+      `/chatbot/conversations/${encodeURIComponent(conversationId)}/messages`,
+      { method: 'POST', body: JSON.stringify({ content }) }
+    );
+  }
+
+  async createChatbotLead(payload: ChatbotLeadCreatePayload): Promise<ChatbotLead> {
+    return this.apiRequest<ChatbotLead>('/chatbot/leads', {
+      method: 'POST',
+      body: JSON.stringify(payload),
     });
   }
 }
