@@ -18,4 +18,13 @@ describe('AssessmentSelector', () => {
       '/assessments/5q'
     );
   });
+
+  it('mounts inside <main id="main">', () => {
+    render(
+      <MemoryRouter>
+        <AssessmentSelector />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole('main')).toHaveAttribute('id', 'main');
+  });
 });

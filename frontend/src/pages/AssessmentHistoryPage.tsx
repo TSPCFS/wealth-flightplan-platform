@@ -6,6 +6,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
 import { HistoryTimeline } from '../components/assessments/HistoryTimeline';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const typeLabel: Record<string, string> = {
   '5q': '5-Question',
@@ -24,6 +25,7 @@ const formatDate = (iso: string): string => {
 };
 
 export const AssessmentHistoryPage: React.FC = () => {
+  useDocumentTitle('Assessment history');
   const [data, setData] = useState<AssessmentHistoryResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

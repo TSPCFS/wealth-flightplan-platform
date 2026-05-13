@@ -8,6 +8,7 @@ import { AppLayout } from '../components/common/AppLayout';
 import { StageDisplay } from '../components/assessments/StageDisplay';
 import { GapsList } from '../components/assessments/GapsList';
 import { RecommendationsList } from '../components/assessments/RecommendationsList';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const bandLabel: Record<string, string> = {
   solid_plan: 'Solid plan',
@@ -22,6 +23,7 @@ const bandStyle: Record<string, string> = {
 };
 
 export const AssessmentResultsPage: React.FC = () => {
+  useDocumentTitle('Assessment results');
   const { id } = useParams<{ id: string }>();
   const [result, setResult] = useState<AssessmentDetail | null>(null);
   const [error, setError] = useState<string | null>(null);

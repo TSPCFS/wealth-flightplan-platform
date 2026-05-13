@@ -4,8 +4,10 @@ import { AssessmentFlow } from '../components/assessments/AssessmentFlow';
 import { QUESTIONS_GAP } from '../data/assessment-questions';
 import { assessmentService } from '../services/assessment.service';
 import type { ResponsesGap } from '../types/assessment.types';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const AssessmentGapPage: React.FC = () => {
+  useDocumentTitle('GAP test');
   const navigate = useNavigate();
 
   const handleSubmit = async (responses: Record<string, string>, elapsed: number) => {

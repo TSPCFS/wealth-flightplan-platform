@@ -4,8 +4,10 @@ import { AssessmentFlow } from '../components/assessments/AssessmentFlow';
 import { QUESTIONS_10Q } from '../data/assessment-questions';
 import { assessmentService } from '../services/assessment.service';
 import type { ResponsesLetter } from '../types/assessment.types';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const Assessment10QPage: React.FC = () => {
+  useDocumentTitle('10-question assessment');
   const navigate = useNavigate();
 
   const handleSubmit = async (responses: Record<string, string>, elapsed: number) => {
