@@ -31,11 +31,14 @@ const daysAgo = (iso: string): string => {
 const badgeFor = (latest: WorksheetSubmission | null | undefined) => {
   if (!latest) return null;
   if (latest.is_draft) {
-    return { label: 'Draft saved', tone: 'bg-amber-100 text-amber-800' };
+    return {
+      label: 'Draft saved',
+      tone: 'bg-[#FFF4DA] text-[#9C7611]',
+    };
   }
   return {
     label: `Last submitted ${daysAgo(latest.created_at)}`,
-    tone: 'bg-emerald-100 text-emerald-800',
+    tone: 'bg-attooh-lime-pale text-attooh-success',
   };
 };
 
@@ -46,24 +49,30 @@ export const WorksheetCard: React.FC<Props> = ({ worksheet, latest, reason }) =>
   return (
     <Link
       to={`/worksheets/${encodeURIComponent(worksheet.worksheet_code)}`}
-      className="block bg-white rounded-lg shadow border border-transparent p-5 hover:border-blue-500 hover:shadow-md transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="group block bg-attooh-card rounded-xl border border-attooh-border p-6 shadow-attooh-sm transition-all duration-200 hover:border-attooh-lime hover:shadow-attooh-md hover:-translate-y-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-attooh-lime"
     >
-      <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-        <span className="font-medium">{worksheet.worksheet_code}</span>
+      <div className="flex items-center justify-between mb-3">
+        <span className="font-lato text-[11px] font-bold uppercase tracking-[0.16em] text-attooh-lime-hover">
+          {worksheet.worksheet_code}
+        </span>
         {worksheet.estimated_time_minutes !== undefined && (
-          <span>~{worksheet.estimated_time_minutes} min</span>
+          <span className="font-lato text-[11px] uppercase tracking-[0.1em] text-attooh-muted">
+            ~{worksheet.estimated_time_minutes} min
+          </span>
         )}
       </div>
-      <h2 className="text-lg font-semibold text-gray-900 mb-1">{worksheet.title}</h2>
-      {body && <p className="text-sm text-gray-600 mb-3 line-clamp-3">{body}</p>}
+      <h2 className="text-lg font-bold text-attooh-charcoal mb-2">{worksheet.title}</h2>
+      {body && <p className="text-sm text-attooh-muted mb-3 line-clamp-3">{body}</p>}
       {badge && (
         <span
-          className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded ${badge.tone}`}
+          className={`inline-flex items-center font-lato text-[10px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded ${badge.tone}`}
         >
           {badge.label}
         </span>
       )}
-      <span className="block mt-3 text-sm font-medium text-blue-600">Open →</span>
+      <span className="block mt-4 font-lato font-bold text-[13px] uppercase tracking-[0.08em] text-attooh-lime-hover group-hover:translate-x-0.5 transition">
+        Open →
+      </span>
     </Link>
   );
 };

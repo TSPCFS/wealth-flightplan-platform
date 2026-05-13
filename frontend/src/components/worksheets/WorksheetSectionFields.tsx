@@ -33,13 +33,15 @@ export const WorksheetSectionFields: React.FC<Props> = ({
         const fieldValue = value[field.name];
         const inputId = `field-${field.name}`;
         const baseInput =
-          'mt-1 block w-full min-h-[44px] px-3 py-2 border rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500';
-        const borderCls = fieldError ? 'border-red-400' : 'border-gray-300';
+          'mt-1.5 block w-full min-h-[44px] px-3.5 py-2.5 border-[1.5px] rounded-lg text-sm bg-white transition focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale';
+        const borderCls = fieldError ? 'border-attooh-danger' : 'border-attooh-border';
 
         return (
           <div key={field.name}>
             <label htmlFor={inputId} className="block">
-              <span className="text-sm font-medium text-gray-700">{field.label}</span>
+              <span className="font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate">
+                {field.label}
+              </span>
               {field.type === 'select' ? (
                 <select
                   id={inputId}
@@ -81,10 +83,10 @@ export const WorksheetSectionFields: React.FC<Props> = ({
               )}
             </label>
             {field.description && (
-              <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+              <p className="text-xs text-attooh-muted mt-1">{field.description}</p>
             )}
             {fieldError && (
-              <p role="alert" className="text-xs text-red-600 mt-1">
+              <p role="alert" className="text-xs text-attooh-danger mt-1">
                 {fieldError}
               </p>
             )}
@@ -93,9 +95,9 @@ export const WorksheetSectionFields: React.FC<Props> = ({
       })}
     </div>
     {sectionTotal !== undefined && fields.some((f) => f.type === 'number') && (
-      <p className="text-sm text-gray-600 text-right">
+      <p className="text-sm text-attooh-muted text-right">
         Section total:{' '}
-        <span className="font-semibold text-gray-900">{formatCurrency(sectionTotal)}</span>
+        <span className="font-bold text-attooh-charcoal">{formatCurrency(sectionTotal)}</span>
       </p>
     )}
   </div>

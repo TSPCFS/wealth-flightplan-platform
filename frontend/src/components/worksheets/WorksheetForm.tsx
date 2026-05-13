@@ -194,23 +194,25 @@ export const WorksheetForm: React.FC<Props> = ({ schema, initialData }) => {
     <form onSubmit={onSubmit} className="space-y-6" aria-label={schema.title}>
       <header className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{schema.title}</h1>
+          <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal tracking-tight">
+            {schema.title}
+          </h1>
           {schema.description && (
-            <p className="text-sm text-gray-600 mt-1">{schema.description}</p>
+            <p className="text-sm text-attooh-muted mt-1.5">{schema.description}</p>
           )}
         </div>
         <span
           data-testid="autosave-indicator"
-          className="text-xs text-gray-500"
+          className="font-lato text-[11px] uppercase tracking-wider text-attooh-muted"
           aria-live="polite"
         >
           {savedLabel}
         </span>
       </header>
 
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-attooh-border rounded-full h-2 overflow-hidden">
         <div
-          className="bg-blue-600 h-2 rounded-full transition-all"
+          className="bg-attooh-lime h-2 rounded-full transition-all"
           style={{ width: `${totals.completionPct}%` }}
           role="progressbar"
           aria-valuemin={0}
@@ -223,17 +225,17 @@ export const WorksheetForm: React.FC<Props> = ({ schema, initialData }) => {
       {schema.sections.map((section) => (
         <section
           key={section.name}
-          className="bg-white rounded-lg shadow p-5"
+          className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-6"
           aria-labelledby={`section-${section.name}-heading`}
         >
           <h2
             id={`section-${section.name}-heading`}
-            className="text-lg font-semibold text-gray-900 mb-1"
+            className="text-lg font-bold text-attooh-charcoal mb-1"
           >
             {section.label}
           </h2>
           {section.description && (
-            <p className="text-sm text-gray-500 mb-3">{section.description}</p>
+            <p className="text-sm text-attooh-muted mb-4">{section.description}</p>
           )}
 
           {isArraySection(section) ? (
@@ -274,7 +276,7 @@ export const WorksheetForm: React.FC<Props> = ({ schema, initialData }) => {
             Clear form
           </Button>
         </div>
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-attooh-charcoal font-medium">
           {totals.completionPct}% complete
         </span>
       </div>

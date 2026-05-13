@@ -60,14 +60,20 @@ export const WorksheetsCataloguePage: React.FC = () => {
   if (!list) return <LoadingSpinner />;
 
   return (
-    <AppLayout maxWidth="wide" className="space-y-6">
-      <header>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Worksheets</h1>
-        <p className="text-gray-600 mt-1">
-          Fillable forms that turn the framework into a plan. Drafts autosave as you go.
+    <AppLayout maxWidth="wide" className="space-y-8">
+      <section className="bg-attooh-lime-pale border-l-4 border-attooh-lime rounded-r-xl p-7">
+        <p className="font-lato font-bold text-[10px] uppercase tracking-[0.2em] text-attooh-success mb-2">
+          Worksheets
         </p>
-      </header>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h1 className="font-montserrat text-2xl sm:text-[36px] font-bold text-attooh-charcoal mb-2 tracking-tight">
+          Turn the framework into a plan
+        </h1>
+        <p className="text-base text-attooh-charcoal max-w-2xl">
+          Fillable forms that turn the framework into a plan. Drafts autosave as you go, and your past submissions are kept per worksheet.
+        </p>
+      </section>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {list.worksheets.map((ws) => (
           <WorksheetCard
             key={ws.worksheet_code}

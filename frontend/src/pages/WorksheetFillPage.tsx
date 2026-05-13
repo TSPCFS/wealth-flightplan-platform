@@ -62,8 +62,11 @@ export const WorksheetFillPage: React.FC = () => {
       <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error ?? 'Worksheet not found.'} />
         <div className="mt-6 text-center">
-          <Link to="/worksheets" className="text-blue-600 underline">
-            Back to worksheets
+          <Link
+            to="/worksheets"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to worksheets
           </Link>
         </div>
       </AppLayout>
@@ -72,18 +75,21 @@ export const WorksheetFillPage: React.FC = () => {
 
   return (
     <AppLayout maxWidth="narrow">
-      <Link to="/worksheets" className="text-sm text-blue-600 underline">
+      <Link
+        to="/worksheets"
+        className="inline-flex items-center font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+      >
         ← Worksheets
       </Link>
-      <div className="mt-4">
+      <div className="mt-5">
         <WorksheetForm schema={schema} initialData={initialData} />
       </div>
-      <div className="text-center mt-6">
+      <div className="text-center mt-7">
         <Link
           to={`/worksheets/${encodeURIComponent(schema.worksheet_code)}/history`}
-          className="text-sm text-blue-600 hover:text-blue-800 underline"
+          className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
         >
-          View past submissions
+          View past submissions →
         </Link>
       </div>
     </AppLayout>
