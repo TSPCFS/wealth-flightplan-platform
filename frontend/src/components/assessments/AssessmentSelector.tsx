@@ -36,26 +36,28 @@ const CARDS: SelectorCard[] = [
 export const AssessmentSelector: React.FC = () => {
   return (
     <AppLayout maxWidth="wide">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose an assessment</h1>
-        <p className="text-gray-600">
+      <header className="mb-9">
+        <h1 className="font-montserrat text-3xl sm:text-[36px] font-bold text-attooh-charcoal tracking-tight mb-1.5">
+          Choose an assessment
+        </h1>
+        <p className="text-base text-attooh-muted">
           Pick the format that fits your time. Your previous results stay on your dashboard.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {CARDS.map((card) => (
           <Link
             key={card.to}
             to={card.to}
-            className="block bg-white rounded-lg shadow p-6 border border-transparent hover:border-blue-500 hover:shadow-md transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="group block bg-attooh-card rounded-xl border border-attooh-border p-7 shadow-attooh-sm transition-all duration-200 hover:border-attooh-lime hover:shadow-attooh-md hover:-translate-y-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-attooh-lime"
           >
-            <div className="text-xs uppercase tracking-wide text-blue-700 font-semibold mb-2">
+            <div className="font-lato text-[11px] font-bold uppercase tracking-[0.16em] text-attooh-lime-hover mb-3">
               {card.time}
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">{card.title}</h2>
-            <p className="text-sm text-gray-600 mb-4">{card.description}</p>
-            <span className="inline-flex items-center text-sm font-medium text-blue-600">
+            <h2 className="text-xl font-bold text-attooh-charcoal mb-2">{card.title}</h2>
+            <p className="text-sm text-attooh-muted mb-5">{card.description}</p>
+            <span className="font-lato font-bold text-[13px] uppercase tracking-[0.08em] text-attooh-lime-hover inline-flex items-center gap-1 group-hover:gap-2 transition-all">
               Start →
             </span>
           </Link>

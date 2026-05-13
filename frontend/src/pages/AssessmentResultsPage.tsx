@@ -5,6 +5,7 @@ import type { AssessmentDetail } from '../types/assessment.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
+import { SectionLabel } from '../components/common/SectionLabel';
 import { StageDisplay } from '../components/assessments/StageDisplay';
 import { GapsList } from '../components/assessments/GapsList';
 import { RecommendationsList } from '../components/assessments/RecommendationsList';
@@ -17,9 +18,9 @@ const bandLabel: Record<string, string> = {
 };
 
 const bandStyle: Record<string, string> = {
-  solid_plan: 'bg-green-50 text-green-700',
-  meaningful_gaps: 'bg-yellow-50 text-yellow-800',
-  wide_gaps: 'bg-red-50 text-red-700',
+  solid_plan: 'bg-attooh-lime-pale text-attooh-success',
+  meaningful_gaps: 'bg-[#FFF4DA] text-[#9C7611]',
+  wide_gaps: 'bg-[rgba(199,54,59,0.1)] text-attooh-danger',
 };
 
 export const AssessmentResultsPage: React.FC = () => {
@@ -60,8 +61,11 @@ export const AssessmentResultsPage: React.FC = () => {
       <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error ?? 'Assessment not found.'} />
         <div className="mt-6 text-center">
-          <Link to="/assessments" className="text-blue-600 hover:text-blue-800 underline">
-            Back to assessments
+          <Link
+            to="/assessments"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to assessments
           </Link>
         </div>
       </AppLayout>
@@ -70,29 +74,32 @@ export const AssessmentResultsPage: React.FC = () => {
 
   return (
     <AppLayout maxWidth="narrow" className="space-y-6">
-      <header className="flex items-center justify-between">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Your results</h1>
-        <Link to="/assessments" className="text-sm text-blue-600 hover:text-blue-800 underline">
-          Take another
+      <header className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal break-words tracking-tight">
+          Your results
+        </h1>
+        <Link
+          to="/assessments"
+          className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+        >
+          Take another →
         </Link>
       </header>
 
       {result.assessment_type === 'gap_test' ? (
         <>
-          <section className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-2">
-              Overall band
-            </h2>
-            <div className="flex items-center gap-3">
+          <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+            <SectionLabel>Overall band</SectionLabel>
+            <div className="flex items-center gap-3 mt-3">
               <span
                 className={`inline-flex items-center text-sm font-semibold px-3 py-1 rounded ${bandStyle[result.band]}`}
               >
                 {bandLabel[result.band]}
               </span>
-              <span className="text-sm text-gray-600">Score {result.total_score} / 24</span>
+              <span className="text-sm text-attooh-muted">Score {result.total_score} / 24</span>
             </div>
             {result.advisor_recommendation && (
-              <p className="text-gray-800 mt-4">{result.advisor_recommendation}</p>
+              <p className="text-attooh-charcoal mt-4">{result.advisor_recommendation}</p>
             )}
           </section>
           <GapsList gaps={result.gaps_identified} />
@@ -112,9 +119,9 @@ export const AssessmentResultsPage: React.FC = () => {
       <div className="text-center">
         <Link
           to="/assessments/history"
-          className="text-sm text-blue-600 hover:text-blue-800 underline"
+          className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
         >
-          View full history
+          View full history →
         </Link>
       </div>
     </AppLayout>
