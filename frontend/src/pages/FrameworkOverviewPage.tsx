@@ -34,13 +34,15 @@ export const FrameworkOverviewPage: React.FC = () => {
 
   return (
     <AppLayout maxWidth="wide">
-      <header className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 break-words">The Wealth FlightPlan™ framework</h1>
-        <p className="text-gray-600">
+      <header className="mb-9">
+        <h1 className="font-montserrat text-3xl sm:text-[36px] font-bold text-attooh-charcoal mb-1.5 tracking-tight break-words">
+          The Wealth FlightPlan™ framework
+        </h1>
+        <p className="text-base text-attooh-muted">
           Seven steps from financial GPS to abundance. Open any step to dig in.
         </p>
       </header>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {steps.map((step) => (
           <StepCard key={step.step_number} step={step} />
         ))}
