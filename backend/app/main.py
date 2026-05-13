@@ -14,6 +14,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.api import assessments as assessments_routes
 from app.api import auth as auth_routes
+from app.api import chatbot as chatbot_routes
 from app.api import content as content_routes
 from app.api import users as users_routes
 from app.api import users_dashboard as dashboard_routes
@@ -43,6 +44,31 @@ async def lifespan(_: FastAPI):
     configure_logging(settings.log_level)
     # Eagerly init the engine so connection errors surface at startup.
     get_engine()
+
+    # Eagerly load + cache the chatbot system prompt so the manuscript file
+    # is read once at startup. Skip in test mode (the lru_cache picks the
+    # right value the first time it's needed, and tests don't ship a
+    # manuscript fixture).
+    if not settings.testing:
+        from app.services.chatbot_prompts import (
+            MANUSCRIPT_PATH,
+            get_system_prompt,
+        )
+
+        if not MANUSCRIPT_PATH.exists():
+            logger.error(
+                "Chatbot manuscript missing at %s — assistant will serve a "
+                "degraded prompt that refuses book-specific questions.",
+                MANUSCRIPT_PATH,
+            )
+        get_system_prompt()  # warm the cache
+
+        if not settings.anthropic_api_key.strip():
+            logger.warning(
+                "ANTHROPIC_API_KEY is empty — chatbot will return the "
+                "'not configured' stub reply rather than calling Claude."
+            )
+
     logger.info("Wealth FlightPlan backend started (env=%s)", settings.environment)
     yield
 
@@ -90,6 +116,7 @@ def create_app() -> FastAPI:
     app.include_router(assessments_routes.router)
     app.include_router(content_routes.router)
     app.include_router(worksheets_routes.router)
+    app.include_router(chatbot_routes.router)
 
     @app.get("/health", tags=["meta"], status_code=status.HTTP_200_OK)
     async def health() -> dict[str, str]:
