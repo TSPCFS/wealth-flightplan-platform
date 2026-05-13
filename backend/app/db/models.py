@@ -56,6 +56,9 @@ class User(Base):
     account_status: Mapped[str] = mapped_column(String(20), default="active", nullable=False)
     subscription_tier: Mapped[str] = mapped_column(String(20), default="free", nullable=False)
     is_business_owner: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    suspended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # 2FA
     two_factor_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
@@ -473,9 +476,7 @@ class ChatbotConversation(Base):
 
     __tablename__ = "chatbot_conversations"
 
-    conversation_id: Mapped[uuid.UUID] = mapped_column(
-        GUID(), primary_key=True, default=uuid.uuid4
-    )
+    conversation_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
         GUID(), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
     )
@@ -518,9 +519,7 @@ class ChatbotMessage(Base):
 
     __tablename__ = "chatbot_messages"
 
-    message_id: Mapped[uuid.UUID] = mapped_column(
-        GUID(), primary_key=True, default=uuid.uuid4
-    )
+    message_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
     conversation_id: Mapped[uuid.UUID] = mapped_column(
         GUID(),
         ForeignKey("chatbot_conversations.conversation_id", ondelete="CASCADE"),
@@ -563,9 +562,7 @@ class ChatbotLead(Base):
 
     __tablename__ = "chatbot_leads"
 
-    lead_id: Mapped[uuid.UUID] = mapped_column(
-        GUID(), primary_key=True, default=uuid.uuid4
-    )
+    lead_id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
         GUID(), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
     )
@@ -588,9 +585,7 @@ class ChatbotLead(Base):
         default=utcnow,
         nullable=False,
     )
-    contacted_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    contacted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     __table_args__ = (
         CheckConstraint(

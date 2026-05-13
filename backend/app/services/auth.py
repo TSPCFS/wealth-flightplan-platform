@@ -222,6 +222,25 @@ async def login(
         await session.commit()
         raise invalid_credentials
 
+    # Admin-issued suspension takes precedence over the generic
+    # "not active" check so the front-end can show a friendlier message.
+    if user.suspended_at is not None:
+        await audit.record(
+            session,
+            action="auth.login",
+            user_id=user.user_id,
+            status="failure",
+            ip_address=ctx.ip_address,
+            user_agent=ctx.user_agent,
+            error_message="user_suspended",
+        )
+        await session.commit()
+        raise APIError(
+            status_code=status.HTTP_403_FORBIDDEN,
+            code="FORBIDDEN_USER_SUSPENDED",
+            message="Your account is currently suspended. Contact your administrator.",
+        )
+
     if user.account_status != "active":
         await audit.record(
             session,
