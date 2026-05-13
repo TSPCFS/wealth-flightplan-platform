@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_serializer
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas._base import ZuluDateTime, ZuluResponse
 
@@ -56,19 +56,20 @@ class MessageCreate(BaseModel):
 
 
 class MessageOut(ZuluResponse):
-    """A message as returned by the API. ``metadata`` is the DB ``meta`` column."""
+    """A message as returned by the API.
 
-    model_config = ConfigDict(from_attributes=True)
+    The DB column is ``meta`` (SQLAlchemy reserves ``metadata`` on the
+    declarative Base) but the API exposes it as ``metadata`` per the
+    contract. We accept either field name when constructing the model
+    and always serialize as ``metadata``.
+    """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     role: MessageRole
     content: str
     created_at: ZuluDateTime
-    # Serialized from ``ChatbotMessage.meta`` (the DB column).
-    metadata: dict | None = Field(default=None, alias="meta")
-
-    @field_serializer("metadata")
-    def _serialize_metadata(self, value: dict | None) -> dict | None:
-        return value
+    metadata: dict | None = Field(default=None, alias="meta", serialization_alias="metadata")
 
 
 class ConversationDetailOut(ZuluResponse):
