@@ -4,6 +4,7 @@ import { assessmentService } from '../services/assessment.service';
 import type { AssessmentDetail } from '../types/assessment.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
+import { AppLayout } from '../components/common/AppLayout';
 import { StageDisplay } from '../components/assessments/StageDisplay';
 import { GapsList } from '../components/assessments/GapsList';
 import { RecommendationsList } from '../components/assessments/RecommendationsList';
@@ -54,19 +55,19 @@ export const AssessmentResultsPage: React.FC = () => {
   if (loading) return <LoadingSpinner />;
   if (error || !result) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error ?? 'Assessment not found.'} />
         <div className="mt-6 text-center">
           <Link to="/assessments" className="text-blue-600 hover:text-blue-800 underline">
             Back to assessments
           </Link>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <AppLayout maxWidth="narrow" className="space-y-6">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Your results</h1>
         <Link to="/assessments" className="text-sm text-blue-600 hover:text-blue-800 underline">
@@ -114,6 +115,6 @@ export const AssessmentResultsPage: React.FC = () => {
           View full history
         </Link>
       </div>
-    </div>
+    </AppLayout>
   );
 };

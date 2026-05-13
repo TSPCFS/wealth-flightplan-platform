@@ -3,11 +3,14 @@ import React from 'react';
 interface Props {
   children: React.ReactNode;
   // Common page widths so callers don't reinvent the container each time.
-  maxWidth?: 'narrow' | 'default' | 'wide';
+  // `compact` is for tight form flows (e.g. assessment one-question-at-a-time);
+  // most pages should pick `narrow` / `default` / `wide`.
+  maxWidth?: 'compact' | 'narrow' | 'default' | 'wide';
   className?: string;
 }
 
 const widthClass: Record<NonNullable<Props['maxWidth']>, string> = {
+  compact: 'max-w-2xl',
   narrow: 'max-w-3xl',
   default: 'max-w-4xl',
   wide: 'max-w-6xl',

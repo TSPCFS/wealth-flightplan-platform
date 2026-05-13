@@ -8,6 +8,7 @@ import type {
 } from '../types/worksheet.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
+import { AppLayout } from '../components/common/AppLayout';
 import { WorksheetForm } from '../components/worksheets/WorksheetForm';
 
 const VALID_CODES: WorksheetCode[] = ['APP-A', 'APP-B', 'APP-C', 'APP-D', 'APP-E', 'APP-F', 'APP-G'];
@@ -56,19 +57,19 @@ export const WorksheetFillPage: React.FC = () => {
   if (!ready) return <LoadingSpinner />;
   if (error || !schema) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error ?? 'Worksheet not found.'} />
         <div className="mt-6 text-center">
           <Link to="/worksheets" className="text-blue-600 underline">
             Back to worksheets
           </Link>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <AppLayout maxWidth="narrow">
       <Link to="/worksheets" className="text-sm text-blue-600 underline">
         ← Worksheets
       </Link>
@@ -83,6 +84,6 @@ export const WorksheetFillPage: React.FC = () => {
           View past submissions
         </Link>
       </div>
-    </div>
+    </AppLayout>
   );
 };

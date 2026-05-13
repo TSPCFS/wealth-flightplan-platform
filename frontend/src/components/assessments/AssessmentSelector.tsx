@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { AppLayout } from '../common/AppLayout';
 
 interface SelectorCard {
   to: string;
@@ -34,7 +35,7 @@ const CARDS: SelectorCard[] = [
 
 export const AssessmentSelector: React.FC = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <AppLayout maxWidth="wide">
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose an assessment</h1>
         <p className="text-gray-600">
@@ -60,6 +61,6 @@ export const AssessmentSelector: React.FC = () => {
           </Link>
         ))}
       </div>
-    </div>
+    </AppLayout>
   );
 };

@@ -9,6 +9,7 @@ import type {
   StepNumber,
 } from '../../types/content.types';
 import { FormError } from '../common/FormError';
+import { AppLayout } from '../common/AppLayout';
 import { ExampleCard } from './ExampleCard';
 
 const STEP_OPTIONS: StepNumber[] = ['1', '2', '3', '4a', '4b', '5', '6'];
@@ -77,7 +78,7 @@ export const ExampleBrowser: React.FC = () => {
   const filtersActive = step || stage || calc || hasCalc || q;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <AppLayout maxWidth="wide" className="space-y-6">
       <header className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Worked examples</h1>
@@ -186,6 +187,6 @@ export const ExampleBrowser: React.FC = () => {
           ))}
         </div>
       )}
-    </div>
+    </AppLayout>
   );
 };

@@ -6,6 +6,7 @@ import { FormError } from '../common/FormError';
 import { useAssessmentDraft } from '../../hooks/useAssessmentDraft';
 import { AssessmentProgressBar } from './AssessmentProgressBar';
 import { QuestionCard } from './QuestionCard';
+import { AppLayout } from '../common/AppLayout';
 
 export interface AssessmentFlowProps {
   type: AssessmentType;
@@ -76,7 +77,7 @@ export const AssessmentFlow: React.FC<AssessmentFlowProps> = ({
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <AppLayout maxWidth="compact">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">{title}</h1>
         <AssessmentProgressBar current={safeIndex + 1} total={questions.length} />
@@ -142,6 +143,6 @@ export const AssessmentFlow: React.FC<AssessmentFlowProps> = ({
           </button>
         </div>
       )}
-    </div>
+    </AppLayout>
   );
 };

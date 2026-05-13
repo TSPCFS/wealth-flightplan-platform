@@ -5,6 +5,7 @@ import { contentService } from '../services/content.service';
 import type { StepDetail, StepNumber } from '../types/content.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
+import { AppLayout } from '../components/common/AppLayout';
 
 const VALID_STEPS: StepNumber[] = ['1', '2', '3', '4a', '4b', '5', '6'];
 
@@ -33,20 +34,20 @@ export const StepDetailPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
         <div className="mt-6 text-center">
           <Link to="/framework" className="text-blue-600 underline">
             Back to framework
           </Link>
         </div>
-      </div>
+      </AppLayout>
     );
   }
   if (!step) return <LoadingSpinner />;
 
   return (
-    <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <AppLayout maxWidth="narrow" className="space-y-8">
       <header>
         <Link to="/framework" className="text-sm text-blue-600 underline">
           ← Framework
@@ -127,6 +128,6 @@ export const StepDetailPage: React.FC = () => {
           </ul>
         </section>
       )}
-    </article>
+    </AppLayout>
   );
 };

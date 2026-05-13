@@ -5,6 +5,7 @@ import type { CaseStudyDetail } from '../types/content.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { formatCurrency } from '../utils/format';
+import { AppLayout } from '../components/common/AppLayout';
 
 export const CaseStudyDetailPage: React.FC = () => {
   const { studyCode } = useParams<{ studyCode: string }>();
@@ -28,14 +29,14 @@ export const CaseStudyDetailPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
         <div className="mt-6 text-center">
           <Link to="/case-studies" className="text-blue-600 underline">
             Back to case studies
           </Link>
         </div>
-      </div>
+      </AppLayout>
     );
   }
   if (!study) return <LoadingSpinner />;
@@ -46,7 +47,7 @@ export const CaseStudyDetailPage: React.FC = () => {
       : `${formatCurrency(study.income_monthly)}/month`;
 
   return (
-    <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <AppLayout maxWidth="narrow" className="space-y-8">
       <header>
         <Link to="/case-studies" className="text-sm text-blue-600 underline">
           ← Case studies
@@ -112,6 +113,6 @@ export const CaseStudyDetailPage: React.FC = () => {
           </ul>
         </section>
       )}
-    </article>
+    </AppLayout>
   );
 };

@@ -4,6 +4,7 @@ import { assessmentService } from '../services/assessment.service';
 import type { AssessmentHistoryResponse } from '../types/assessment.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
+import { AppLayout } from '../components/common/AppLayout';
 import { HistoryTimeline } from '../components/assessments/HistoryTimeline';
 
 const typeLabel: Record<string, string> = {
@@ -47,16 +48,16 @@ export const AssessmentHistoryPage: React.FC = () => {
   if (loading) return <LoadingSpinner />;
   if (error || !data) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error ?? 'No history available.'} />
-      </div>
+      </AppLayout>
     );
   }
 
   const hasAny = data.assessments.length > 0;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <AppLayout maxWidth="narrow" className="space-y-8">
       <header className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Assessment history</h1>
@@ -112,6 +113,6 @@ export const AssessmentHistoryPage: React.FC = () => {
           </ul>
         )}
       </section>
-    </div>
+    </AppLayout>
   );
 };

@@ -4,6 +4,7 @@ import type { WorksheetSubmission } from '../types/worksheet.types';
 import { worksheetService } from '../services/worksheet.service';
 import { FormError } from '../components/common/FormError';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { AppLayout } from '../components/common/AppLayout';
 import { WorksheetSubmissionResult } from '../components/worksheets/WorksheetSubmissionResult';
 
 interface ResultsLocationState {
@@ -52,33 +53,33 @@ export const WorksheetResultsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <LoadingSpinner />
-      </div>
+      </AppLayout>
     );
   }
 
   if (error || !submission) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12 space-y-6">
+      <AppLayout maxWidth="narrow" className="py-12 space-y-6">
         <FormError error={error || 'Missing submission.'} />
         <div className="text-center">
           <Link to="/worksheets" className="text-blue-600 underline">
             Back to worksheets
           </Link>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <AppLayout maxWidth="default">
       <Link to="/worksheets" className="text-sm text-blue-600 underline">
         ← Worksheets
       </Link>
       <div className="mt-4">
         <WorksheetSubmissionResult submission={submission} />
       </div>
-    </div>
+    </AppLayout>
   );
 };

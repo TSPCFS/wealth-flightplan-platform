@@ -7,6 +7,7 @@ import type {
 } from '../types/worksheet.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
+import { AppLayout } from '../components/common/AppLayout';
 import { formatCurrency, formatPercent } from '../utils/format';
 
 const VALID_CODES: WorksheetCode[] = ['APP-A', 'APP-B', 'APP-C', 'APP-D', 'APP-E', 'APP-F', 'APP-G'];
@@ -57,20 +58,20 @@ export const WorksheetHistoryPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
         <div className="mt-6 text-center">
           <Link to="/worksheets" className="text-blue-600 underline">
             Back to worksheets
           </Link>
         </div>
-      </div>
+      </AppLayout>
     );
   }
   if (!data) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <AppLayout maxWidth="default" className="space-y-6">
       <header className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <Link to="/worksheets" className="text-sm text-blue-600 underline">
@@ -136,6 +137,6 @@ export const WorksheetHistoryPage: React.FC = () => {
           </table>
         </div>
       )}
-    </div>
+    </AppLayout>
   );
 };

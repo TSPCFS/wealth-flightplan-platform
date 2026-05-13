@@ -7,6 +7,7 @@ import type {
 } from '../types/worksheet.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
+import { AppLayout } from '../components/common/AppLayout';
 import { WorksheetCard } from '../components/worksheets/WorksheetCard';
 
 export const WorksheetsCataloguePage: React.FC = () => {
@@ -49,15 +50,15 @@ export const WorksheetsCataloguePage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
-      </div>
+      </AppLayout>
     );
   }
   if (!list) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <AppLayout maxWidth="wide" className="space-y-6">
       <header>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Worksheets</h1>
         <p className="text-gray-600 mt-1">
@@ -73,6 +74,6 @@ export const WorksheetsCataloguePage: React.FC = () => {
           />
         ))}
       </div>
-    </div>
+    </AppLayout>
   );
 };
