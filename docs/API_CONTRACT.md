@@ -940,6 +940,237 @@ All monetary fields (`household_income_monthly_after_tax`, all `total_*`/`balanc
 
 ---
 
+## Admin (Phase 8)
+
+All routes mount under `/admin` and require the caller's `users.is_admin = true`. Non-admins receive **403 `FORBIDDEN_NOT_ADMIN`**. Unauthenticated requests still 401. Every state-changing action writes one `audit_logs` row keyed on the acting admin's `user_id` and the target user's `user_id` (as `entity_type="user"` / `entity_id=<target>`).
+
+Suspended users — set via `POST /admin/users/{id}/suspend` — receive **403 `FORBIDDEN_USER_SUSPENDED`** on both `POST /auth/login` and any subsequent authenticated request (the suspension check is layered on top of `get_current_user`). The suspend endpoint also bumps `token_version` so any access tokens issued before suspension stop validating.
+
+The user model gains three columns in migration `0007_phase8_admin`:
+- `is_admin: bool` (default `false`) — the role bit
+- `suspended_at: timestamptz | null` — set on suspend, cleared on unsuspend
+- `locked_until: timestamptz | null` — paired with `suspended_at` (~100 yrs forward); cleared on unsuspend
+
+`GET /users/profile` now includes `is_admin: bool` in the response body.
+
+### GET /admin/users
+List + filter users.
+
+**Query params (all optional):**
+- `q` — substring match on email / first_name / last_name (case-insensitive)
+- `is_admin` — `true | false`
+- `verified` — `true | false` (matches `email_verified`)
+- `suspended` — `true | false` (matches `suspended_at IS NOT NULL`)
+- `page` (default 1, min 1)
+- `page_size` (default 25, max 100)
+
+**Response 200:**
+```json
+{
+  "users": [
+    {
+      "user_id": "uuid",
+      "email": "user@example.com",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "is_admin": false,
+      "is_business_owner": false,
+      "email_verified": true,
+      "account_status": "active",
+      "suspended_at": null,
+      "locked_until": null,
+      "subscription_tier": "free",
+      "created_at": "2026-05-13T10:00:00Z",
+      "last_login": "2026-05-13T10:30:00Z"
+    }
+  ],
+  "total": 42,
+  "page": 1,
+  "page_size": 25,
+  "has_more": true
+}
+```
+
+### GET /admin/users/{user_id}
+Full detail per user: profile fields + counts across assessments / worksheets / chatbot leads / framework steps.
+**Response 200:**
+```json
+{
+  "user_id": "uuid",
+  "email": "user@example.com",
+  "first_name": "Jane",
+  "last_name": "Doe",
+  "is_admin": false,
+  "is_business_owner": false,
+  "email_verified": true,
+  "email_verified_at": "2026-05-12T10:00:00Z",
+  "account_status": "active",
+  "suspended_at": null,
+  "locked_until": null,
+  "subscription_tier": "free",
+  "household_income_monthly_after_tax": 85000,
+  "household_size": 4,
+  "number_of_dependants": 2,
+  "primary_language": "en",
+  "timezone": "SAST",
+  "current_stage": "Freedom",
+  "latest_assessment_id": "uuid",
+  "created_at": "2026-05-01T08:00:00Z",
+  "updated_at": "2026-05-12T10:30:00Z",
+  "last_login": "2026-05-13T10:30:00Z",
+  "counts": {
+    "assessments": 3,
+    "worksheet_submissions": 5,
+    "worksheet_drafts": 1,
+    "example_interactions": 12,
+    "chatbot_conversations": 2,
+    "chatbot_leads": 1,
+    "framework_steps_completed": 2
+  }
+}
+```
+**Errors:** 404 `USER_NOT_FOUND`.
+
+### POST /admin/users/{user_id}/suspend
+Sets `suspended_at = now()`, `locked_until = now() + 100yr`, `account_status = "suspended"`, and bumps `token_version`.
+**Response 200:** `{ "user": <AdminUserDetail>, "message": "User suspended. They cannot log in until unsuspended." }`
+Audit action: `admin.user.suspend`.
+
+### POST /admin/users/{user_id}/unsuspend
+Clears `suspended_at`, `locked_until`, sets `account_status = "active"`.
+**Response 200:** `{ "user": <AdminUserDetail>, "message": "User unsuspended and can log in again." }`
+Audit action: `admin.user.unsuspend`.
+
+### POST /admin/users/{user_id}/reset-password
+Issues a fresh password-reset JWT (1-hour expiry, bound to the target's `token_version`) and emails it via the standard reset template.
+**Response 200:** `{ "user": <AdminUserDetail>, "message": "Password-reset email sent to the user." }`
+Audit action: `admin.user.reset_password`.
+
+### POST /admin/users/{user_id}/promote
+Sets `is_admin = true`. No-op when the user is already an admin (still returns 200 with a "no change made" message).
+**Response 200:** `{ "user": <AdminUserDetail>, "message": "User promoted to admin." }`
+Audit action: `admin.user.promote`.
+
+### POST /admin/users/{user_id}/demote
+Sets `is_admin = false`. Refuses self-targeting with **400 `SELF_DEMOTION`** so an admin can't strip their own role and lock themselves out — ask another admin.
+**Response 200:** `{ "user": <AdminUserDetail>, "message": "User demoted to regular role." }`
+Audit action: `admin.user.demote`.
+
+### DELETE /admin/users/{user_id}
+Hard delete — removes the `users` row (CASCADE removes assessments / worksheet_responses / example_interactions / user_progress / chatbot_* through their FK).
+**Body required:**
+```json
+{ "confirm_email": "user@example.com" }
+```
+- `confirm_email` must match the target user's email (case-insensitive).
+- Returns **400 `CONFIRM_EMAIL_MISMATCH`** when the value doesn't match.
+- Returns **400 `SELF_DELETION`** when `user_id == acting_admin.user_id`.
+
+**Response 200:**
+```json
+{ "deleted_user_id": "uuid", "message": "User <email> permanently deleted." }
+```
+Audit action: `admin.user.delete` (written **before** the row deletion so `entity_id` survives in the trail).
+
+### GET /admin/stats
+Snapshot counters for the admin dashboard.
+**Response 200:**
+```json
+{
+  "total_users": 217,
+  "verified_users": 195,
+  "suspended_users": 3,
+  "admins": 2,
+  "new_signups_7d": 12,
+  "new_signups_30d": 41
+}
+```
+
+### GET /admin/audit
+Paginated audit log.
+
+**Query params:**
+- `acting_user_id` — filter to a specific admin's actions
+- `action` — exact match (e.g. `admin.user.suspend`)
+- `since` / `until` — ISO timestamps
+- `page` (default 1) / `page_size` (default 50, max 200)
+
+**Response 200:**
+```json
+{
+  "entries": [
+    {
+      "log_id": "uuid",
+      "user_id": "uuid",
+      "action": "admin.user.suspend",
+      "entity_type": "user",
+      "entity_id": "uuid",
+      "status": "success",
+      "ip_address": "127.0.0.1",
+      "user_agent": "...",
+      "new_values": { "suspended_at": "...", "locked_until": "..." },
+      "old_values": null,
+      "error_message": null,
+      "created_at": "2026-05-13T11:30:00Z"
+    }
+  ],
+  "total": 84,
+  "page": 1,
+  "page_size": 50,
+  "has_more": true
+}
+```
+
+### GET /admin/leads
+Paginated `chatbot_leads` list joined with the user's email + name for the dashboard table.
+
+**Query params:**
+- `status` — `new | contacted | qualified | closed`
+- `page` / `page_size` (default 25, max 100)
+
+If the chatbot tables aren't yet migrated, the endpoint degrades gracefully to an empty list (`total: 0`) rather than failing.
+
+**Response 200:**
+```json
+{
+  "leads": [
+    {
+      "lead_id": "uuid",
+      "user_id": "uuid",
+      "user_email": "user@example.com",
+      "user_name": "Jane Doe",
+      "conversation_id": "uuid",
+      "trigger_event": "user_request",
+      "topic": "cover review",
+      "message": "Please call me about life cover.",
+      "advisor_email": "wouter@attooh.co.za",
+      "status": "new",
+      "created_at": "2026-05-13T10:00:00Z",
+      "contacted_at": null
+    }
+  ],
+  "total": 8,
+  "page": 1,
+  "page_size": 25,
+  "has_more": false
+}
+```
+
+### PATCH /admin/leads/{lead_id}
+Move a lead through the status pipeline.
+**Body:**
+```json
+{ "status": "contacted" }
+```
+- `status` ∈ `"new" | "contacted" | "qualified" | "closed"`.
+- The first transition off `"new"` stamps `contacted_at = now()`. Subsequent transitions leave the existing timestamp alone so it always reads "first contact".
+- Audit action: `admin.lead.status` (records both old and new status).
+
+**Response 200:** the updated `AdminLeadItem` shape.
+**Errors:** 404 `LEAD_NOT_FOUND`.
+
+---
+
 ## Worksheet Endpoints (Phase 4)
 
 All require Bearer auth. Worksheets are user-data forms with backend validation and calculation. Each submission inserts a row into `worksheet_responses` (per DATABASE_SCHEMA.md). Drafts (`is_draft: true`) are autosaved as the user types; submits (`is_draft: false`) trigger validation and calculation.
