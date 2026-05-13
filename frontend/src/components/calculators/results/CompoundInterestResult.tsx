@@ -86,7 +86,7 @@ export const CompoundInterestResult: React.FC<Props> = ({ outputs }) => {
           aria-expanded={showTable}
         >
           <span>Year-by-year table</span>
-          <span>{showTable ? '−' : '+'}</span>
+          <span aria-hidden="true">{showTable ? '−' : '+'}</span>
         </button>
         {showTable && (
           <div className="overflow-x-auto max-h-96 border-t border-gray-200">

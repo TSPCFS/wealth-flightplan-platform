@@ -6,6 +6,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { RecommendedActions } from '../components/dashboard/RecommendedActions';
 import { WorksheetCard } from '../components/worksheets/WorksheetCard';
+import { AppLayout } from '../components/common/AppLayout';
 
 // Accept all status values the backend may emit. `completed` is the canonical
 // value; `done` is tolerated as an alias for forward-compat.
@@ -37,15 +38,15 @@ export const RecommendationsPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
-      </div>
+      </AppLayout>
     );
   }
   if (!data) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <AppLayout maxWidth="default" className="space-y-8">
       <header>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Your recommendations</h1>
         {data.current_stage && (
@@ -129,6 +130,6 @@ export const RecommendationsPage: React.FC = () => {
           </div>
         </section>
       )}
-    </div>
+    </AppLayout>
   );
 };

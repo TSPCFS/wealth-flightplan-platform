@@ -4,9 +4,9 @@ import type { GapIdentified } from '../../types/assessment.types';
 const PRIORITY_ORDER: GapIdentified['priority'][] = ['high', 'medium', 'low'];
 
 const priorityStyle: Record<GapIdentified['priority'], string> = {
-  high: 'bg-red-50 text-red-700 ring-red-200',
-  medium: 'bg-yellow-50 text-yellow-800 ring-yellow-200',
-  low: 'bg-blue-50 text-blue-700 ring-blue-200',
+  high: 'bg-red-50 text-red-800 ring-red-200',
+  medium: 'bg-yellow-50 text-yellow-900 ring-yellow-200',
+  low: 'bg-blue-50 text-blue-800 ring-blue-200',
 };
 
 const statusLabel: Record<GapIdentified['current_status'], string> = {
@@ -16,9 +16,9 @@ const statusLabel: Record<GapIdentified['current_status'], string> = {
 };
 
 const statusStyle: Record<GapIdentified['current_status'], string> = {
-  yes: 'bg-green-50 text-green-700',
-  partially: 'bg-yellow-50 text-yellow-800',
-  no: 'bg-red-50 text-red-700',
+  yes: 'bg-green-50 text-green-800',
+  partially: 'bg-yellow-50 text-yellow-900',
+  no: 'bg-red-50 text-red-800',
 };
 
 interface GapsListProps {

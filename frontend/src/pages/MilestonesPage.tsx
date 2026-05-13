@@ -5,6 +5,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { formatShortDate } from '../utils/relativeTime';
 import { urgencyLabel, urgencyStyle } from '../components/dashboard/urgency';
+import { AppLayout } from '../components/common/AppLayout';
 
 export const MilestonesPage: React.FC = () => {
   const [data, setData] = useState<MilestonesResponse | null>(null);
@@ -23,9 +24,9 @@ export const MilestonesPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
-      </div>
+      </AppLayout>
     );
   }
   if (!data) return <LoadingSpinner />;
@@ -37,7 +38,7 @@ export const MilestonesPage: React.FC = () => {
   );
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <AppLayout maxWidth="narrow" className="space-y-8">
       <header>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Milestones</h1>
         <p className="text-gray-600 mt-1">
@@ -103,6 +104,6 @@ export const MilestonesPage: React.FC = () => {
           </ul>
         )}
       </section>
-    </div>
+    </AppLayout>
   );
 };

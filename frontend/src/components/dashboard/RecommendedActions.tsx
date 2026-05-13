@@ -5,10 +5,12 @@ import type {
   RecommendedAction,
 } from '../../types/user.types';
 
+// Tones one shade darker than Tailwind defaults to keep ≥4.5:1 contrast
+// on the light tinted backgrounds (WCAG AA).
 const priorityStyle: Record<RecommendationPriority, string> = {
-  high: 'bg-red-50 text-red-700 ring-red-200',
-  medium: 'bg-amber-50 text-amber-800 ring-amber-200',
-  low: 'bg-blue-50 text-blue-700 ring-blue-200',
+  high: 'bg-red-50 text-red-800 ring-red-200',
+  medium: 'bg-amber-50 text-amber-900 ring-amber-200',
+  low: 'bg-blue-50 text-blue-800 ring-blue-200',
 };
 
 interface Props {

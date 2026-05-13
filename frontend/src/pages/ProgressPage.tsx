@@ -6,6 +6,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { Button } from '../components/common/Button';
 import { formatShortDate } from '../utils/relativeTime';
+import { AppLayout } from '../components/common/AppLayout';
 
 const recomputeOverall = (steps: StepProgress[]): {
   steps_completed: number;
@@ -76,9 +77,9 @@ export const ProgressPage: React.FC = () => {
 
   if (loadError) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={loadError} />
-      </div>
+      </AppLayout>
     );
   }
   if (!progress) return <LoadingSpinner />;
@@ -112,7 +113,7 @@ export const ProgressPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <AppLayout maxWidth="narrow" className="space-y-6">
       <header>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Your framework progress</h1>
         <p className="text-gray-600 mt-1">
@@ -157,6 +158,6 @@ export const ProgressPage: React.FC = () => {
           />
         ))}
       </ul>
-    </div>
+    </AppLayout>
   );
 };

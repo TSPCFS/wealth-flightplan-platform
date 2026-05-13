@@ -9,6 +9,7 @@ import { eventVisuals } from '../components/dashboard/eventIcon';
 import { relativeTimeFromIso } from '../utils/relativeTime';
 import { compareStages } from '../hooks/useDashboardStageCelebration';
 import type { Stage } from '../types/assessment.types';
+import { AppLayout } from '../components/common/AppLayout';
 
 // Derive direction from the backend's stage_changed payload
 // (`details.from_stage` + `details.to_stage`). Tolerates a legacy
@@ -56,10 +57,10 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
           data-testid="stage-direction"
           className={`shrink-0 inline-flex items-center text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ring-1 ${
             stageDir === 'up'
-              ? 'bg-emerald-50 text-emerald-700 ring-emerald-200'
+              ? 'bg-emerald-50 text-emerald-800 ring-emerald-200'
               : stageDir === 'down'
-                ? 'bg-red-50 text-red-700 ring-red-200'
-                : 'bg-gray-50 text-gray-700 ring-gray-200'
+                ? 'bg-red-50 text-red-800 ring-red-200'
+                : 'bg-gray-50 text-gray-800 ring-gray-200'
           }`}
         >
           {stageDirectionSymbol(stageDir)}
@@ -129,7 +130,7 @@ export const ActivityPage: React.FC = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <AppLayout maxWidth="narrow" className="space-y-6">
       <header>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Activity</h1>
         <p className="text-gray-600 mt-1">
@@ -156,6 +157,6 @@ export const ActivityPage: React.FC = () => {
           </Button>
         </div>
       )}
-    </div>
+    </AppLayout>
   );
 };

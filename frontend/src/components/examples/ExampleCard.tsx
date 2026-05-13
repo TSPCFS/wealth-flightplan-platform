@@ -14,7 +14,7 @@ export const ExampleCard: React.FC<ExampleCardProps> = ({ example }) => (
     <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
       <span className="font-medium">{example.example_code}</span>
       {example.calculator_type && (
-        <span className="inline-flex items-center text-xs font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+        <span className="inline-flex items-center text-xs font-medium bg-blue-50 text-blue-800 px-2 py-0.5 rounded">
           Has calculator
         </span>
       )}
