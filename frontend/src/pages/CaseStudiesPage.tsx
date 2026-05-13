@@ -10,11 +10,13 @@ import type {
 } from '../types/content.types';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const STEP_OPTIONS: StepNumber[] = ['1', '2', '3', '4a', '4b', '5', '6'];
 const STAGE_OPTIONS: Stage[] = ['Foundation', 'Momentum', 'Freedom', 'Independence', 'Abundance'];
 
 export const CaseStudiesPage: React.FC = () => {
+  useDocumentTitle('Case studies');
   const [stage, setStage] = useState<Stage | ''>('');
   const [step, setStep] = useState<StepNumber | ''>('');
   const [q, setQ] = useState('');

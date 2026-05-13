@@ -43,6 +43,20 @@ describe('CaseStudiesPage', () => {
     );
   });
 
+  it('mounts inside <main id="main">', async () => {
+    const { contentService } = await import('../services/content.service');
+    vi.mocked(contentService.listCaseStudies).mockResolvedValue({
+      case_studies: [],
+      total: 0,
+    });
+    render(
+      <MemoryRouter>
+        <CaseStudiesPage />
+      </MemoryRouter>
+    );
+    await waitFor(() => expect(screen.getByRole('main')).toHaveAttribute('id', 'main'));
+  });
+
   it('shows the empty state when no studies match', async () => {
     const { contentService } = await import('../services/content.service');
     vi.mocked(contentService.listCaseStudies).mockResolvedValue({

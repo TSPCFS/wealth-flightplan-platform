@@ -6,11 +6,13 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { formatCurrency } from '../utils/format';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const CaseStudyDetailPage: React.FC = () => {
   const { studyCode } = useParams<{ studyCode: string }>();
   const [study, setStudy] = useState<CaseStudyDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  useDocumentTitle(study ? `${study.study_code} · ${study.name}` : null);
 
   useEffect(() => {
     if (!studyCode) {

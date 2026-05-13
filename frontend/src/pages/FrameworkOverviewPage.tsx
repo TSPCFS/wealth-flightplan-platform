@@ -5,8 +5,10 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { StepCard } from '../components/framework/StepCard';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const FrameworkOverviewPage: React.FC = () => {
+  useDocumentTitle('Framework');
   const [steps, setSteps] = useState<FrameworkStep[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 

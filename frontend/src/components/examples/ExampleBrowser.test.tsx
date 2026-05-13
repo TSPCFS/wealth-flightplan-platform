@@ -98,6 +98,13 @@ describe('ExampleBrowser', () => {
     await waitFor(() => expect(screen.getByText(/No examples match/)).toBeInTheDocument());
   });
 
+  it('mounts inside <main id="main">', async () => {
+    const { contentService } = await import('../../services/content.service');
+    vi.mocked(contentService.listExamples).mockResolvedValue({ examples: [], total: 0 });
+    renderBrowser();
+    await waitFor(() => expect(screen.getByRole('main')).toHaveAttribute('id', 'main'));
+  });
+
   it('surfaces a friendly error message when the API errors', async () => {
     const { contentService } = await import('../../services/content.service');
     vi.mocked(contentService.listExamples).mockRejectedValue(new Error('boom'));

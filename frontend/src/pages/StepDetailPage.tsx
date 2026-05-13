@@ -6,6 +6,7 @@ import type { StepDetail, StepNumber } from '../types/content.types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const VALID_STEPS: StepNumber[] = ['1', '2', '3', '4a', '4b', '5', '6'];
 
@@ -16,6 +17,7 @@ export const StepDetailPage: React.FC = () => {
   const { stepNumber } = useParams<{ stepNumber: string }>();
   const [step, setStep] = useState<StepDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  useDocumentTitle(step ? `Step ${step.step_number} · ${step.title}` : null);
 
   useEffect(() => {
     if (!isStepNumber(stepNumber)) {

@@ -54,6 +54,17 @@ describe('FrameworkOverviewPage', () => {
     expect(screen.getByText('~90 min')).toBeInTheDocument();
   });
 
+  it('mounts inside <main id="main">', async () => {
+    const { contentService } = await import('../services/content.service');
+    vi.mocked(contentService.getFramework).mockResolvedValue({ steps: [] });
+    render(
+      <MemoryRouter>
+        <FrameworkOverviewPage />
+      </MemoryRouter>
+    );
+    await waitFor(() => expect(screen.getByRole('main')).toHaveAttribute('id', 'main'));
+  });
+
   it('shows an error message when the framework fetch fails', async () => {
     const { contentService } = await import('../services/content.service');
     vi.mocked(contentService.getFramework).mockRejectedValue(new Error('nope'));

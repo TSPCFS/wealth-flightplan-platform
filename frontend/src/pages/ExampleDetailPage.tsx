@@ -7,11 +7,13 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { AppLayout } from '../components/common/AppLayout';
 import { InteractiveCalculator } from '../components/calculators/InteractiveCalculator';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const ExampleDetailPage: React.FC = () => {
   const { exampleCode } = useParams<{ exampleCode: string }>();
   const [example, setExample] = useState<ExampleDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  useDocumentTitle(example ? `${example.example_code} · ${example.title}` : null);
 
   useEffect(() => {
     if (!exampleCode) {
