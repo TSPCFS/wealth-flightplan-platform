@@ -31,7 +31,7 @@ limiter = Limiter(key_func=_limiter_key, headers_enabled=False)
 
 
 def email_key(request: Request) -> str:
-    """Rate-limit by submitted email — used by /auth/login and /auth/password-reset."""
+    """Rate-limit by submitted email; used by /auth/login and /auth/password-reset."""
     try:
         email_val = request.scope.get("_rate_email") or (
             request.path_params.get("email") if request.path_params else None

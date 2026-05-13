@@ -1,4 +1,4 @@
-"""Content endpoints — conforms to docs/API_CONTRACT.md (Phase 3)."""
+"""Content endpoints: conforms to docs/API_CONTRACT.md (Phase 3)."""
 
 from __future__ import annotations
 
@@ -235,7 +235,7 @@ async def calculate_example(
             )
         )
         await session.commit()
-    except Exception as exc:  # pragma: no cover — defensive
+    except Exception as exc:  # pragma: no cover; defensive
         logger.warning("Failed to record example_interaction: %s", exc)
         await session.rollback()
 

@@ -98,7 +98,7 @@ def _normalise_pem(raw: str) -> str:
     """Convert escaped \\n sequences to real newlines.
 
     Hosting platforms (Railway, Render, Fly, etc.) often pipe env vars as
-    single-line strings — an operator pasting a PEM via CLI / dotenv typically
+    single-line strings; an operator pasting a PEM via CLI / dotenv typically
     ends up with literal ``\\n`` instead of newlines. PyJWT/jose require real
     newlines to parse the key, so normalise here. PEMs pasted through web
     dashboards usually preserve newlines and pass through unchanged.
@@ -109,7 +109,7 @@ def _normalise_pem(raw: str) -> str:
 
 
 def _load_key(path_or_inline: Path | None, inline: str | None, kind: str) -> str:
-    # Inline env var takes priority — preferred path for production.
+    # Inline env var takes priority: preferred path for production.
     if inline:
         return _normalise_pem(inline)
     if path_or_inline is None:

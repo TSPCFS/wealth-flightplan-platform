@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pin a light surface for the whole app — the design system is light-mode-only
+/* Pin a light surface for the whole app. The design system is light-mode-only
    for Phase 5; dark mode support is queued for Phase 6. Without this, the body
    falls through to `prefers-color-scheme: dark` defaults on systems set to
    dark mode, producing a black canvas behind any page that doesn't set its

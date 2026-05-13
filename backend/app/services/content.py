@@ -1,4 +1,4 @@
-"""Content service — DB queries + view-shaping for /content/* endpoints.
+"""Content service: DB queries + view-shaping for /content/* endpoints.
 
 The seed populates content_metadata. The API layer calls into this module
 and returns the dicts as-is via Pydantic response models.

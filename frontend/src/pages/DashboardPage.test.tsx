@@ -67,7 +67,7 @@ describe('DashboardPage', () => {
     expect(screen.getByText(/R\s?2\s?600\s?000/)).toBeInTheDocument();
   });
 
-  it('shows the empty stage CTA and "—" stats for a fresh user', async () => {
+  it('shows the empty stage CTA and "–" stats for a fresh user', async () => {
     vi.mocked(userService.getDashboard).mockResolvedValue(emptyDashboard);
 
     renderDash();
@@ -75,7 +75,7 @@ describe('DashboardPage', () => {
     await waitFor(() =>
       expect(screen.getByTestId('stage-hero-empty')).toBeInTheDocument()
     );
-    expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(4);
+    expect(screen.getAllByText('–').length).toBeGreaterThanOrEqual(4);
     expect(screen.getByRole('link', { name: /start an assessment/i })).toBeInTheDocument();
     // First-run intro renders on truly empty dashboards
     expect(screen.getByText(/How the Wealth FlightPlan™ works/)).toBeInTheDocument();

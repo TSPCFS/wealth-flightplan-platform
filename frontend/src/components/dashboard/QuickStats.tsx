@@ -21,7 +21,7 @@ const StatCard: React.FC<StatProps> = ({ label, value, format, emptyHint }) => {
         {label}
       </p>
       <p className="text-2xl font-bold text-gray-900 mt-1">
-        {empty ? '—' : format === 'currency' ? formatCurrency(value) : formatPercent(value)}
+        {empty ? '–' : format === 'currency' ? formatCurrency(value) : formatPercent(value)}
       </p>
       {empty && (
         <Link

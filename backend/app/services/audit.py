@@ -27,7 +27,7 @@ async def record(
     new_values: dict[str, Any] | None = None,
     error_message: str | None = None,
 ) -> None:
-    """Insert an audit log row. Never raises — auditing must not break the request."""
+    """Insert an audit log row. Never raises; auditing must not break the request."""
     try:
         log = AuditLog(
             user_id=user_id,
@@ -43,5 +43,5 @@ async def record(
         )
         session.add(log)
         await session.flush()
-    except Exception as e:  # pragma: no cover — defensive
+    except Exception as e:  # pragma: no cover; defensive
         logger.exception("Audit log write failed for action=%s: %s", action, e)

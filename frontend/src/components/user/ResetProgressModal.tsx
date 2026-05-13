@@ -46,7 +46,7 @@ export const ResetProgressModal: React.FC<Props> = ({
     setError(null);
     try {
       await userService.resetProgress();
-      setToast('Progress reset — reloading…');
+      setToast('Progress reset, reloading…');
       // Tiny delay so the user sees the toast; full reload clears every cache
       // (AuthContext stage cache, dashboard intro flag still applies per-device).
       setTimeout(() => {

@@ -56,7 +56,7 @@ export const CaseStudyDetailPage: React.FC = () => {
         </Link>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2 break-words">{study.name}</h1>
         <p className="text-sm text-gray-500 mt-1">
-          {study.study_code} · Age band: {study.age_band || '—'} · Income: {income}
+          {study.study_code} · Age band: {study.age_band || '–'} · Income: {income}
         </p>
       </header>
 

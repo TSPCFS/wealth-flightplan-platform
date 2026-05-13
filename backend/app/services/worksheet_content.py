@@ -18,7 +18,7 @@ FeedbackStatus = Literal["on_track", "needs_attention", "critical"]
 
 
 # ---------------------------------------------------------------------------
-# APP-A — Zero-Based Budget
+# APP-A: Zero-Based Budget
 # ---------------------------------------------------------------------------
 
 APP_A_RECS_HIGH_NEEDS = (
@@ -37,7 +37,7 @@ APP_A_RECS_BALANCED = (
 
 
 # ---------------------------------------------------------------------------
-# APP-B — Net Worth Statement
+# APP-B: Net Worth Statement
 # ---------------------------------------------------------------------------
 
 APP_B_RECS_LOW_PCT = (
@@ -50,12 +50,12 @@ APP_B_RECS_MID_PCT = (
     "Consider a rental property or offshore allocation to diversify income-generating assets.",
 )
 APP_B_RECS_HIGH_PCT = (
-    "You're approaching Abundance — focus on tax structures (trust, offshore) and estate planning.",
+    "You're approaching Abundance: focus on tax structures (trust, offshore) and estate planning.",
 )
 
 
 # ---------------------------------------------------------------------------
-# APP-C — Risk Cover Review Checklist
+# APP-C: Risk Cover Review Checklist
 # ---------------------------------------------------------------------------
 
 APP_C_CRITICAL_ITEMS: dict[tuple[str, str], str] = {
@@ -70,7 +70,7 @@ APP_C_CRITICAL_ITEMS: dict[tuple[str, str], str] = {
 
 
 # ---------------------------------------------------------------------------
-# APP-D — Debt Disclosure
+# APP-D: Debt Disclosure
 # ---------------------------------------------------------------------------
 
 APP_D_RECS_HIGH_RATE = (
@@ -80,7 +80,7 @@ APP_D_RECS_HIGH_RATE = (
 )
 APP_D_RECS_MID_RATE = (
     "Keep paying minimums on bond + vehicle; redirect any surplus to the highest-rate account.",
-    "Re-quote vehicle finance with 2+ providers — refinance can shave 1–2% off the rate.",
+    "Re-quote vehicle finance with 2+ providers; refinance can shave 1–2% off the rate.",
 )
 APP_D_RECS_LOW_RATE = (
     "Debt is well-priced. Focus the next month's surplus on investing (Step 6).",
@@ -88,11 +88,11 @@ APP_D_RECS_LOW_RATE = (
 
 
 # ---------------------------------------------------------------------------
-# APP-E / APP-F — completion-only worksheets
+# APP-E / APP-F: completion-only worksheets
 # ---------------------------------------------------------------------------
 
 APP_E_RECS_COMPLETE = (
-    "Lock the next conversation into the calendar — same time every month.",
+    "Lock the next conversation into the calendar: same time every month.",
     "Close on a forward-looking item; never end on blame.",
 )
 APP_E_RECS_INCOMPLETE = (
@@ -100,7 +100,7 @@ APP_E_RECS_INCOMPLETE = (
 )
 
 APP_F_RECS_INCOMPLETE = (
-    "Fill the Personal + Assets sections first — they unlock the most for your family in an emergency.",
+    "Fill the Personal + Assets sections first; they unlock the most for your family in an emergency.",
     "Store the Life File in a known location and share access with your executor.",
 )
 APP_F_RECS_COMPLETE = ("Set a calendar reminder to review the Life File annually.",)

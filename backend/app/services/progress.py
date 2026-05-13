@@ -1,4 +1,4 @@
-"""Framework progress service — operates on the user_progress table.
+"""Framework progress service: operates on the user_progress table.
 
 The user_progress row is created lazily on first GET so users don't carry
 an extra row from registration. Step 4b is conditional: it only counts
@@ -33,8 +33,8 @@ STEPS: list[tuple[str, str]] = [
     ("1", "Financial GPS"),
     ("2", "Zero-Based Budget"),
     ("3", "Money Matrix"),
-    ("4a", "Risk Cover — Households"),
-    ("4b", "Risk Cover — Business Owners"),
+    ("4a", "Risk Cover: Households"),
+    ("4b", "Risk Cover: Business Owners"),
     ("5", "Debt Optimisation"),
     ("6", "Investment"),
 ]

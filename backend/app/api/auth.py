@@ -1,4 +1,4 @@
-"""Authentication endpoints — conforms to docs/API_CONTRACT.md."""
+"""Authentication endpoints: conforms to docs/API_CONTRACT.md."""
 
 from typing import Annotated
 

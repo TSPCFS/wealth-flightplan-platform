@@ -57,7 +57,7 @@ describe('ResetProgressModal', () => {
     });
     await waitFor(() => expect(userService.resetProgress).toHaveBeenCalledOnce());
     await waitFor(() =>
-      expect(screen.getByRole('status')).toHaveTextContent(/Progress reset — reloading/i)
+      expect(screen.getByRole('status')).toHaveTextContent(/Progress reset, reloading/i)
     );
     // Wait for the deferred reload.
     await waitFor(() => expect(onReload).toHaveBeenCalled(), { timeout: 1500 });

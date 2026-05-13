@@ -1,4 +1,4 @@
-"""Datetime helpers — contract mandates ISO 8601 UTC with explicit ``Z`` suffix."""
+"""Datetime helpers: contract mandates ISO 8601 UTC with explicit ``Z`` suffix."""
 
 from __future__ import annotations
 

@@ -31,7 +31,7 @@ const renderSummaryValue = (key: string, value: unknown): string => {
     return String(value);
   }
   if (typeof value === 'string') return value;
-  return value === null || value === undefined ? '—' : JSON.stringify(value);
+  return value === null || value === undefined ? '–' : JSON.stringify(value);
 };
 
 const humaniseKey = (k: string): string =>

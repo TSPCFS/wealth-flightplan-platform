@@ -1,4 +1,4 @@
-"""Email service — Resend HTTP API with a dev-stdout fallback.
+"""Email service: Resend HTTP API with a dev-stdout fallback.
 
 When ``RESEND_API_KEY`` is set, mail is sent via the official ``resend``
 SDK. Otherwise the email body + verification/reset link is logged to stdout
@@ -59,7 +59,7 @@ def _wrap_html(body: str) -> str:
         f'<h2 style="margin-top:0;color:#1f7a3a">{BRAND}</h2>'
         f"{body}"
         f'<p style="margin-top:32px;color:#888888;font-size:13px">'
-        f"Illustrative — not financial advice. Verify with a qualified advisor."
+        f"Illustrative. Not financial advice. Verify with a qualified advisor."
         f"</p></div>"
     )
 
@@ -82,7 +82,7 @@ def _verification_text(first_name: str, link: str) -> str:
         f"Welcome to {BRAND}. Confirm your email to unlock the dashboard:\n\n"
         f"{link}\n\n"
         f"This link expires in 24 hours.\n\n"
-        f"— {BRAND}"
+        f"– {BRAND}"
     )
 
 
@@ -107,7 +107,7 @@ def _reset_text(first_name: str, link: str) -> str:
         f"{link}\n\n"
         f"If you didn't request this, you can safely ignore this email. "
         f"The link expires in 1 hour.\n\n"
-        f"— {BRAND}"
+        f"– {BRAND}"
     )
 
 
@@ -131,7 +131,7 @@ def _send_via_resend(
     html: str,
     text: str,
 ) -> dict[str, Any]:
-    """Synchronous Resend send — wrapped in ``asyncio.to_thread`` at the call site."""
+    """Synchronous Resend send: wrapped in ``asyncio.to_thread`` at the call site."""
     resend.api_key = settings.resend_api_key
     params: dict[str, Any] = {
         "from": _from_field(settings),
@@ -145,7 +145,7 @@ def _send_via_resend(
 
 def _log_email(*, to: str, subject: str, link: str) -> None:
     logger.info(
-        "EMAIL (dev — no RESEND_API_KEY)\n  to: %s\n  subject: %s\n  link: %s",
+        "EMAIL (dev, no RESEND_API_KEY)\n  to: %s\n  subject: %s\n  link: %s",
         to,
         subject,
         link,
@@ -174,7 +174,7 @@ async def _send_or_log(
             text=text,
         )
     except Exception as exc:
-        # Never block the caller — verification + reset can be re-requested.
+        # Never block the caller; verification + reset can be re-requested.
         logger.exception("Failed to send email to %s: %s", to_email, exc)
 
 

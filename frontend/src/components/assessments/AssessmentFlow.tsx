@@ -29,7 +29,7 @@ export const AssessmentFlow: React.FC<AssessmentFlowProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
 
-  // Clamp restored index to a valid bound — the catalogue might shrink between visits.
+  // Clamp restored index to a valid bound; the catalogue might shrink between visits.
   const safeIndex = Math.max(0, Math.min(draft.index, questions.length - 1));
   const currentQ = questions[safeIndex];
   const currentValue = draft.responses[currentQ.code] ?? null;

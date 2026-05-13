@@ -5,7 +5,7 @@ Phase 5 additions:
 - ``PATCH /users/profile`` for partial updates
 
 Phase 6b additions:
-- ``POST /users/me/reset-progress`` — wipes the user's testing data
+- ``POST /users/me/reset-progress`` wipes the user's testing data
   (assessments, worksheet_responses, example_interactions, user_progress)
   while preserving the account itself + the audit trail.
 """
@@ -41,7 +41,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 async def _profile_view(session: AsyncSession, user: User) -> UserProfile:
-    """Shared serializer — one extra round-trip to pick up latest assessment fields."""
+    """Shared serializer: one extra round-trip to pick up latest assessment fields."""
     res = await session.execute(
         select(
             Assessment.assessment_id,
@@ -121,7 +121,7 @@ async def reset_progress(
     """Wipe the calling user's testing data.
 
     Guardrails:
-    - Requires ``confirm == "RESET"`` — any other value is treated as missing.
+    - Requires ``confirm == "RESET"``; any other value is treated as missing.
     - Per-user only: queries / deletes filter on ``user_id == current_user.user_id``.
     - Single transaction: counts are captured, then the four DELETEs run, then
       the audit row is inserted, then commit. If anything raises mid-way the

@@ -7,7 +7,7 @@ DATABASE_SCHEMA.md with ``worksheet_code`` so it stays aligned with the
 
 A partial unique index enforces "at most one draft per (user, worksheet_code)"
 so the /draft endpoint can upsert without race conditions. Submissions
-(``is_draft = false``) are unconstrained — every submit inserts a new row,
+(``is_draft = false``) are unconstrained; every submit inserts a new row,
 preserving history.
 
 Revision ID: 0004_phase4_worksheet_responses
@@ -96,7 +96,7 @@ def upgrade() -> None:
         "worksheet_responses",
         [sa.text("created_at DESC")],
     )
-    # Partial unique index — at most one draft per (user_id, worksheet_code).
+    # Partial unique index: at most one draft per (user_id, worksheet_code).
     # Supported by both Postgres and SQLite (CREATE UNIQUE INDEX ... WHERE).
     op.create_index(
         "uq_worksheets_one_draft_per_user_code",

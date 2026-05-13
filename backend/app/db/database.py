@@ -63,7 +63,7 @@ async def get_db() -> AsyncIterator[AsyncSession]:
 
 
 async def reset_engine_for_tests(url: str) -> None:
-    """Replace the global engine — call from test fixtures."""
+    """Replace the global engine; call from test fixtures."""
     global _engine, _session_factory
     if _engine is not None:
         await _engine.dispose()

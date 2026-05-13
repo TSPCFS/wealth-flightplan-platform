@@ -49,11 +49,11 @@ class Settings(BaseSettings):
     cors_allowed_origins: str = "http://localhost:5173,http://localhost:3000"
 
     # Email (Resend). ``sendgrid_api_key`` is retained as a deprecated alias for
-    # backwards-compat — read but never preferred. Empty key → stdout fallback.
+    # backwards-compat: read but never preferred. Empty key → stdout fallback.
     resend_api_key: str = ""
     sendgrid_api_key: str = ""  # deprecated; ignored if resend_api_key is set
     # ``onboarding@resend.dev`` lets the platform send mail without a verified
-    # domain — Resend allow-list their own subdomain for dev/testing.
+    # domain; Resend allow-list their own subdomain for dev/testing.
     email_from: str = "onboarding@resend.dev"
     email_from_name: str = "Wealth FlightPlan"
 

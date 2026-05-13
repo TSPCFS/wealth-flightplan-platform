@@ -29,7 +29,7 @@ class Action(TypedDict):
 
 
 # ---------------------------------------------------------------------------
-# Rule 1 — first step (no assessment yet)
+# Rule 1: first step (no assessment yet)
 # ---------------------------------------------------------------------------
 
 FIRST_STEP_ACTION: Action = {
@@ -43,14 +43,14 @@ FIRST_STEP_ACTION: Action = {
 
 
 # ---------------------------------------------------------------------------
-# Rule 2 — critical GAP test items
+# Rule 2: critical GAP test items
 # ---------------------------------------------------------------------------
 
 GAP_CRITICAL_ACTIONS: dict[str, Action] = {
     "q1": {
         "priority": "high",
         "title": "Draft or update your will",
-        "reason": "Critical gap from your latest GAP Test — get the will signed within 30 days.",
+        "reason": "Critical gap from your latest GAP Test. Get the will signed within 30 days.",
         "action_url": "/worksheets/APP-F",
         "estimated_time_minutes": 45,
         "source": "high_priority_gap",
@@ -58,7 +58,7 @@ GAP_CRITICAL_ACTIONS: dict[str, Action] = {
     "q4": {
         "priority": "high",
         "title": "Build a 3–6 month emergency fund",
-        "reason": "Critical gap from your latest GAP Test — household needs a buffer before investing aggressively.",
+        "reason": "Critical gap from your latest GAP Test. Household needs a buffer before investing aggressively.",
         "action_url": "/examples/WE-3",
         "estimated_time_minutes": 15,
         "source": "high_priority_gap",
@@ -66,7 +66,7 @@ GAP_CRITICAL_ACTIONS: dict[str, Action] = {
     "q5": {
         "priority": "high",
         "title": "Review life cover (10–15× annual income)",
-        "reason": "Critical gap from your latest GAP Test — re-quote with at least two providers.",
+        "reason": "Critical gap from your latest GAP Test. Re-quote with at least two providers.",
         "action_url": "/worksheets/APP-C",
         "estimated_time_minutes": 30,
         "source": "high_priority_gap",
@@ -74,7 +74,7 @@ GAP_CRITICAL_ACTIONS: dict[str, Action] = {
     "q6": {
         "priority": "high",
         "title": "Put income protection in place",
-        "reason": "Critical gap from your latest GAP Test — monthly benefit should cover ≥75% of salary.",
+        "reason": "Critical gap from your latest GAP Test. Monthly benefit should cover ≥75% of salary.",
         "action_url": "/worksheets/APP-C",
         "estimated_time_minutes": 30,
         "source": "high_priority_gap",
@@ -83,7 +83,7 @@ GAP_CRITICAL_ACTIONS: dict[str, Action] = {
 
 
 # ---------------------------------------------------------------------------
-# Rule 3 — stage baseline worksheets
+# Rule 3: stage baseline worksheets
 # ---------------------------------------------------------------------------
 
 STAGE_BASELINE_WORKSHEETS: dict[str, list[str]] = {
@@ -98,31 +98,31 @@ STAGE_BASELINE_WORKSHEETS: dict[str, list[str]] = {
 BASELINE_DETAILS: dict[str, dict[str, str | int]] = {
     "APP-A": {
         "title": "Complete the Zero-Based Budget (Appendix A)",
-        "reason": "Stage baseline — your monthly numbers anchor everything downstream.",
+        "reason": "Stage baseline: your monthly numbers anchor everything downstream.",
         "action_url": "/worksheets/APP-A",
         "estimated_time_minutes": 30,
     },
     "APP-B": {
         "title": "Complete the Net Worth Statement (Appendix B)",
-        "reason": "Stage baseline — the four-numbers dashboard for Step 3.",
+        "reason": "Stage baseline: the four-numbers dashboard for Step 3.",
         "action_url": "/worksheets/APP-B",
         "estimated_time_minutes": 45,
     },
     "APP-C": {
         "title": "Run the Risk Cover Review (Appendix C)",
-        "reason": "Stage baseline — audit the four cover pillars annually.",
+        "reason": "Stage baseline: audit the four cover pillars annually.",
         "action_url": "/worksheets/APP-C",
         "estimated_time_minutes": 30,
     },
     "APP-D": {
         "title": "Fill in the Debt Disclosure Worksheet (Appendix D)",
-        "reason": "Stage baseline — every account on one page unlocks the elimination plan.",
+        "reason": "Stage baseline: every account on one page unlocks the elimination plan.",
         "action_url": "/worksheets/APP-D",
         "estimated_time_minutes": 30,
     },
     "APP-F": {
         "title": "Fill in the attooh! Life File (Appendix F)",
-        "reason": "Stage baseline — the document your family needs if something happens.",
+        "reason": "Stage baseline: the document your family needs if something happens.",
         "action_url": "/worksheets/APP-F",
         "estimated_time_minutes": 90,
     },
@@ -130,7 +130,7 @@ BASELINE_DETAILS: dict[str, dict[str, str | int]] = {
 
 
 # ---------------------------------------------------------------------------
-# Rule 4 — stale annual review
+# Rule 4: stale annual review
 # ---------------------------------------------------------------------------
 
 STALE_REVIEW_ACTIONS: dict[str, Action] = {
@@ -154,7 +154,7 @@ STALE_REVIEW_ACTIONS: dict[str, Action] = {
 
 
 # ---------------------------------------------------------------------------
-# Rule 5 — stage-specific next-step content
+# Rule 5: stage-specific next-step content
 # ---------------------------------------------------------------------------
 
 STAGE_NEXT_STEP_ACTIONS: dict[str, list[Action]] = {
@@ -220,15 +220,15 @@ STAGE_NEXT_STEP_ACTIONS: dict[str, list[Action]] = {
 
 
 # ---------------------------------------------------------------------------
-# Rule 6 — backfill ("continue step N")
+# Rule 6: backfill ("continue step N")
 # ---------------------------------------------------------------------------
 
 STEP_TITLES: dict[str, str] = {
     "1": "Financial GPS",
     "2": "Zero-Based Budget",
     "3": "Money Matrix",
-    "4a": "Risk Cover — Households",
-    "4b": "Risk Cover — Business Owners",
+    "4a": "Risk Cover: Households",
+    "4b": "Risk Cover: Business Owners",
     "5": "Debt Optimisation",
     "6": "Investment",
 }
@@ -239,7 +239,7 @@ def backfill_action(step_number: str) -> Action:
     return {
         "priority": "low",
         "title": f"Continue Step {step_number}: {title}",
-        "reason": "Keep momentum — this is your current focus step in the framework.",
+        "reason": "Keep momentum: this is your current focus step in the framework.",
         "action_url": f"/framework/steps/{step_number}",
         "estimated_time_minutes": 30,
         "source": "backfill",

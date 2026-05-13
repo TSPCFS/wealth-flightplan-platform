@@ -1,4 +1,4 @@
-"""Worksheet endpoints — conforms to docs/API_CONTRACT.md (Phase 4)."""
+"""Worksheet endpoints: conforms to docs/API_CONTRACT.md (Phase 4)."""
 
 from __future__ import annotations
 
@@ -169,7 +169,7 @@ async def get_history(
 
 
 # ---------------------------------------------------------------------------
-# Submissions (id-based) — namespaced under /submissions/ to disambiguate
+# Submissions (id-based): namespaced under /submissions/ to disambiguate
 # from /{worksheet_code}/... routes (code matches ^APP-[A-G]$, id is UUID v4).
 # ---------------------------------------------------------------------------
 

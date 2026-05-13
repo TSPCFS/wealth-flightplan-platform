@@ -343,7 +343,7 @@ class ApiClient {
   }
 
   async getWorksheetLatest(code: WorksheetCode): Promise<WorksheetSubmission | null> {
-    // The endpoint returns 204 when the user has nothing for this worksheet —
+    // The endpoint returns 204 when the user has nothing for this worksheet;
     // apiRequest hands back undefined; normalise to null for downstream code.
     const v = await this.apiRequest<WorksheetSubmission | undefined>(
       `/worksheets/${encodeURIComponent(code)}/latest`

@@ -26,7 +26,7 @@ export const populatedDashboard: DashboardResponse = {
     {
       priority: 'high',
       title: 'Complete the Net Worth Statement (Appendix B)',
-      reason: 'Foundation for Step 3 — Money Matrix.',
+      reason: 'Foundation for Step 3: Money Matrix.',
       action_url: '/worksheets/APP-B',
       estimated_time_minutes: 45,
       source: 'stage_gap',
@@ -43,13 +43,13 @@ export const populatedDashboard: DashboardResponse = {
   recent_activity: [
     {
       event_type: 'assessment_submitted',
-      title: 'Completed 10Q assessment — placed at Freedom',
+      title: 'Completed 10Q assessment: placed at Freedom',
       timestamp: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
       link: '/assessments/results/abc-123',
     },
     {
       event_type: 'worksheet_submitted',
-      title: 'Submitted Zero-Based Budget — 71/8/21 split',
+      title: 'Submitted Zero-Based Budget: 71/8/21 split',
       timestamp: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(),
       link: '/worksheets/results/xyz-789',
     },
@@ -127,7 +127,7 @@ export const recommendationsFixture: RecommendationsResponse = {
   immediate_actions: populatedDashboard.recommended_actions,
   reading_path: [
     { order: 1, step_number: '3', title: 'Money Matrix', status: 'next' },
-    { order: 2, step_number: '4a', title: 'Risk Cover — Households', status: 'upcoming' },
+    { order: 2, step_number: '4a', title: 'Risk Cover: Households', status: 'upcoming' },
   ],
   suggested_examples: [
     { example_code: 'WE-8', title: "Hennie's Net Worth", reason: "Illustrates Step 3's central question" },
@@ -141,7 +141,7 @@ export const activityFirstPage: ActivityResponse = {
   events: [
     {
       event_type: 'assessment_submitted',
-      title: 'Completed 10Q — placed at Freedom',
+      title: 'Completed 10Q: placed at Freedom',
       timestamp: '2026-05-12T10:30:00Z',
       link: '/assessments/results/a1',
     },

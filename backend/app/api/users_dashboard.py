@@ -1,4 +1,4 @@
-"""Phase 5 endpoints — dashboard, recommendations, progress, activity, milestones.
+"""Phase 5 endpoints: dashboard, recommendations, progress, activity, milestones.
 
 Hosted as a separate router (still mounted under ``/users``) so the basic
 profile module stays focused on identity / PATCH while this file owns the

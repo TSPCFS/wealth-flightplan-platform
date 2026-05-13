@@ -1,7 +1,7 @@
 """Pure-function calculator engine for Phase 3 content.
 
 Four calculator types, each with typed Pydantic input/output models. No DB
-access — these are unit-testable in isolation.
+access; these are unit-testable in isolation.
 
 Notation:
     r = monthly interest rate (annual_rate_pct / 100 / 12)
@@ -254,7 +254,7 @@ def debt_analysis(inp: DebtAnalysisInput) -> DebtAnalysisOutput:
             return "smallest balance first"
         if inp.method == "avalanche":
             return "highest interest rate first"
-        return "Debtonator™ — highest rate retired against access-bond cost (prime)"
+        return "Debtonator™: highest rate retired against access-bond cost (prime)"
 
     # Order by close_month then by attack order (snowball: balance asc; avalanche/debtonator: rate desc).
     def _sort_key(i: int) -> tuple[int, float]:
@@ -331,10 +331,10 @@ def _budget_feedback(comparison: list[BudgetCategoryStatus], status: str) -> str
     if status == "deficit":
         prefix = "Your allocations exceed income; you're in deficit. "
     elif status == "surplus":
-        prefix = "You're allocating less than your income — surplus available. "
+        prefix = "You're allocating less than your income; surplus available. "
     else:
         prefix = ""
-    # Prefer the largest over-target deviation — that's the actionable insight
+    # Prefer the largest over-target deviation; that's the actionable insight
     # (being under-target on wants or invest is rarely the urgent number).
     over_target = [c for c in comparison if c.actual_pct - c.target_pct > 0]
     if over_target:
@@ -437,15 +437,15 @@ def _net_worth_interpretation(income_generating_pct: float, net_worth: float) ->
         )
     rounded = round(income_generating_pct)
     if rounded < 20:
-        tail = "below the 20% Foundation marker — focus on building Bucket 2 (wealth)."
+        tail = "below the 20% Foundation marker; focus on building Bucket 2 (wealth)."
     elif rounded < 40:
-        tail = "between Foundation and Momentum — keep growing the income-generating slice."
+        tail = "between Foundation and Momentum; keep growing the income-generating slice."
     elif rounded < 60:
         tail = "approaching the Freedom benchmark of 40%+."
     else:
         tail = "at or above the 60%+ Abundance benchmark."
     return (
-        f"{rounded}% of your net worth is income-generating — {tail} "
+        f"{rounded}% of your net worth is income-generating: {tail} "
         "Healthy households target 60%+ over time."
     )
 

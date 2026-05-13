@@ -21,7 +21,7 @@ const renderValue = (key: string, value: unknown): string => {
   }
   if (typeof value === 'string') return value;
   if (Array.isArray(value)) return `${value.length} item${value.length === 1 ? '' : 's'}`;
-  if (value === null || value === undefined) return '—';
+  if (value === null || value === undefined) return '–';
   return JSON.stringify(value);
 };
 

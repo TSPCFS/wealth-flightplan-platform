@@ -1,4 +1,4 @@
-"""Assessment service — scoring + persistence + history.
+"""Assessment service: scoring + persistence + history.
 
 Pure scoring/banding functions are kept stateless so they can be unit-tested
 without spinning a DB.

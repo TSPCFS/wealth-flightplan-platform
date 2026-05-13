@@ -56,7 +56,7 @@ export const useAssessmentDraft = (type: AssessmentType): UseAssessmentDraftResu
     try {
       localStorage.setItem(key, JSON.stringify(state));
     } catch {
-      // Storage quota / private mode — silently degrade; the assessment still works in-memory.
+      // Storage quota / private mode: silently degrade; the assessment still works in-memory.
     }
   }, [key, state]);
 

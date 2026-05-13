@@ -44,7 +44,7 @@ export const RecommendedActions: React.FC<Props> = ({
       </div>
       {shown.length === 0 ? (
         <p className="text-sm text-gray-600">
-          Nothing pressing — keep working through the framework.
+          Nothing pressing. Keep working through the framework.
         </p>
       ) : (
         <ul className="divide-y divide-gray-100">

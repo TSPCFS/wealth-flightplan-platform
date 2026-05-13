@@ -1,4 +1,4 @@
-"""Assessment endpoints — conforms to docs/API_CONTRACT.md (Phase 2)."""
+"""Assessment endpoints: conforms to docs/API_CONTRACT.md (Phase 2)."""
 
 from uuid import UUID
 

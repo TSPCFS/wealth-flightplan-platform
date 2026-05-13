@@ -1,4 +1,4 @@
-"""Milestones service — pure derivation from existing data.
+"""Milestones service: pure derivation from existing data.
 
 No new storage. Achieved milestones come from existing assessment/worksheet/
 progress rows; upcoming milestones are date math against the most recent
@@ -236,7 +236,7 @@ async def _quarterly_assessment_refresh(
     due = last_at + timedelta(days=90)
     return _Milestone(
         code="quarterly_assessment_refresh",
-        title="Quarterly stage refresh — retake the assessment",
+        title="Quarterly stage refresh: retake the assessment",
         due_date=due,
         category="assessment",
         urgency=_urgency_for(due, today=today),

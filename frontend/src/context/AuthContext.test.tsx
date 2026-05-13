@@ -55,7 +55,7 @@ describe('AuthContext', () => {
   beforeEach(() => {
     localStorage.clear();
     // resetAllMocks clears prior mockResolvedValue / mockRejectedValue setups,
-    // not just call history — required so test order doesn't bleed state.
+    // not just call history; required so test order doesn't bleed state.
     vi.resetAllMocks();
   });
 

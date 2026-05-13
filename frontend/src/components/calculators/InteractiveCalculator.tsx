@@ -90,7 +90,7 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
 
   const debouncedValues = useDebouncedValue(values, 400);
   const reqIdRef = useRef(0);
-  // Dedupe by payload — handles both the "hasSubmitted just flipped to true"
+  // Dedupe by payload; handles both the "hasSubmitted just flipped to true"
   // initial-effect fire and the case where debouncedValues catches up to a
   // payload we already submitted directly.
   const lastCalledKeyRef = useRef<string | null>(null);
@@ -132,7 +132,7 @@ export const InteractiveCalculator: React.FC<Props> = ({ exampleDetail }) => {
   if (!config) {
     return (
       <div className="bg-amber-50 ring-1 ring-amber-100 rounded-lg p-4 text-sm text-amber-900">
-        This example is educational only — no calculator is configured.
+        This example is educational only. No calculator is configured.
       </div>
     );
   }

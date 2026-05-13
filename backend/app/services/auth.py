@@ -1,4 +1,4 @@
-"""Auth service — pure business logic. API layer calls these functions."""
+"""Auth service: pure business logic. API layer calls these functions."""
 
 from __future__ import annotations
 
@@ -398,7 +398,7 @@ async def logout(
     settings: Settings | None = None,
 ) -> None:
     settings = settings or get_settings()
-    # Attempt to decode for jti / exp — silently no-op on invalid token.
+    # Attempt to decode for jti / exp; silently no-op on invalid token.
     try:
         payload = decode_token(refresh_token, expected_type=TokenType.REFRESH, settings=settings)
         jti = payload.get("jti")
@@ -429,7 +429,7 @@ async def request_password_reset(
     ctx: RequestContext,
     settings: Settings | None = None,
 ) -> None:
-    """Always returns successfully — never reveal whether the email exists."""
+    """Always returns successfully; never reveal whether the email exists."""
     settings = settings or get_settings()
     email_addr = email_addr.strip().lower()
     user = await _get_user_by_email(session, email_addr)

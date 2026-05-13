@@ -9,13 +9,13 @@ describe('useDocumentTitle', () => {
 
   it('sets document.title with the brand suffix', () => {
     renderHook(() => useDocumentTitle('Dashboard'));
-    expect(document.title).toBe('Dashboard — Wealth FlightPlan™');
+    expect(document.title).toBe('Dashboard | Wealth FlightPlan™');
   });
 
   it('restores the previous title on unmount', () => {
     document.title = 'before';
     const { unmount } = renderHook(() => useDocumentTitle('Dashboard'));
-    expect(document.title).toBe('Dashboard — Wealth FlightPlan™');
+    expect(document.title).toBe('Dashboard | Wealth FlightPlan™');
     unmount();
     expect(document.title).toBe('before');
   });
@@ -30,8 +30,8 @@ describe('useDocumentTitle', () => {
     const { rerender } = renderHook(({ t }: { t: string | null }) => useDocumentTitle(t), {
       initialProps: { t: 'First' },
     });
-    expect(document.title).toBe('First — Wealth FlightPlan™');
+    expect(document.title).toBe('First | Wealth FlightPlan™');
     rerender({ t: 'Second' });
-    expect(document.title).toBe('Second — Wealth FlightPlan™');
+    expect(document.title).toBe('Second | Wealth FlightPlan™');
   });
 });

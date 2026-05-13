@@ -14,7 +14,7 @@ const toNumber = (v: unknown): number => {
 
 // Sum every numeric cell inside a section. For scalar sections that's the
 // fields with type:'number'; for array sections it's every numeric column
-// across every row. Pure client-side derivation — the server stays authoritative.
+// across every row. Pure client-side derivation; the server stays authoritative.
 const sumSection = (
   section: WorksheetSection,
   data: WorksheetResponseData
@@ -46,7 +46,7 @@ export interface WorksheetTotals {
 //
 // Per the API contract pin (commit 794254a + 9e0a4cf): a scalar leaf is
 // "filled" if its value is non-null AND (for type:number) is a finite number,
-// (for type:text|select) is a non-empty string. NB: 0 IS a filled number —
+// (for type:text|select) is a non-empty string. NB: 0 IS a filled number;
 // many worksheet fields legitimately have zero values (no secondary earner,
 // no store account, etc.) and the user must be able to submit without being
 // forced to type non-zero in fields that don't apply. The BE recomputes the

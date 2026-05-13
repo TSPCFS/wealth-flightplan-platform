@@ -52,3 +52,8 @@ postgres_data/
 
 # Local-only port override
 docker-compose.override.yml
+
+# Copyrighted source material — backend loads at runtime, never commit
+backend/data/manuscript.*
+backend/data/*.docx
+backend/data/*.pdf

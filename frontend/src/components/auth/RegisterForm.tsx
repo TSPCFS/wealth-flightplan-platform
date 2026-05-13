@@ -8,7 +8,7 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { FormError } from '../common/FormError';
 
-// Empty <input type="number"> registered with valueAsNumber gives NaN — coerce to undefined.
+// Empty <input type="number"> registered with valueAsNumber gives NaN; coerce to undefined.
 const optionalNumber = z.preprocess(
   (v) => (v === '' || v === null || (typeof v === 'number' && Number.isNaN(v)) ? undefined : v),
   z.number().optional()

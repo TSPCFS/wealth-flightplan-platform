@@ -24,7 +24,7 @@ export const ProgressOverview: React.FC<Props> = ({ progress }) => {
         </span>
       </div>
 
-      {/* Segmented bar — one cell per step, filled for completed ones */}
+      {/* Segmented bar: one cell per step, filled for completed ones */}
       <div className="flex gap-1" aria-label="Framework progress">
         {Array.from({ length: total }).map((_, idx) => (
           <div

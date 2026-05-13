@@ -12,7 +12,7 @@ Run inline:
     python -m app.db.seeds.phase3_content
 
 The script INSERTs missing rows and UPDATEs existing rows in place (idempotent
-— matches on ``content_code``). Safe to invoke after every migration; safe to
+- matches on ``content_code``). Safe to invoke after every migration; safe to
 re-run during development.
 """
 
@@ -38,8 +38,8 @@ STEPS: list[dict[str, Any]] = [
         "summary": "Know your position; define your destination.",
         "description": (
             "Step 1 anchors the journey. You can't plan if you don't know where you "
-            "stand. Financial GPS is the act of measuring two coordinates — current "
-            "wealth stage and a destination sentence — so every subsequent decision "
+            "stand. Financial GPS is the act of measuring two coordinates (current "
+            "wealth stage and a destination sentence) so every subsequent decision "
             "has a reference point."
         ),
         "parent_step": 1,
@@ -67,7 +67,7 @@ STEPS: list[dict[str, Any]] = [
         "summary": "Every rand has a job.",
         "description": (
             "A zero-based budget allocates every rand of income to needs, wants, "
-            "investing, or buffering — until the remainder is zero. The discipline "
+            "investing, or buffering, until the remainder is zero. The discipline "
             "kills the 'where did it go?' problem that funds invisible drains."
         ),
         "parent_step": 2,
@@ -94,8 +94,8 @@ STEPS: list[dict[str, Any]] = [
         "title": "Money Matrix",
         "summary": "The four numbers: Income / Expenses / Surplus / Assets.",
         "description": (
-            "Money Matrix is the dashboard. Four numbers — Income, Expenses, "
-            "Surplus, Assets — tell you whether the plan is working. The asset "
+            "Money Matrix is the dashboard. Four numbers (Income, Expenses, "
+            "Surplus, Assets) tell you whether the plan is working. The asset "
             "view distinguishes lifestyle assets from income-generating assets, "
             "which is where most households discover they're 'asset-rich but "
             "income-poor'."
@@ -119,13 +119,13 @@ STEPS: list[dict[str, Any]] = [
                 "the central question: *what percentage of net worth is "
                 "income-generating?* Healthy households aim for 60%+ by "
                 "Independence. WE-8 (Hennie) shows a R8.55m household with only "
-                "R4k/month passive income — high net worth, low income engine."
+                "R4k/month passive income: high net worth, low income engine."
             ),
         },
     },
     {
         "content_code": "STEP-4A",
-        "title": "Risk Cover — Households",
+        "title": "Risk Cover: Households",
         "summary": "Protect the plan: Life / Medical / Disability / Assets.",
         "description": (
             "Step 4A is the protective layer for every household. Four pillars: "
@@ -152,7 +152,7 @@ STEPS: list[dict[str, Any]] = [
     },
     {
         "content_code": "STEP-4B",
-        "title": "Risk Cover — Business Owners",
+        "title": "Risk Cover: Business Owners",
         "summary": "Three additional policies for business owners.",
         "description": (
             "Step 4B sits alongside 4A for business owners. Key-person cover, "
@@ -202,7 +202,7 @@ STEPS: list[dict[str, Any]] = [
                 "Complete Appendix D (Debt Disclosure). Run all three methods "
                 "through the calculator. Snowball wins on psychology; Avalanche "
                 "wins on math; Debtonator™ uses the access bond as a velocity "
-                "lever — draw cheap money against the bond, settle expensive "
+                "lever: draw cheap money against the bond, settle expensive "
                 "debt, repay the bond from freed-up payments."
             ),
         },
@@ -242,7 +242,7 @@ STEPS: list[dict[str, Any]] = [
             "body_markdown": (
                 "Fill the tax-advantaged buckets first (TFSA + RA), then move to "
                 "discretionary and offshore. WE-3 / WE-4 / WE-5 show why time "
-                "horizon matters more than contribution amount — every decade of "
+                "horizon matters more than contribution amount; every decade of "
                 "delay roughly halves the retirement outcome."
             ),
         },
@@ -511,7 +511,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "R1,500/month payment the math is unforgiving: every month the "
             "balance accrues R600 interest on day one, so only R900 of each "
             "payment actually attacks principal. Even the textbook outcome is "
-            "stark — and the book's narrative variant (which uses a *declining* "
+            "stark, and the book's narrative variant (which uses a *declining* "
             "5% minimum) stretches this to 8-9 years. Either way: expensive debt "
             "destroys plans."
         ),
@@ -553,7 +553,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "A R30,000 withdrawal from the Two-Pot Savings Pot at age 45 with a "
             "36% marginal tax rate yields ~R19,200 cash in hand. Left invested "
             "at 10% nominal for 20 years that same R30,000 would have compounded "
-            "to roughly R201,800. The headline cost isn't the tax — it's the "
+            "to roughly R201,800. The headline cost isn't the tax. It's the "
             "foregone compounding."
         ),
         "parent_step": 6,
@@ -564,7 +564,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "step_number": "6",
             "chapter": "Step 6: Investment",
             "key_principle": "Savings Pot withdrawals trade visible cash for invisible compounding.",
-            "key_takeaway": "Treat the Savings Pot like a true emergency reserve — taking it ahead of retirement is rarely worth what it costs.",
+            "key_takeaway": "Treat the Savings Pot like a true emergency reserve: taking it ahead of retirement is rarely worth what it costs.",
             "educational_text": (
                 "The Two-Pot System (post-Sept 2024) splits new retirement "
                 "contributions 1/3 Savings Pot, 2/3 Retirement Pot. Savings Pot "
@@ -583,7 +583,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "The headline example. R5,000/month invested from age 35 to 60 "
             "compounding monthly at 10% nominal grows to ~R6.6m (the book "
             "rounds to R6.4m; the standard formula yields ~R6.63m). At the 4% "
-            "safe-withdrawal rate that supplies R22.1k/month of passive income — "
+            "safe-withdrawal rate that supplies R22.1k/month of passive income, "
             "indefinitely."
         ),
         "parent_step": 6,
@@ -597,7 +597,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "key_takeaway": "Time horizon beats contribution amount.",
             "educational_text": (
                 "WE-3 anchors the entire investment chapter. Adjust the slider on "
-                "monthly contribution or years — notice how *years* moves the "
+                "monthly contribution or years; notice how *years* moves the "
                 "outcome dramatically more than contribution. That's the lever "
                 "WE-4 and WE-5 push on next."
             ),
@@ -612,8 +612,8 @@ EXAMPLES: list[dict[str, Any]] = [
             "Nomvula contributes R5,000/month for 10 years (age 25-35) then stops "
             "and lets the balance compound for 25 more years to age 60. Themba "
             "starts at 35 and contributes for 25 consecutive years to 60. Both at "
-            "10% p.a. Nomvula's earlier start — despite contributing one-third "
-            "of what Themba contributes — produces ~R12.3m vs Themba's ~R6.6m."
+            "10% p.a. Nomvula's earlier start (despite contributing one-third "
+            "of what Themba contributes) produces ~R12.3m vs Themba's ~R6.6m."
         ),
         "parent_step": 6,
         "stage_relevance": ["Foundation", "Momentum", "Freedom"],
@@ -623,7 +623,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "step_number": "6",
             "chapter": "Step 6: Investment",
             "key_principle": "Time horizon > contribution amount.",
-            "key_takeaway": "Starting early — even with a smaller total contribution — wins.",
+            "key_takeaway": "Starting early, even with a smaller total contribution, wins.",
             "educational_text": (
                 "Model Themba's scenario directly with the defaults (R5k/month × "
                 "25 years). For Nomvula's, run R5k/month for 10 years, take the "
@@ -636,7 +636,7 @@ EXAMPLES: list[dict[str, Any]] = [
     {
         "content_code": "WE-5",
         "title": "Cost of Waiting",
-        "summary": "R3k/month at 10% — start age 18 → R26.5m at 65; start age 40 → R3.6m.",
+        "summary": "R3k/month at 10%: start age 18 → R26.5m at 65; start age 40 → R3.6m.",
         "description": (
             "Four investors all contribute R3,000/month at 10% nominal until age "
             "65. The only variable is start age. From 18: ~R26.5m. From 25: "
@@ -667,7 +667,7 @@ EXAMPLES: list[dict[str, Any]] = [
         "description": (
             "R5/day (R150/month) contributed from birth to age 18, then left to "
             "compound to age 65. Standard monthly compounding at 10% gives ~R8.9m. "
-            "The book's R1.9m figure assumes a lower effective rate (~6%) — the "
+            "The book's R1.9m figure assumes a lower effective rate (~6%); the "
             "calculator will reflect whatever rate you set."
         ),
         "parent_step": 6,
@@ -677,11 +677,11 @@ EXAMPLES: list[dict[str, Any]] = [
         "detail": {
             "step_number": "6",
             "chapter": "Step 6: Investment",
-            "key_principle": "Time horizon is the great equaliser — even tiny contributions matter when started early.",
+            "key_principle": "Time horizon is the great equaliser: even tiny contributions matter when started early.",
             "key_takeaway": "A R5/day gift at birth becomes life-changing by retirement.",
             "educational_text": (
                 "The 18-year contribution phase produces around R90k. From there "
-                "the 47-year idle phase is pure compounding — try setting "
+                "the 47-year idle phase is pure compounding; try setting "
                 "monthly_contribution=0, initial_amount=90000, years=47 to see "
                 "the second leg."
             ),
@@ -690,12 +690,12 @@ EXAMPLES: list[dict[str, Any]] = [
     },
     {
         "content_code": "WE-7",
-        "title": "Zero-Based Budget — R45k household",
+        "title": "Zero-Based Budget: R45k household",
         "summary": "R45k take-home: Needs R32k (71%), Wants R3.5k (8%), Invest R9.5k (21%).",
         "description": (
             "A real R45,000/month household budget. Needs absorb 71% (well above "
             "the 50% target), Wants 8% (well below 30%), Invest 21% (close to "
-            "20%). The story matters more than the numbers — most households "
+            "20%). The story matters more than the numbers; most households "
             "don't realise how much of 'wants' has been re-classified as 'needs' "
             "until they run the exercise."
         ),
@@ -707,7 +707,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "step_number": "2",
             "chapter": "Step 2: Zero-Based Budget",
             "key_principle": "Real household allocations often exceed the 50/30/20 targets.",
-            "key_takeaway": "Track the gap between target and reality — that gap is the conversation.",
+            "key_takeaway": "Track the gap between target and reality. That gap is the conversation.",
             "educational_text": (
                 "Run your own numbers through the allocator. If Needs > 60% the "
                 "structural question is bond/vehicle/school affordability, not "
@@ -722,7 +722,7 @@ EXAMPLES: list[dict[str, Any]] = [
         "title": "Hennie's Net Worth",
         "summary": "R8.55m total assets, R5.45m net worth, only R4k/month passive income.",
         "description": (
-            "Hennie's balance sheet looks healthy on paper — R8.55m in assets, "
+            "Hennie's balance sheet looks healthy on paper: R8.55m in assets, "
             "R3.1m bond, R5.45m net worth. But only ~R900k is income-generating; "
             "the rest is lifestyle (primary home, vehicles, contents). At a 4% "
             "withdrawal rate that's R3,000-R4,000/month of passive income."
@@ -764,7 +764,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "step_number": "4a",
             "chapter": "Step 4A: Risk Cover (Households)",
             "key_principle": "Structured benefits work only if worked actively.",
-            "key_takeaway": "Either commit to the programme or downgrade — partial engagement is the worst-value option.",
+            "key_takeaway": "Either commit to the programme or downgrade; partial engagement is the worst-value option.",
             "educational_text": (
                 "List the benefits available on your medical aid / insurer. Cross "
                 "off any you've used in the last 12 months. The remainder is your "
@@ -780,7 +780,7 @@ EXAMPLES: list[dict[str, Any]] = [
         "description": (
             "Ilse earns R700k/year and contributes R60k to a retirement annuity. "
             "At a 36% marginal rate she gets R21,600 of tax back, lifting the "
-            "first-year return to ~56% — before any investment growth. The "
+            "first-year return to ~56%, before any investment growth. The "
             "Section 11F leverage is overwhelming for higher earners."
         ),
         "parent_step": 6,
@@ -833,7 +833,7 @@ EXAMPLES: list[dict[str, Any]] = [
     {
         "content_code": "WE-12",
         "title": "Debtonator™ Cycle",
-        "summary": "Draw R30k against access bond (10.25%), settle R30k credit card (24%) — annual saving ~R4k+.",
+        "summary": "Draw R30k against access bond (10.25%), settle R30k credit card (24%): annual saving ~R4k+.",
         "description": (
             "Debtonator™ uses the access bond as a velocity-banking lever. Draw "
             "R30,000 from the bond at the prime rate (10.25%) and use it to "
@@ -861,7 +861,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "step_number": "5",
             "chapter": "Step 5: Debt Optimisation",
             "key_principle": "Use cheap money to retire expensive money.",
-            "key_takeaway": "Debtonator™ only works if the consumer debt actually closes — don't re-borrow.",
+            "key_takeaway": "Debtonator™ only works if the consumer debt actually closes; don't re-borrow.",
             "educational_text": (
                 "The implementation in this calculator models Debtonator™ by "
                 "reducing the highest-rate debt's effective rate to prime (10.25%) "
@@ -880,7 +880,7 @@ EXAMPLES: list[dict[str, Any]] = [
             "Most home loans accrue interest daily. Paying earlier in the month "
             "means the interest charge is calculated on a lower running balance. "
             "Shifting a R1.5m bond's debit from the 26th to the 1st saves "
-            "R80,000-R150,000 over a 20-year loan — no rate change, no extra "
+            "R80,000-R150,000 over a 20-year loan: no rate change, no extra "
             "money out, just a date."
         ),
         "parent_step": 5,
@@ -922,7 +922,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
             "income_monthly": 85_000,
             "situation": "Two adults, kids at home, R85k/month combined. They ran the budget on a Saturday afternoon and discovered the surplus they thought existed was actually a small monthly deficit, masked by savings withdrawals.",
             "learning": "Start with the honest number. The 20-year plan that followed (Net Worth Statement annually, Step 4A audit, RA top-up, settle two credit cards) lifted them from Foundation to early Freedom over 18 months.",
-            "key_insight": "Honesty about the gap is the first move — and it's the move most households skip.",
+            "key_insight": "Honesty about the gap is the first move, and it's the move most households skip.",
             "related_step_numbers": ["1", "2"],
             "related_example_codes": ["WE-7"],
         },
@@ -939,7 +939,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
             "income_monthly": 65_000,
             "situation": "Looked successful from the outside (good income, recent flat purchase) but were one missed paycheck away from disaster.",
             "learning": "Honest stage assessment unlocks the right next step: not 'invest more' but 'kill consumer debt, then build emergency fund'.",
-            "key_insight": "Stage placement governs strategy — wrong stage, wrong moves.",
+            "key_insight": "Stage placement governs strategy: wrong stage, wrong moves.",
             "related_step_numbers": ["1", "5"],
             "related_example_codes": ["WE-1"],
         },
@@ -948,13 +948,13 @@ CASE_STUDIES: list[dict[str, Any]] = [
         "content_code": "CS-003",
         "title": "Johan & Marlize van der Merwe",
         "summary": "R150k/month, perceived wealthy; zero income-generating assets.",
-        "description": "Senior couple, R150,000/month, primary home valued at R7m, two cars, no consumer debt — and approximately zero income-generating assets outside their RA.",
+        "description": "Senior couple, R150,000/month, primary home valued at R7m, two cars, no consumer debt, and approximately zero income-generating assets outside their RA.",
         "parent_step": 3,
         "stage_relevance": ["Freedom"],
         "detail": {
             "age_band": "Senior/40s",
             "income_monthly": 150_000,
-            "situation": "Lifestyle-rich but asset-poor. The R90k Question — 'if you both stopped working tomorrow, how long until lifestyle breaks?' — produced silence at the kitchen table.",
+            "situation": "Lifestyle-rich but asset-poor. The R90k Question ('if you both stopped working tomorrow, how long until lifestyle breaks?') produced silence at the kitchen table.",
             "learning": "Income ≠ wealth. The next five years were spent re-routing surplus into Bucket 2 (wealth) instead of Bucket 1 (lifestyle).",
             "key_insight": "High income masks low income-generating assets.",
             "related_step_numbers": ["3"],
@@ -989,7 +989,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
             "age_band": "41",
             "income_monthly": 78_000,
             "situation": "Years of unbudgeted giving (family obligations, religious giving) plus a habit of using store cards for any over-budget purchase. Each account felt small; the total felt impossible.",
-            "learning": "The brutal mathematics of expensive debt. Marius ran Snowball for the psychological win — closed three accounts inside six months — then switched to Debtonator™ for the bigger balances.",
+            "learning": "The brutal mathematics of expensive debt. Marius ran Snowball for the psychological win (closed three accounts inside six months), then switched to Debtonator™ for the bigger balances.",
             "key_insight": "Make the invisible visible. Once the full list is on paper, the plan writes itself.",
             "related_step_numbers": ["5"],
             "related_example_codes": ["WE-1", "WE-12"],
@@ -1015,7 +1015,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
     {
         "content_code": "CS-007",
         "title": "Hennie",
-        "summary": "R8.55m net worth, R4k/month passive income — wealth illusion.",
+        "summary": "R8.55m net worth, R4k/month passive income: wealth illusion.",
         "description": "52-year-old, R8.55m in total assets, R3.1m bond outstanding, R5.45m net worth. Income-generating slice: R900k → R3,000-R4,000/month at 4% withdrawal.",
         "parent_step": 3,
         "stage_relevance": ["Momentum", "Freedom"],
@@ -1056,9 +1056,9 @@ CASE_STUDIES: list[dict[str, Any]] = [
         "detail": {
             "age_band": "45",
             "income_monthly": None,
-            "situation": "Genuine emergency — but the structural answer was 'borrow short-term and protect the retirement compound', not 'tap the savings pot'.",
+            "situation": "Genuine emergency, but the structural answer was 'borrow short-term and protect the retirement compound', not 'tap the savings pot'.",
             "learning": "True cost of accessing Savings Pot is the foregone compounding, not the tax.",
-            "key_insight": "The Savings Pot isn't an ATM — it's a last-resort lever.",
+            "key_insight": "The Savings Pot isn't an ATM. It's a last-resort lever.",
             "related_step_numbers": ["6"],
             "related_example_codes": ["WE-2"],
         },
@@ -1067,14 +1067,14 @@ CASE_STUDIES: list[dict[str, Any]] = [
         "content_code": "CS-010",
         "title": "Ilse",
         "summary": "R700k/year, R60k RA contribution at 36% marginal → R21.6k instant tax saving.",
-        "description": "Ilse earns R700,000/year and contributes R60,000 to her retirement annuity. Section 11F deduction × 36% marginal rate = R21,600 instant tax saving — a 56% first-year return on the contribution before any investment growth.",
+        "description": "Ilse earns R700,000/year and contributes R60,000 to her retirement annuity. Section 11F deduction × 36% marginal rate = R21,600 instant tax saving: a 56% first-year return on the contribution before any investment growth.",
         "parent_step": 6,
         "stage_relevance": ["Freedom", "Independence"],
         "detail": {
             "age_band": "High earner",
             "income_monthly": 58_333,
             "situation": "Higher earner who finally read the Section 11F mechanics and realised her RA contribution was being subsidised by 36% of every rand.",
-            "learning": "Section 11F leverage for higher earners is overwhelming — every R1 contributed costs ~R0.64 after tax.",
+            "learning": "Section 11F leverage for higher earners is overwhelming: every R1 contributed costs ~R0.64 after tax.",
             "key_insight": "Use the tax code in your favour. Fill the RA up to the cap.",
             "related_step_numbers": ["6"],
             "related_example_codes": ["WE-10"],
@@ -1084,13 +1084,13 @@ CASE_STUDIES: list[dict[str, Any]] = [
         "content_code": "CS-011",
         "title": "Nomvula",
         "summary": "R5k/month age 25-35, then idle; R1.02m at 35 compounds to ~R12.3m by 60.",
-        "description": "Starts at 25 with R5,000/month for 10 years. Stops at 35 (career change, lower income). Lets the R1.02m balance compound to age 60 at 10% — final value ~R12.3m.",
+        "description": "Starts at 25 with R5,000/month for 10 years. Stops at 35 (career change, lower income). Lets the R1.02m balance compound to age 60 at 10%; final value ~R12.3m.",
         "parent_step": 6,
         "stage_relevance": ["Foundation", "Momentum"],
         "detail": {
             "age_band": "25-60",
             "income_monthly": None,
-            "situation": "Got compound interest early, then life happened — she stopped contributing but did not withdraw.",
+            "situation": "Got compound interest early, then life happened. She stopped contributing but did not withdraw.",
             "learning": "Early start + leave it alone is the most underrated wealth strategy.",
             "key_insight": "The compounding does the work; you just don't interrupt it.",
             "related_step_numbers": ["6"],
@@ -1100,14 +1100,14 @@ CASE_STUDIES: list[dict[str, Any]] = [
     {
         "content_code": "CS-012",
         "title": "Themba",
-        "summary": "R5k/month age 35-60 — late start, longer run, ~R6.6m at 60.",
+        "summary": "R5k/month age 35-60: late start, longer run, ~R6.6m at 60.",
         "description": "Mirror of Nomvula. Themba waits until 35, then contributes R5,000/month for 25 consecutive years at 10%. Final value ~R6.6m.",
         "parent_step": 6,
         "stage_relevance": ["Foundation", "Momentum"],
         "detail": {
             "age_band": "35-60",
             "income_monthly": None,
-            "situation": "Did everything right from his start date — but his start date was 10 years late.",
+            "situation": "Did everything right from his start date, but his start date was 10 years late.",
             "learning": "Same monthly amount, same retirement age, half the outcome.",
             "key_insight": "Start dates compound. Earlier is exponentially better.",
             "related_step_numbers": ["6"],
@@ -1117,7 +1117,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
     {
         "content_code": "CS-013",
         "title": "Four Investor Cohort",
-        "summary": "Same R3k/month to 65 — start age 18/25/30/40 → R26.5m / R15.9m / R9.7m / R3.6m.",
+        "summary": "Same R3k/month to 65: start age 18/25/30/40 → R26.5m / R15.9m / R9.7m / R3.6m.",
         "description": "Four investors at start ages 18, 25, 30, 40. All contribute R3,000/month until age 65 at 10%. Outcomes diverge sharply.",
         "parent_step": 6,
         "stage_relevance": ["Foundation", "Momentum", "Freedom"],
@@ -1135,7 +1135,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
         "content_code": "CS-014",
         "title": "Ouma Maria",
         "summary": "R200/month for 45 years (R108k contributed) → R2.1m at 83.",
-        "description": "Started a unit trust at 38 with R200/month from a R14,000/month max salary. Never increased the contribution. Never withdrew. By 83 the balance had grown to R2.1m — 19× the total contributed.",
+        "description": "Started a unit trust at 38 with R200/month from a R14,000/month max salary. Never increased the contribution. Never withdrew. By 83 the balance had grown to R2.1m: 19× the total contributed.",
         "parent_step": 6,
         "stage_relevance": ["Foundation", "Momentum"],
         "detail": {
@@ -1143,7 +1143,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
             "income_monthly": 14_000,
             "situation": "Modest income, modest contribution, extraordinary discipline.",
             "learning": "Tiny consistent action over a long horizon beats heroic late effort.",
-            "key_insight": "It doesn't take a big shovel — it takes a long arm.",
+            "key_insight": "It doesn't take a big shovel. It takes a long arm.",
             "related_step_numbers": ["6"],
             "related_example_codes": ["WE-3"],
         },
@@ -1159,7 +1159,7 @@ CASE_STUDIES: list[dict[str, Any]] = [
             "age_band": "Birth-65",
             "income_monthly": None,
             "situation": "Aunts, uncles, grandparents pooling small amounts make this trivial to fund.",
-            "learning": "Universal availability of compounding — anyone can do this for any child.",
+            "learning": "Universal availability of compounding: anyone can do this for any child.",
             "key_insight": "R5/day is a generational rounding error; R1-9m is a generational outcome.",
             "related_step_numbers": ["6"],
             "related_example_codes": ["WE-6"],

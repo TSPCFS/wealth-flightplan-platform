@@ -1,8 +1,8 @@
-"""Worksheet service — schema validation, calculation dispatch, persistence.
+"""Worksheet service: schema validation, calculation dispatch, persistence.
 
 The schema lives in ``content_metadata.detail`` (seeded by phase4_worksheets).
 The /draft endpoint upserts into ``worksheet_responses`` keyed by
-(user_id, worksheet_code, is_draft=True) — the partial unique index in
+(user_id, worksheet_code, is_draft=True); the partial unique index in
 migration 0004 enforces "at most one draft per (user, worksheet_code)".
 /submit validates, calculates, inserts is_draft=False, and removes any
 matching draft.
@@ -66,7 +66,7 @@ async def get_worksheet_row(session: AsyncSession, worksheet_code: str) -> Conte
 
 
 def schema_for(row: ContentMetadata) -> dict[str, Any]:
-    """Public schema view — used as the /worksheets/{code} response body.
+    """Public schema view: used as the /worksheets/{code} response body.
 
     The internal dispatch key (``detail.calculator``) is NOT exposed here;
     use :func:`internal_calculator_key` when the service needs it.
@@ -87,7 +87,7 @@ def schema_for(row: ContentMetadata) -> dict[str, Any]:
 
 
 def internal_calculator_key(row: ContentMetadata) -> str | None:
-    """Dispatch key read off the content_metadata row — internal use only."""
+    """Dispatch key read off the content_metadata row; internal use only."""
     return (row.detail or {}).get("calculator")
 
 
@@ -149,7 +149,7 @@ def _validate_scalar_field(
         if raw_value not in options:
             errors.setdefault(path, []).append(f"Must be one of: {', '.join(options)}.")
         return raw_value
-    # text (including multiline) — just normalise None → "".
+    # text (including multiline); just normalise None → "".
     return "" if raw_value is None else str(raw_value)
 
 
@@ -220,7 +220,7 @@ def _raise_validation_error(errors: dict[str, list[str]]) -> None:
 def _field_is_filled(field_spec: dict[str, Any], value: Any) -> bool:
     """Per API contract: a scalar leaf is 'filled' if its value is non-null AND
     (for type:number) is a finite number, (for type:text|select) is a non-empty
-    string. Note: 0 IS a filled number — many worksheet fields legitimately have
+    string. Note: 0 IS a filled number; many worksheet fields legitimately have
     zero values (no secondary earner, no store account, etc.)."""
     f_type = field_spec.get("type", "number")
     if f_type == "number":
@@ -417,18 +417,18 @@ def _net_worth_feedback(calc: dict[str, Any]) -> dict[str, Any]:
     if pct >= 60:
         return {
             "status": "on_track",
-            "message": f"{pct:.0f}% of net worth is income-generating — at or above the 60% Abundance benchmark.",
+            "message": f"{pct:.0f}% of net worth is income-generating, at or above the 60% Abundance benchmark.",
             "recommendations": list(content.APP_B_RECS_HIGH_PCT),
         }
     if pct >= 30:
         return {
             "status": "needs_attention",
-            "message": f"{pct:.0f}% of net worth is income-generating — keep growing toward 60%.",
+            "message": f"{pct:.0f}% of net worth is income-generating; keep growing toward 60%.",
             "recommendations": list(content.APP_B_RECS_MID_PCT),
         }
     return {
         "status": "critical",
-        "message": f"Only {pct:.0f}% of net worth is income-generating — Foundation/Momentum territory.",
+        "message": f"Only {pct:.0f}% of net worth is income-generating: Foundation/Momentum territory.",
         "recommendations": list(content.APP_B_RECS_LOW_PCT),
     }
 
@@ -448,7 +448,7 @@ def _risk_cover_feedback(
             total += 1
             value = s_data.get(field["name"]) if isinstance(s_data, dict) else None
             if value in (None, "", "n/a"):
-                # Not applicable / not answered — skip from gap counting.
+                # Not applicable / not answered: skip from gap counting.
                 continue
             answered += 1
             if value == "no":
@@ -482,7 +482,7 @@ def _risk_cover_feedback(
     else:
         feedback = {
             "status": "on_track",
-            "message": "All cover items checked off — schedule the next annual review.",
+            "message": "All cover items checked off. Schedule the next annual review.",
             "recommendations": [
                 "Diarise the next Appendix C audit 12 months from today.",
             ],
@@ -500,18 +500,18 @@ def _debt_feedback(calc: dict[str, Any]) -> dict[str, Any]:
     if rate > 20:
         return {
             "status": "critical",
-            "message": f"Weighted-average rate is {rate:.1f}% — expensive debt is the priority.",
+            "message": f"Weighted-average rate is {rate:.1f}%; expensive debt is the priority.",
             "recommendations": list(content.APP_D_RECS_HIGH_RATE),
         }
     if rate > 12:
         return {
             "status": "needs_attention",
-            "message": f"Weighted-average rate is {rate:.1f}% — workable but worth re-pricing.",
+            "message": f"Weighted-average rate is {rate:.1f}%; workable but worth re-pricing.",
             "recommendations": list(content.APP_D_RECS_MID_RATE),
         }
     return {
         "status": "on_track",
-        "message": f"Weighted-average rate is {rate:.1f}% — well-priced debt.",
+        "message": f"Weighted-average rate is {rate:.1f}%: well-priced debt.",
         "recommendations": list(content.APP_D_RECS_LOW_RATE),
     }
 
@@ -643,7 +643,7 @@ async def submit(
     schema = schema_for(row)
     calculator = internal_calculator_key(row)
 
-    # APP-G is not stored here — the API layer should redirect to /assessments/10q.
+    # APP-G is not stored here; the API layer should redirect to /assessments/10q.
     if calculator == "assessment_10q":
         raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,

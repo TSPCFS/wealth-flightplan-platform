@@ -1,4 +1,4 @@
-"""Idempotent seed for Phase 4 — 7 worksheet rows in ``content_metadata``.
+"""Idempotent seed for Phase 4: 7 worksheet rows in ``content_metadata``.
 
 Each row is ``content_type='worksheet'`` with the full form schema stored
 under the ``detail`` JSONB column. The seed is upsert-by-content_code so
@@ -96,7 +96,7 @@ def _textarea(name: str, label: str) -> dict[str, Any]:
 # Worksheet definitions
 # ---------------------------------------------------------------------------
 
-# APP-A Zero-Based Budget — fields per wealth_index.md Appendix A details.
+# APP-A Zero-Based Budget: fields per wealth_index.md Appendix A details.
 
 APP_A_SECTIONS = [
     {
@@ -153,7 +153,7 @@ APP_A_SECTIONS = [
 ]
 
 
-# APP-B Net Worth Statement — table-style sections.
+# APP-B Net Worth Statement: table-style sections.
 
 APP_B_LIFESTYLE_ITEMS = [
     {"name": "Primary home"},
@@ -230,7 +230,7 @@ APP_B_SECTIONS = [
 ]
 
 
-# APP-C Risk Cover Review Checklist — 6 coverage categories + 1 business owner.
+# APP-C Risk Cover Review Checklist: 6 coverage categories + 1 business owner.
 
 APP_C_SECTIONS = [
     {
@@ -305,7 +305,7 @@ APP_C_SECTIONS = [
 ]
 
 
-# APP-D Debt Disclosure — one table-style section.
+# APP-D Debt Disclosure: one table-style section.
 
 APP_D_SECTIONS = [
     {
@@ -358,7 +358,7 @@ APP_D_SECTIONS = [
 ]
 
 
-# APP-E Monthly Money Review — 30-minute conversation script.
+# APP-E Monthly Money Review: 30-minute conversation script.
 
 APP_E_SECTIONS = [
     {
@@ -391,7 +391,7 @@ APP_E_SECTIONS = [
 ]
 
 
-# APP-F attooh! Life File — 4 inventory sections.
+# APP-F attooh! Life File: 4 inventory sections.
 
 APP_F_SECTIONS = [
     {
@@ -448,7 +448,7 @@ APP_F_SECTIONS = [
 ]
 
 
-# APP-G — schema mirrors 10Q assessment; submit forwards to /assessments/10q.
+# APP-G: schema mirrors 10Q assessment; submit forwards to /assessments/10q.
 
 APP_G_SECTIONS = [
     {
@@ -478,7 +478,7 @@ WORKSHEETS: list[dict[str, Any]] = [
         "summary": "Every rand has a job: Income − (Needs + Wants + Invest) = R0.",
         "description": (
             "Build a bottom-up monthly budget. Allocate every rand to needs, wants, "
-            "or investing — until the remainder is zero. The discipline kills the "
+            "or investing, until the remainder is zero. The discipline kills the "
             "'where did it go?' problem that funds invisible drains."
         ),
         "parent_step": 2,
@@ -566,7 +566,7 @@ WORKSHEETS: list[dict[str, Any]] = [
         "description": (
             "A repeatable conversation script. Last Month (budget reconciliation) → "
             "This Month (upcoming + adjustments) → Us (pride, worries, focus). "
-            "End on a forward-looking item — never on blame."
+            "End on a forward-looking item. Never on blame."
         ),
         "parent_step": 2,
         "stage_relevance": ["Foundation", "Momentum", "Freedom", "Independence", "Abundance"],
@@ -604,7 +604,7 @@ WORKSHEETS: list[dict[str, Any]] = [
     {
         "content_code": "APP-G",
         "title": "Wealth FlightPlan™ Self-Assessment (10Q)",
-        "summary": "Stage placement — same 10 questions as the assessment endpoint.",
+        "summary": "Stage placement: same 10 questions as the assessment endpoint.",
         "description": (
             "Worksheet variant of the 10-question self-assessment. Submitting it "
             "is equivalent to POSTing /assessments/10q; the form persists as a "

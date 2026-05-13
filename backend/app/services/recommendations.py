@@ -1,4 +1,4 @@
-"""Recommendation engine — 6-rule cascade producing up to 5 actions.
+"""Recommendation engine: 6-rule cascade producing up to 5 actions.
 
 Rules apply in order; rules 1 and 2 are short-circuiting (they stop the
 cascade as soon as they fire). The remaining rules append candidates until
@@ -51,7 +51,7 @@ class _UserSignals:
 
 
 async def _gather_signals(session: AsyncSession, user: User) -> _UserSignals:
-    """Single round-trip per signal — all read-only, no N+1 across worksheets."""
+    """Single round-trip per signal: all read-only, no N+1 across worksheets."""
     # Latest 5Q/10Q assessment.
     res = await session.execute(
         select(Assessment)
@@ -237,14 +237,14 @@ def compose_actions(signals: _UserSignals, *, now: datetime | None = None) -> li
     """Run the 6-rule cascade. Returns up to 5 actions ordered by priority."""
     now = now or utcnow()
 
-    # Rule 1 — short-circuits if it fires.
+    # Rule 1: short-circuits if it fires.
     rule1 = _rule_first_step(signals)
     if rule1:
         return rule1
 
     stage = _stage_of(signals.latest_5q_or_10q)
 
-    # Rule 2 — short-circuits if it fires (still capped by MAX_ACTIONS).
+    # Rule 2: short-circuits if it fires (still capped by MAX_ACTIONS).
     rule2 = _rule_critical_gaps(signals, now=now)
     if rule2:
         return _cap_and_sort(_dedupe_by_url(rule2))
@@ -330,12 +330,12 @@ def _suggested_for(stage: str | None) -> tuple[list[dict[str, Any]], list[dict[s
             {
                 "worksheet_code": "APP-D",
                 "title": "Debt Disclosure",
-                "reason": "Momentum baseline — every account on one page.",
+                "reason": "Momentum baseline: every account on one page.",
             },
             {
                 "worksheet_code": "APP-C",
                 "title": "Risk Cover Review",
-                "reason": "Momentum follow-up — protect the plan before scaling investing.",
+                "reason": "Momentum follow-up: protect the plan before scaling investing.",
             },
         ]
     elif stage == "Freedom":
@@ -355,7 +355,7 @@ def _suggested_for(stage: str | None) -> tuple[list[dict[str, Any]], list[dict[s
             {
                 "worksheet_code": "APP-B",
                 "title": "Net Worth Statement",
-                "reason": "Freedom baseline — annual income-generating-pct check.",
+                "reason": "Freedom baseline: annual income-generating-pct check.",
             }
         ]
     else:  # Independence / Abundance

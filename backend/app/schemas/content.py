@@ -41,7 +41,7 @@ class StepDetail(FrameworkStep):
     body_markdown: str | None = None
 
 
-# ---------- Examples — list view ----------
+# ---------- Examples: list view ----------
 
 
 class ExampleListItem(BaseModel):
@@ -62,7 +62,7 @@ class ExamplesResponse(BaseModel):
     total: int
 
 
-# ---------- Examples — detail view ----------
+# ---------- Examples: detail view ----------
 
 
 class CalculatorInputSpec(BaseModel):

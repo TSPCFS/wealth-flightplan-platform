@@ -37,7 +37,7 @@ class WorksheetCatalogueResponse(BaseModel):
 
 
 class WorksheetSchema(BaseModel):
-    """Loose response model — sections/fields carry arbitrary metadata
+    """Loose response model: sections/fields carry arbitrary metadata
     for the FE renderer, mirrored from the seed."""
 
     model_config = ConfigDict(extra="forbid")

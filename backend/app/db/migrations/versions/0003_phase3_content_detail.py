@@ -1,7 +1,7 @@
 """Phase 3: content detail columns + example_interactions.
 
 Adds JSONB columns to content_metadata (option (a) from the Phase 3 backend
-prompt — simpler than a 1:1 sibling table, since detail is always read with
+prompt: simpler than a 1:1 sibling table, since detail is always read with
 the row and the shape legitimately varies by content_type) and creates the
 example_interactions table for the calculator analytics log.
 

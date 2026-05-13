@@ -31,7 +31,7 @@ describe('useDashboardStageCelebration', () => {
     expect(result.current.celebration).toBeNull();
     expect(localStorage.getItem(KEY)).toBe('Freedom');
 
-    // Same stage on next mount — no celebration
+    // Same stage on next mount: no celebration
     rerender({ stage: 'Freedom' });
     expect(result.current.celebration).toBeNull();
   });

@@ -33,7 +33,7 @@ export const RecentActivity: React.FC<Props> = ({
       </div>
       {shown.length === 0 ? (
         <p className="text-sm text-gray-600">
-          Nothing here yet — finish an assessment or worksheet to start the timeline.
+          Nothing here yet. Finish an assessment or worksheet to start the timeline.
         </p>
       ) : (
         <ul className="space-y-3">

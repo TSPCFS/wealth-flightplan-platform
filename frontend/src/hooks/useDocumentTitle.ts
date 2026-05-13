@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const SUFFIX = ' — Wealth FlightPlan™';
+const SUFFIX = ' | Wealth FlightPlan™';
 
 // Sets `document.title` to `${title}${SUFFIX}` while the calling component is
 // mounted, and restores the previous title on unmount. Pass `null` to skip the

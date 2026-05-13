@@ -64,10 +64,10 @@ class User(Base):
     # Privacy
     privacy_settings: Mapped[dict] = mapped_column(JSONType(), default=dict, nullable=False)
 
-    # Token versioning — bumped to invalidate all refresh tokens (e.g. on password reset).
+    # Token versioning: bumped to invalidate all refresh tokens (e.g. on password reset).
     token_version: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
-    # Timestamps (tz-aware UTC — see app.core.datetimes)
+    # Timestamps (tz-aware UTC; see app.core.datetimes)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False
     )
@@ -152,7 +152,7 @@ class AuditLog(Base):
 
 
 # ---------------------------------------------------------------------------
-# Phase 2 — assessments, user_progress, content_metadata
+# Phase 2: assessments, user_progress, content_metadata
 # ---------------------------------------------------------------------------
 
 
@@ -180,7 +180,7 @@ class Assessment(Base):
     ip_address: Mapped[str | None] = mapped_column(INETType(), nullable=True)
     user_agent: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    # Timestamps — Python-side default keeps microsecond precision under SQLite
+    # Timestamps: Python-side default keeps microsecond precision under SQLite
     # tests (server_default truncates to seconds), which is needed for
     # deterministic ordering by created_at.
     created_at: Mapped[datetime] = mapped_column(
@@ -226,7 +226,7 @@ class Assessment(Base):
 
 
 class UserProgress(Base):
-    """Framework completion — schema only in Phase 2; populated by Phase 3+."""
+    """Framework completion: schema only in Phase 2; populated by Phase 3+."""
 
     __tablename__ = "user_progress"
 
@@ -297,7 +297,7 @@ class UserProgress(Base):
 
 
 class ContentMetadata(Base):
-    """Framework / examples / worksheets catalogue — schema only in Phase 2."""
+    """Framework / examples / worksheets catalogue: schema only in Phase 2."""
 
     __tablename__ = "content_metadata"
 
@@ -321,9 +321,9 @@ class ContentMetadata(Base):
     has_worksheet: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     has_example: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    # Phase 3 additions — keep all rich content on the same row.
+    # Phase 3 additions: keep all rich content on the same row.
     #
-    # Decision: option (a) from the Phase 3 prompt — add JSONB columns rather
+    # Decision: option (a) from the Phase 3 prompt: add JSONB columns rather
     # than a sibling content_details table. Reasoning: (1) reads are 1:1 with
     # the metadata row, so a join buys nothing; (2) the shape varies by
     # content_type and is read-heavy, write-once, which JSONB handles cleanly;
@@ -371,7 +371,7 @@ class ContentMetadata(Base):
 
 
 class ExampleInteraction(Base):
-    """Per-user calculator run log — for analytics + replay."""
+    """Per-user calculator run log: for analytics + replay."""
 
     __tablename__ = "example_interactions"
 
@@ -411,11 +411,11 @@ class ExampleInteraction(Base):
 
 
 class WorksheetResponse(Base):
-    """Phase 4 — per-user worksheet draft / submission rows.
+    """Phase 4: per-user worksheet draft / submission rows.
 
     Draft uniqueness ("at most one draft per (user, worksheet_code)") is
     enforced at the DB level by a partial unique index in migration 0004.
-    Submissions (is_draft=False) are unconstrained — each submit inserts a
+    Submissions (is_draft=False) are unconstrained; each submit inserts a
     new row, preserving history.
     """
 

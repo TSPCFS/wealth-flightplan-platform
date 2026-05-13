@@ -39,7 +39,7 @@ export const StageCelebration: React.FC<Props> = ({ celebration, description, on
     );
   }
 
-  // Upward move — modal-style overlay anchored centre.
+  // Upward move: modal-style overlay anchored centre.
   return (
     <div
       role="dialog"

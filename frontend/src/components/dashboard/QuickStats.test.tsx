@@ -22,7 +22,7 @@ describe('QuickStats', () => {
     expect(screen.queryByText(/Complete Net Worth Statement/)).not.toBeInTheDocument();
   });
 
-  it('renders em-dash and a CTA link for nullable stats', () => {
+  it('renders en-dash and a CTA link for nullable stats', () => {
     render(
       <MemoryRouter>
         <QuickStats
@@ -35,7 +35,7 @@ describe('QuickStats', () => {
         />
       </MemoryRouter>
     );
-    expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(4);
+    expect(screen.getAllByText('–').length).toBeGreaterThanOrEqual(4);
     const cta = screen.getAllByRole('link', { name: /Net Worth Statement/i })[0];
     expect(cta).toHaveAttribute('href', '/worksheets/APP-B');
   });

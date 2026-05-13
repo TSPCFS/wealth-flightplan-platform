@@ -69,7 +69,7 @@ export const MilestonesPage: React.FC = () => {
         ) : (
           <ol className="border-l-2 border-blue-200 pl-6 space-y-5">
             {data.achieved.map((m, idx) => (
-              // Compose key with idx + date — codes like `framework_step_completed`
+              // Compose key with idx + date; codes like `framework_step_completed`
               // legitimately repeat once per step completion.
               <li key={`${m.code}-${m.date}-${idx}`} className="relative">
                 <span

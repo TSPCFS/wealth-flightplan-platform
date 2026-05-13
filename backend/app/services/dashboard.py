@@ -1,4 +1,4 @@
-"""Dashboard aggregator — composes data from progress / recommendations /
+"""Dashboard aggregator: composes data from progress / recommendations /
 activity / milestones plus a small quick-stats query."""
 
 from __future__ import annotations
@@ -67,7 +67,7 @@ def next_stage_of(current_stage: str | None) -> str | None:
 
 
 # ---------------------------------------------------------------------------
-# Quick stats query — 4 single-row lookups, no N+1.
+# Quick stats query: 4 single-row lookups, no N+1.
 # ---------------------------------------------------------------------------
 
 

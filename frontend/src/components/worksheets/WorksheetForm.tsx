@@ -162,7 +162,7 @@ export const WorksheetForm: React.FC<Props> = ({ schema, initialData }) => {
         data
       );
       // Pass the submission via router state so the results page renders
-      // without re-fetching — the contract doesn't expose a
+      // without re-fetching; the contract doesn't expose a
       // GET /worksheets/{worksheet_id} endpoint today.
       navigate(`/worksheets/results/${submission.worksheet_id}`, {
         state: { submission },

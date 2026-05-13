@@ -1,7 +1,7 @@
-"""Activity feed — query-time aggregation across assessments, worksheets,
+"""Activity feed: query-time aggregation across assessments, worksheets,
 and user_progress, plus a derived `stage_changed` synthesis.
 
-Phase 5 only — no new storage. Cursor pagination is opaque base64 of
+Phase 5 only: no new storage. Cursor pagination is opaque base64 of
 ``(timestamp_iso, sort_tag)`` where ``sort_tag`` is a stable per-event key
 so ties between events that landed in the same instant remain deterministic.
 """
@@ -50,12 +50,12 @@ async def _load_assessment_events(session: AsyncSession, user_id) -> list[_Event
     events: list[_Event] = []
     for row in rows:
         if row.assessment_type == "gap_test":
-            band = row.calculated_stage or "—"
-            title = f"Completed GAP Test — scored {band} band"
+            band = row.calculated_stage or "–"
+            title = f"Completed GAP Test: scored {band} band"
         else:
             label = "5Q" if row.assessment_type == "5q" else "10Q"
-            stage = row.calculated_stage or "—"
-            title = f"Completed {label} assessment — placed at {stage}"
+            stage = row.calculated_stage or "–"
+            title = f"Completed {label} assessment: placed at {stage}"
         events.append(
             _Event(
                 event_type="assessment_submitted",
@@ -90,7 +90,7 @@ async def _load_worksheet_events(session: AsyncSession, user_id) -> list[_Event]
             _Event(
                 event_type="worksheet_submitted",
                 title=f"Submitted {_worksheet_title(row.worksheet_code)}"
-                + (f" — {title_suffix}" if title_suffix else ""),
+                + (f": {title_suffix}" if title_suffix else ""),
                 timestamp=row.created_at,
                 details={
                     "worksheet_id": str(row.worksheet_id),

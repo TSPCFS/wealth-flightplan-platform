@@ -1,4 +1,4 @@
-"""Worksheet export — PDF (ReportLab) + CSV.
+"""Worksheet export: PDF (ReportLab) + CSV.
 
 The PDF dispatcher renders a per-worksheet template using the schema as the
 layout source (so future worksheets get a sensible default rendering without
@@ -29,7 +29,7 @@ from reportlab.platypus import (
 from app.core.datetimes import to_utc_z
 from app.db.models import User, WorksheetResponse
 
-DISCLAIMER = "Illustrative — not financial advice. Verify with a qualified advisor."
+DISCLAIMER = "Illustrative. Not financial advice. Verify with a qualified advisor."
 
 _STATUS_COLOURS: dict[str, colors.Color] = {
     "on_track": colors.HexColor("#1f7a3a"),
@@ -48,7 +48,7 @@ _STATUS_COLOURS: dict[str, colors.Color] = {
 
 def _fmt_value(value: Any, fmt: str | None) -> str:
     if value is None or value == "":
-        return "—"
+        return "–"
     if isinstance(value, bool):
         return "Yes" if value else "No"
     if fmt == "currency":
@@ -107,7 +107,7 @@ def _build_pdf_header(
         f"Submitted: {submitted_at.strftime('%Y-%m-%d %H:%M UTC')}"
     )
     return [
-        Paragraph(f"Wealth FlightPlan™ — {worksheet_title}", title_style),
+        Paragraph(f"Wealth FlightPlan™ | {worksheet_title}", title_style),
         Paragraph(sub, sub_style),
     ]
 

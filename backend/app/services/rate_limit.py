@@ -1,7 +1,7 @@
 """Redis-backed fixed-window rate limiter.
 
 Used for per-email limits on /auth/login and /auth/password-reset where the
-key is only known after parsing the request body — slowapi's decorator-based
+key is only known after parsing the request body; slowapi's decorator-based
 limiter inspects the request before the body is read, so we apply it here.
 """
 
@@ -47,7 +47,7 @@ async def enforce(
 
     new_val = await r.incr(redis_key)
     if new_val == 1:
-        # First hit in this window — set TTL.
+        # First hit in this window; set TTL.
         await r.expire(redis_key, period)
 
     if new_val > count:

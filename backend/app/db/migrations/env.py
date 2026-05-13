@@ -1,4 +1,4 @@
-"""Alembic environment — async-aware, driven from app.core.config."""
+"""Alembic environment: async-aware, driven from app.core.config."""
 
 from __future__ import annotations
 

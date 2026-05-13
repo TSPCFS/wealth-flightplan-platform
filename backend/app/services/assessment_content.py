@@ -6,7 +6,7 @@ Single source of truth so tests can assert against these strings directly.
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------
-# Stage band tables — keep aligned with docs/API_CONTRACT.md
+# Stage band tables: keep aligned with docs/API_CONTRACT.md
 # ---------------------------------------------------------------------------
 
 STAGES_5Q: tuple[tuple[int, int, str], ...] = (
@@ -32,7 +32,7 @@ GAP_BANDS: tuple[tuple[int, int, str], ...] = (
 
 
 # ---------------------------------------------------------------------------
-# Stage details — description + income_runway label
+# Stage details: description + income_runway label
 # ---------------------------------------------------------------------------
 
 STAGE_DESCRIPTIONS: dict[str, str] = {
@@ -59,7 +59,7 @@ STAGE_INCOME_RUNWAY: dict[str, str] = {
 STAGE_RECOMMENDATIONS: dict[str, tuple[str, ...]] = {
     "Foundation": (
         "Complete the Zero-Based Budget worksheet (Appendix A).",
-        "Fill in the Debt Disclosure worksheet (Appendix D) — every account, balance, and rate.",
+        "Fill in the Debt Disclosure worksheet (Appendix D): every account, balance, and rate.",
         "Build a R1,000 starter buffer, then grow it to 1 month of essential expenses.",
         "Schedule your first Monthly Money Conversation (Appendix E).",
         "Take the full 10-question assessment for a sharper stage placement.",
@@ -67,12 +67,12 @@ STAGE_RECOMMENDATIONS: dict[str, tuple[str, ...]] = {
     "Momentum": (
         "Take the GAP Test to pinpoint your top three gaps.",
         "Review insurance cover end-to-end (Appendix C: Risk Cover Review).",
-        "Start or expand a TFSA — direct R3,000/month per adult.",
+        "Start or expand a TFSA: direct R3,000/month per adult.",
         "Complete the Net Worth Statement (Appendix B) to baseline your assets.",
         "Build emergency fund toward 3-6 months of household expenses.",
     ),
     "Freedom": (
-        "Refresh the Net Worth Statement (Appendix B) — at least annually.",
+        "Refresh the Net Worth Statement (Appendix B), at least annually.",
         "Optimise Section 11F retirement contributions toward the 27.5% / R350k cap.",
         "Establish a Bucket 3 Dream Fund in a separately-named account.",
         "Run an annual cover review (Appendix C) with quotes from 2+ providers.",
@@ -81,7 +81,7 @@ STAGE_RECOMMENDATIONS: dict[str, tuple[str, ...]] = {
     "Independence": (
         "Book your annual advisor review of cover + investments.",
         "Finalise estate planning + the attooh! Life File (Appendix F).",
-        "Optimise tax structures — trust, offshore allocation, business stake.",
+        "Optimise tax structures: trust, offshore allocation, business stake.",
         "Model years-to-Abundance based on current passive income trajectory.",
     ),
     "Abundance": (
@@ -94,7 +94,7 @@ STAGE_RECOMMENDATIONS: dict[str, tuple[str, ...]] = {
 
 
 # ---------------------------------------------------------------------------
-# GAP Test — question titles + per-question recommendations
+# GAP Test: question titles + per-question recommendations
 # ---------------------------------------------------------------------------
 
 GAP_QUESTION_TITLES: dict[str, str] = {
@@ -116,24 +116,24 @@ GAP_QUESTION_TITLES: dict[str, str] = {
 # Recommendation when a GAP question is answered "no".
 GAP_RECOMMENDATIONS_NO: dict[str, str] = {
     "q1": "Draft or update your will; have it signed and witnessed within 30 days.",
-    "q2": "Tighten budget tracking — aim to know your surplus within R5,000 each month.",
+    "q2": "Tighten budget tracking: aim to know your surplus within R5,000 each month.",
     "q3": "Schedule a 30-minute Monthly Money Conversation with your partner this week (Appendix E).",
     "q4": "Build 3-6 months of household expenses in an access bond or money market account.",
-    "q5": "Review life cover — target 10-15x annual income plus debt clearance.",
-    "q6": "Put income protection in place — monthly benefit >=75% of salary.",
+    "q5": "Review life cover: target 10-15x annual income plus debt clearance.",
+    "q6": "Put income protection in place: monthly benefit >=75% of salary.",
     "q7": "Review short-term insurance: get 2+ quotes; cost target 1.5-2.5% of gross household income.",
     "q8": "Direct R3,000/month per adult into TFSAs to max the R36k annual cap.",
     "q9": "Increase retirement contributions toward the 27.5% Section 11F cap (capped R350k/yr).",
     "q10": "Open a separately-named account for Bucket 3 dream goals (5-10yr horizon).",
     "q11": "If you own a business: arrange key-person + buy-and-sell cover with a qualified broker.",
-    "q12": "Book an annual cover review with a financial advisor — full Appendix C audit.",
+    "q12": "Book an annual cover review with a financial advisor: full Appendix C audit.",
 }
 
 
-# Softened wording when the answer is "partially" — same target, but framed
+# Softened wording when the answer is "partially": same target, but framed
 # as a tightening exercise rather than a fresh start.
 GAP_RECOMMENDATIONS_PARTIALLY: dict[str, str] = {
-    "q1": "Refresh your will — review beneficiaries and re-sign within the next 3 months.",
+    "q1": "Refresh your will: review beneficiaries and re-sign within the next 3 months.",
     "q2": "Sharpen surplus tracking until you can predict it within R5,000 each month.",
     "q3": "Lock the Monthly Money Conversation into a calendar slot you both keep.",
     "q4": "Top up the emergency fund until it covers 3-6 months of household expenses.",
