@@ -463,9 +463,156 @@ class WorksheetResponse(Base):
     )
 
 
+# ---------------------------------------------------------------------------
+# Phase 7a: chatbot conversations, messages, leads
+# ---------------------------------------------------------------------------
+
+
+class ChatbotConversation(Base):
+    """A chatbot conversation: many messages, one user."""
+
+    __tablename__ = "chatbot_conversations"
+
+    conversation_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        nullable=False,
+    )
+    last_message_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        nullable=False,
+    )
+
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    message_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="active", nullable=False)
+
+    messages: Mapped[list[ChatbotMessage]] = relationship(
+        "ChatbotMessage",
+        back_populates="conversation",
+        cascade="all, delete-orphan",
+        order_by="ChatbotMessage.created_at",
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('active','deleted')",
+            name="ck_chatbot_conversations_status",
+        ),
+        Index("ix_chatbot_conversations_user_id", "user_id"),
+    )
+
+
+class ChatbotMessage(Base):
+    """Append-only chat message; one row per turn (user / assistant / system)."""
+
+    __tablename__ = "chatbot_messages"
+
+    message_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), primary_key=True, default=uuid.uuid4
+    )
+    conversation_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(),
+        ForeignKey("chatbot_conversations.conversation_id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    role: Mapped[str] = mapped_column(String(20), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+
+    tokens_in: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    tokens_out: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    model: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        nullable=False,
+    )
+
+    # DB column is ``meta`` (SQLAlchemy reserves ``metadata`` on Base).
+    # Surfaced as ``metadata`` in API responses.
+    meta: Mapped[dict | None] = mapped_column("meta", JSONType(), nullable=True)
+
+    conversation: Mapped[ChatbotConversation] = relationship(
+        "ChatbotConversation", back_populates="messages"
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "role IN ('user','assistant','system')",
+            name="ck_chatbot_messages_role",
+        ),
+        Index("ix_chatbot_messages_conversation_id", "conversation_id", "created_at"),
+    )
+
+
+class ChatbotLead(Base):
+    """Advisor handoff request raised from a chatbot session or directly by the user."""
+
+    __tablename__ = "chatbot_leads"
+
+    lead_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False
+    )
+    conversation_id: Mapped[uuid.UUID | None] = mapped_column(
+        GUID(),
+        ForeignKey("chatbot_conversations.conversation_id", ondelete="SET NULL"),
+        nullable=True,
+    )
+
+    trigger_event: Mapped[str] = mapped_column(String(64), nullable=False)
+    topic: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    advisor_email: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    status: Mapped[str] = mapped_column(String(20), default="new", nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        default=utcnow,
+        nullable=False,
+    )
+    contacted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('new','contacted','qualified','closed')",
+            name="ck_chatbot_leads_status",
+        ),
+        CheckConstraint(
+            "trigger_event IN ('worksheet_complete','calculator_complete',"
+            "'regulated_question','user_request','step_complete')",
+            name="ck_chatbot_leads_trigger_event",
+        ),
+        Index("ix_chatbot_leads_user_id", "user_id"),
+        Index("ix_chatbot_leads_status_created", "status", "created_at"),
+    )
+
+
 __all__ = [
     "Assessment",
     "AuditLog",
+    "ChatbotConversation",
+    "ChatbotLead",
+    "ChatbotMessage",
     "ContentMetadata",
     "ExampleInteraction",
     "User",
