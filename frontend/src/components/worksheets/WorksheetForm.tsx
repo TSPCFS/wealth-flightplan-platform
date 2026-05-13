@@ -27,12 +27,17 @@ const seedDataFromSchema = (schema: WorksheetSchema): WorksheetResponseData => {
     } else {
       const sec: Record<string, unknown> = {};
       for (const field of section.fields ?? []) {
-        sec[field.name] =
-          field.default !== undefined
-            ? field.default
-            : field.type === 'number'
-              ? ''
-              : '';
+        // Number fields always seed empty: the schema's `default: 0` is for
+        // backend submission semantics ("treat unfilled as zero"), but on the
+        // UI we want truly empty inputs so the completion bar starts at 0%
+        // and 0 is only counted as filled once the user explicitly types it.
+        // Without this, every money/percent field in every worksheet would
+        // load pre-filled with 0 and the bar would read 100% instantly.
+        if (field.type === 'number') {
+          sec[field.name] = '';
+        } else {
+          sec[field.name] = field.default !== undefined ? field.default : '';
+        }
       }
       data[section.name] = sec;
     }

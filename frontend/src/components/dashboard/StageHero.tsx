@@ -12,8 +12,12 @@ interface Props {
 // CTA pair. Tracks MOCKUP.html exactly.
 const HERO_BG_IMAGE =
   'https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/AqJpNjLZr8GgtLAFmqa0/media/637ba93453cbe1febe4828e4.png';
+// Strong overlay on the left for headline legibility, then drops off quickly
+// so the soccer-at-sunset photo (boys silhouettes + ball) reads through on the
+// right two-thirds of the hero. Previously 135deg + uniform 0.25/0.1 stops
+// flattened the whole photo into a near-black field.
 const HERO_OVERLAY =
-  'linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.1) 100%)';
+  'linear-gradient(95deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.35) 30%, rgba(0,0,0,0.05) 65%, rgba(0,0,0,0) 100%)';
 
 export const StageHero: React.FC<Props> = ({ stageDetails }) => {
   if (!stageDetails) {
