@@ -12,6 +12,8 @@ import { RecentActivity } from '../components/dashboard/RecentActivity';
 import { UpcomingMilestones } from '../components/dashboard/UpcomingMilestones';
 import { QuickStats } from '../components/dashboard/QuickStats';
 import { StageCelebration } from '../components/dashboard/StageCelebration';
+import { FirstRunIntro } from '../components/dashboard/FirstRunIntro';
+import { AppLayout } from '../components/common/AppLayout';
 import { useDashboardStageCelebration } from '../hooks/useDashboardStageCelebration';
 
 export const DashboardPage: React.FC = () => {
@@ -37,9 +39,9 @@ export const DashboardPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-3xl mx-auto py-12 px-4">
+        <AppLayout maxWidth="narrow" className="py-12">
           <FormError error={error} />
-        </div>
+        </AppLayout>
       </div>
     );
   }
@@ -55,7 +57,7 @@ export const DashboardPage: React.FC = () => {
         />
       )}
 
-      <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-6">
+      <AppLayout maxWidth="wide" className="space-y-6">
         <header className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">
@@ -67,6 +69,10 @@ export const DashboardPage: React.FC = () => {
             Logout
           </Button>
         </header>
+
+        {dashboard.current_stage === null && dashboard.recent_activity.length === 0 && (
+          <FirstRunIntro />
+        )}
 
         <StageHero stageDetails={dashboard.current_stage_details} />
 
@@ -85,7 +91,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <QuickStats stats={dashboard.quick_stats} />
-      </div>
+      </AppLayout>
     </div>
   );
 };

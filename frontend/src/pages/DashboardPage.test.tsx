@@ -77,6 +77,33 @@ describe('DashboardPage', () => {
     );
     expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(4);
     expect(screen.getByRole('link', { name: /start an assessment/i })).toBeInTheDocument();
+    // First-run intro renders on truly empty dashboards
+    expect(screen.getByText(/How the Wealth FlightPlan™ works/)).toBeInTheDocument();
+  });
+
+  it('does NOT render the first-run intro when stage is set', async () => {
+    vi.mocked(userService.getDashboard).mockResolvedValue(populatedDashboard);
+    renderDash();
+    await waitFor(() => expect(screen.getByText('Freedom')).toBeInTheDocument());
+    expect(screen.queryByText(/How the Wealth FlightPlan™ works/)).not.toBeInTheDocument();
+  });
+
+  it('does NOT render the first-run intro when recent_activity is non-empty', async () => {
+    vi.mocked(userService.getDashboard).mockResolvedValue({
+      ...emptyDashboard,
+      recent_activity: [
+        {
+          event_type: 'assessment_submitted',
+          title: 'Took an assessment',
+          timestamp: '2026-05-12T10:30:00Z',
+        },
+      ],
+    });
+    renderDash();
+    await waitFor(() =>
+      expect(screen.getByTestId('stage-hero-empty')).toBeInTheDocument()
+    );
+    expect(screen.queryByText(/How the Wealth FlightPlan™ works/)).not.toBeInTheDocument();
   });
 
   it('surfaces a friendly error when the dashboard fetch fails', async () => {
