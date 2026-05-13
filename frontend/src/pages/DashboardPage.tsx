@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { userService } from '../services/user.service';
 import type { DashboardResponse } from '../types/user.types';
-import { Button } from '../components/common/Button';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { FormError } from '../components/common/FormError';
 import { StageHero } from '../components/dashboard/StageHero';
@@ -19,7 +18,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const DashboardPage: React.FC = () => {
   useDocumentTitle('Dashboard');
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,16 +59,11 @@ export const DashboardPage: React.FC = () => {
       )}
 
       <AppLayout maxWidth="wide" className="space-y-6">
-        <header className="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">
-              Welcome{user?.first_name ? `, ${user.first_name}` : ''}
-            </h1>
-            <p className="text-gray-600">Your Wealth FlightPlan™ dashboard.</p>
-          </div>
-          <Button onClick={() => logout()} variant="secondary">
-            Logout
-          </Button>
+        <header>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">
+            Welcome{user?.first_name ? `, ${user.first_name}` : ''}
+          </h1>
+          <p className="text-gray-600">Your Wealth FlightPlan™ dashboard.</p>
         </header>
 
         {dashboard.current_stage === null && dashboard.recent_activity.length === 0 && (

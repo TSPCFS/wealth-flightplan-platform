@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { AssessmentFlow } from './AssessmentFlow';
 import type { AssessmentQuestion } from '../../data/assessment-questions';
+
+// AssessmentFlow renders inside AppLayout, which mounts the routed TopNav,
+// so every render needs a router context.
+const withRouter = (ui: React.ReactNode) =>
+  render(<MemoryRouter>{ui}</MemoryRouter>);
 
 const QUESTIONS: AssessmentQuestion[] = [
   {
@@ -34,7 +40,7 @@ describe('AssessmentFlow', () => {
   });
 
   it('disables Next until the current question is answered', () => {
-    render(
+    withRouter(
       <AssessmentFlow
         type="5q"
         questions={QUESTIONS}
@@ -49,7 +55,7 @@ describe('AssessmentFlow', () => {
   });
 
   it('Back navigates to the previous question', () => {
-    render(
+    withRouter(
       <AssessmentFlow
         type="5q"
         questions={QUESTIONS}
@@ -68,7 +74,7 @@ describe('AssessmentFlow', () => {
 
   it('submits merged responses with an elapsed time', async () => {
     const onSubmit = vi.fn().mockResolvedValue(undefined);
-    render(
+    withRouter(
       <AssessmentFlow
         type="5q"
         questions={QUESTIONS}
@@ -88,7 +94,7 @@ describe('AssessmentFlow', () => {
   });
 
   it('persists answers to localStorage and restores them on remount', () => {
-    const { unmount } = render(
+    const { unmount } = withRouter(
       <AssessmentFlow
         type="5q"
         questions={QUESTIONS}
@@ -101,7 +107,7 @@ describe('AssessmentFlow', () => {
     fireEvent.click(screen.getByLabelText('B2'));
     unmount();
 
-    render(
+    withRouter(
       <AssessmentFlow
         type="5q"
         questions={QUESTIONS}
@@ -120,7 +126,7 @@ describe('AssessmentFlow', () => {
       message: 'Bad',
       details: { q1: ['Required'] },
     });
-    render(
+    withRouter(
       <AssessmentFlow
         type="5q"
         questions={QUESTIONS}
