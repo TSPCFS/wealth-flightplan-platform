@@ -119,6 +119,37 @@ class UserProfile(ZuluResponse):
     created_at: ZuluDateTime
 
 
+class ResetProgressRequest(BaseModel):
+    """Body shape for POST /users/me/reset-progress.
+
+    The contract requires the ``confirm`` field as a guardrail against
+    accidental deletion. The value is checked at the API layer (must equal
+    ``"RESET"``); the field is required so an empty body is rejected with
+    ``MISSING_CONFIRM`` rather than silently destroying data.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    confirm: str | None = None
+
+
+class ResetProgressDeletedCounts(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    assessments: int
+    worksheet_responses: int
+    example_interactions: int
+    user_progress_rows: int
+
+
+class ResetProgressResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    deleted: ResetProgressDeletedCounts
+    preserved: list[str]
+    message: str
+
+
 class ProfileUpdateRequest(BaseModel):
     """Partial profile update. Every field is optional; the API layer applies
     only the fields that are present in the request body."""

@@ -1,8 +1,13 @@
-"""User profile endpoints (GET + PATCH).
+"""User profile endpoints (GET + PATCH + reset-progress).
 
 Phase 5 additions:
 - ``is_business_owner`` exposed in profile responses
 - ``PATCH /users/profile`` for partial updates
+
+Phase 6b additions:
+- ``POST /users/me/reset-progress`` — wipes the user's testing data
+  (assessments, worksheet_responses, example_interactions, user_progress)
+  while preserving the account itself + the audit trail.
 """
 
 from __future__ import annotations
@@ -10,13 +15,27 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import desc, select
+from sqlalchemy import delete, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_request_context
+from app.core.errors import APIError
 from app.db.database import get_db
-from app.db.models import Assessment, User
-from app.schemas.auth import ProfileUpdateRequest, UserProfile
+from app.db.models import (
+    Assessment,
+    ExampleInteraction,
+    User,
+    UserProgress,
+    WorksheetResponse,
+)
+from app.schemas.auth import (
+    ProfileUpdateRequest,
+    ResetProgressRequest,
+    ResetProgressResponse,
+    UserProfile,
+)
+from app.services import audit
+from app.services.auth import RequestContext
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -86,3 +105,75 @@ async def update_profile(
     await session.commit()
     await session.refresh(current_user)
     return await _profile_view(session, current_user)
+
+
+@router.post(
+    "/me/reset-progress",
+    response_model=ResetProgressResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def reset_progress(
+    payload: ResetProgressRequest,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: AsyncSession = Depends(get_db),
+    ctx: RequestContext = Depends(get_request_context),
+) -> ResetProgressResponse:
+    """Wipe the calling user's testing data.
+
+    Guardrails:
+    - Requires ``confirm == "RESET"`` — any other value is treated as missing.
+    - Per-user only: queries / deletes filter on ``user_id == current_user.user_id``.
+    - Single transaction: counts are captured, then the four DELETEs run, then
+      the audit row is inserted, then commit. If anything raises mid-way the
+      session rolls back automatically via the ``get_db`` dependency.
+    """
+    if payload.confirm != "RESET":
+        raise APIError(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            code="MISSING_CONFIRM",
+            message='Request body must include {"confirm": "RESET"} to proceed.',
+        )
+
+    user_id = current_user.user_id
+
+    # 1) Capture counts BEFORE deletion.
+    async def _count(model) -> int:  # type: ignore[no-untyped-def]
+        res = await session.execute(
+            select(func.count()).select_from(model).where(model.user_id == user_id)
+        )
+        return int(res.scalar_one())
+
+    counts = {
+        "assessments": await _count(Assessment),
+        "worksheet_responses": await _count(WorksheetResponse),
+        "example_interactions": await _count(ExampleInteraction),
+        "user_progress_rows": await _count(UserProgress),
+    }
+
+    # 2) Delete user-owned rows in the four tables. ``audit_logs`` and the
+    #    ``users`` row itself are intentionally untouched.
+    await session.execute(delete(Assessment).where(Assessment.user_id == user_id))
+    await session.execute(delete(WorksheetResponse).where(WorksheetResponse.user_id == user_id))
+    await session.execute(delete(ExampleInteraction).where(ExampleInteraction.user_id == user_id))
+    await session.execute(delete(UserProgress).where(UserProgress.user_id == user_id))
+
+    # 3) Compliance trail. ``audit.record`` flushes via the same session so the
+    #    DELETEs and the INSERT either both land or both roll back.
+    await audit.record(
+        session,
+        action="reset_progress",
+        user_id=user_id,
+        entity_type="user",
+        entity_id=user_id,
+        status="success",
+        ip_address=ctx.ip_address,
+        user_agent=ctx.user_agent,
+        new_values={"deleted": counts},
+    )
+    await session.commit()
+
+    return ResetProgressResponse(
+        deleted=counts,
+        preserved=["user_account", "audit_logs"],
+        message="Progress reset. Reload to see the empty-state dashboard.",
+    )
