@@ -28,18 +28,21 @@ interface StepRowProps {
 }
 
 const StepRow: React.FC<StepRowProps> = ({ step, pending, onToggle }) => (
-  <li className="bg-white rounded-lg shadow p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-    <span className="inline-flex items-center justify-center text-sm font-semibold text-white bg-blue-600 rounded-full w-9 h-9 shrink-0">
+  <li className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+    <span
+      aria-hidden="true"
+      className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-attooh-lime text-attooh-charcoal font-montserrat font-bold text-base ring-[3px] ring-attooh-lime-pale shrink-0"
+    >
       {step.step_number}
     </span>
     <div className="flex-1 min-w-0">
       <Link
         to={`/framework/${encodeURIComponent(step.step_number)}`}
-        className="text-base font-semibold text-gray-900 hover:text-blue-700"
+        className="text-base font-bold text-attooh-charcoal hover:text-attooh-lime-hover"
       >
         {step.title}
       </Link>
-      <p className="text-xs text-gray-500 mt-1">
+      <p className="text-xs text-attooh-muted mt-1">
         {step.is_completed && step.completed_at
           ? `Completed on ${formatShortDate(step.completed_at)}`
           : 'Not started'}
@@ -117,19 +120,21 @@ export const ProgressPage: React.FC = () => {
   return (
     <AppLayout maxWidth="narrow" className="space-y-6">
       <header>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Your framework progress</h1>
-        <p className="text-gray-600 mt-1">
+        <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal break-words tracking-tight">
+          Your framework progress
+        </h1>
+        <p className="text-attooh-muted mt-1.5">
           Mark each step complete as you work through it. Step 4b (Business owners) appears when
           your profile reflects that you own a business.
         </p>
       </header>
 
-      <section className="bg-white rounded-lg shadow p-5">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm text-gray-700">
+      <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm text-attooh-charcoal">
             {progress.steps_completed} of {progress.steps_total} steps complete
           </p>
-          <p className="text-sm font-semibold text-gray-900">
+          <p className="text-sm font-bold text-attooh-charcoal">
             {progress.overall_completion_pct}%
           </p>
         </div>
@@ -139,10 +144,10 @@ export const ProgressPage: React.FC = () => {
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={progress.overall_completion_pct}
-          className="w-full bg-gray-200 rounded-full h-2"
+          className="w-full bg-attooh-border rounded-full h-2 overflow-hidden"
         >
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all"
+            className="bg-attooh-lime h-2 rounded-full transition-all"
             style={{ width: `${progress.overall_completion_pct}%` }}
           />
         </div>

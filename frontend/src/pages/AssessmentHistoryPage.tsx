@@ -60,55 +60,58 @@ export const AssessmentHistoryPage: React.FC = () => {
 
   return (
     <AppLayout maxWidth="narrow" className="space-y-8">
-      <header className="flex items-center justify-between">
+      <header className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Assessment history</h1>
+          <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal break-words tracking-tight">
+            Assessment history
+          </h1>
           {data.current_stage && (
-            <p className="text-sm text-gray-600 mt-1">
-              Current stage: <span className="font-medium">{data.current_stage}</span>
+            <p className="text-sm text-attooh-muted mt-1.5">
+              Current stage:{' '}
+              <span className="font-medium text-attooh-charcoal">{data.current_stage}</span>
             </p>
           )}
         </div>
         <Link
           to="/assessments"
-          className="text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+          className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
         >
-          Take another
+          Take another →
         </Link>
       </header>
 
       <section>
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
+        <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-4">
           Stage progression
         </h2>
         <HistoryTimeline progression={data.stage_progression} />
       </section>
 
       <section>
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
+        <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-4">
           All submissions
         </h2>
         {!hasAny ? (
-          <p className="text-gray-600">No assessments yet.</p>
+          <p className="text-attooh-muted">No assessments yet.</p>
         ) : (
-          <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow">
+          <ul className="divide-y divide-attooh-border bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm">
             {data.assessments.map((a) => (
-              <li key={a.assessment_id} className="p-4 flex items-center justify-between">
+              <li key={a.assessment_id} className="p-5 flex items-center justify-between">
                 <div>
                   <Link
                     to={`/assessments/results/${a.assessment_id}`}
-                    className="text-base font-medium text-gray-900 hover:text-blue-700"
+                    className="text-base font-semibold text-attooh-charcoal hover:text-attooh-lime-hover"
                   >
                     {typeLabel[a.assessment_type] ?? a.assessment_type}
                   </Link>
-                  <p className="text-sm text-gray-500">{formatDate(a.created_at)}</p>
+                  <p className="text-sm text-attooh-muted">{formatDate(a.created_at)}</p>
                 </div>
                 <div className="text-right">
                   {a.calculated_stage && (
-                    <p className="text-sm font-medium text-gray-900">{a.calculated_stage}</p>
+                    <p className="text-sm font-bold text-attooh-charcoal">{a.calculated_stage}</p>
                   )}
-                  {a.band && <p className="text-sm font-medium text-gray-900">{a.band}</p>}
-                  <p className="text-xs text-gray-500">Score {a.total_score}</p>
+                  {a.band && <p className="text-sm font-bold text-attooh-charcoal">{a.band}</p>}
+                  <p className="text-xs text-attooh-muted">Score {a.total_score}</p>
                 </div>
               </li>
             ))}

@@ -37,50 +37,52 @@ export const ProfilePage: React.FC = () => {
   if (!profile) return <LoadingSpinner />;
 
   return (
-    <AppLayout maxWidth="narrow" className="space-y-8">
+    <AppLayout maxWidth="narrow" className="space-y-7">
       <header>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Profile</h1>
-        <p className="text-gray-600 mt-1">
+        <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal break-words tracking-tight">
+          Profile
+        </h1>
+        <p className="text-attooh-muted mt-1.5">
           Personal details and preferences. Your household data feeds calculations across the
           platform.
         </p>
       </header>
 
-      <section className="bg-white rounded-lg shadow p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-4">
+      <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+        <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-4">
           Personal details
         </h2>
         <ProfileForm profile={profile} onSaved={setProfile} />
       </section>
 
-      <section className="bg-white rounded-lg shadow p-5 space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+      <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7 space-y-3">
+        <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate">
           Account
         </h2>
         <div>
-          <p className="text-xs text-gray-500">Email</p>
-          <p className="text-sm text-gray-900">{profile.email}</p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-attooh-muted">Email</p>
+          <p className="text-sm text-attooh-charcoal">{profile.email}</p>
+          <p className="text-xs text-attooh-muted mt-1">
             Contact support to change your email address.
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500">Member since</p>
-          <p className="text-sm text-gray-900">{formatShortDate(profile.created_at)}</p>
+          <p className="font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-attooh-muted">Member since</p>
+          <p className="text-sm text-attooh-charcoal">{formatShortDate(profile.created_at)}</p>
         </div>
       </section>
 
       <section
         aria-labelledby="reset-section-title"
-        className="bg-white rounded-lg shadow p-5 ring-1 ring-red-100"
+        className="bg-attooh-card rounded-xl border-[1.5px] border-[rgba(199,54,59,0.25)] shadow-attooh-sm p-7"
       >
         <h2
           id="reset-section-title"
-          className="text-sm font-semibold uppercase tracking-wide text-red-700 mb-2"
+          className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-danger mb-2"
         >
           Reset my testing data
         </h2>
-        <p className="text-sm text-gray-700 mb-4">
+        <p className="text-sm text-attooh-charcoal mb-4">
           Wipes your assessments, worksheets, and progress so you can re-run the
           recommendation cascade from a clean state. Your account, profile, and
           password are kept.
@@ -100,11 +102,11 @@ export const ProfilePage: React.FC = () => {
         onClose={() => setResetOpen(false)}
       />
 
-      <section className="bg-white rounded-lg shadow p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
+      <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+        <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-3">
           Privacy
         </h2>
-        <p className="text-sm text-gray-600 mb-3">
+        <p className="text-sm text-attooh-muted mb-4">
           Data download and account deletion arrive in Phase 6.
         </p>
         <div className="flex flex-wrap gap-3">

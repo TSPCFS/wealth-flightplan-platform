@@ -12,13 +12,13 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 // Accept all status values the backend may emit. `completed` is the canonical
 // value; `done` is tolerated as an alias for forward-compat.
 const readingStatusStyle: Record<string, { tone: string; label: string }> = {
-  next: { tone: 'bg-blue-50 text-blue-700 ring-blue-200', label: 'Next' },
-  upcoming: { tone: 'bg-gray-50 text-gray-700 ring-gray-200', label: 'Upcoming' },
-  completed: { tone: 'bg-emerald-50 text-emerald-700 ring-emerald-200', label: 'Done' },
-  done: { tone: 'bg-emerald-50 text-emerald-700 ring-emerald-200', label: 'Done' },
+  next: { tone: 'bg-attooh-lime-pale text-attooh-success ring-attooh-lime', label: 'Next' },
+  upcoming: { tone: 'bg-attooh-bg text-attooh-slate ring-attooh-border', label: 'Upcoming' },
+  completed: { tone: 'bg-attooh-lime-pale text-attooh-success ring-attooh-lime', label: 'Done' },
+  done: { tone: 'bg-attooh-lime-pale text-attooh-success ring-attooh-lime', label: 'Done' },
 };
 const _fallbackStatusStyle = {
-  tone: 'bg-gray-50 text-gray-700 ring-gray-200',
+  tone: 'bg-attooh-bg text-attooh-slate ring-attooh-border',
   label: '',
 };
 
@@ -50,11 +50,13 @@ export const RecommendationsPage: React.FC = () => {
   return (
     <AppLayout maxWidth="default" className="space-y-8">
       <header>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Your recommendations</h1>
+        <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal break-words tracking-tight">
+          Your recommendations
+        </h1>
         {data.current_stage && (
-          <p className="text-gray-600 mt-1">
+          <p className="text-attooh-muted mt-1.5">
             Tailored to your current stage:{' '}
-            <span className="font-medium">{data.current_stage}</span>
+            <span className="font-medium text-attooh-charcoal">{data.current_stage}</span>
           </p>
         )}
       </header>
@@ -65,23 +67,23 @@ export const RecommendationsPage: React.FC = () => {
       />
 
       {data.reading_path.length > 0 && (
-        <section className="bg-white rounded-lg shadow p-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
+        <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+          <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-4">
             Suggested reading path
           </h2>
-          <ol className="space-y-3 list-decimal list-inside">
+          <ol className="space-y-3 list-decimal list-inside marker:text-attooh-lime-hover marker:font-bold">
             {data.reading_path.map((entry) => {
               const style = readingStatusStyle[entry.status] ?? _fallbackStatusStyle;
               return (
-                <li key={entry.order} className="text-gray-900">
+                <li key={entry.order} className="text-attooh-charcoal">
                   <Link
                     to={`/framework/${encodeURIComponent(entry.step_number)}`}
-                    className="hover:text-blue-700"
+                    className="hover:text-attooh-lime-hover"
                   >
                     Step {entry.step_number} · {entry.title}
                   </Link>{' '}
                   <span
-                    className={`inline-flex items-center text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ring-1 ${style.tone}`}
+                    className={`inline-flex items-center font-lato text-[10px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded ring-1 ${style.tone}`}
                   >
                     {style.label}
                   </span>
@@ -94,20 +96,22 @@ export const RecommendationsPage: React.FC = () => {
 
       {data.suggested_examples.length > 0 && (
         <section>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
+          <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-4">
             Suggested examples
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {data.suggested_examples.map((ex) => (
               <Link
                 key={ex.example_code}
                 to={`/examples/${encodeURIComponent(ex.example_code)}`}
-                className="block bg-white rounded-lg shadow p-5 border border-transparent hover:border-blue-500 hover:shadow-md transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="group block bg-attooh-card rounded-xl border border-attooh-border p-6 shadow-attooh-sm transition-all duration-200 hover:border-attooh-lime hover:shadow-attooh-md hover:-translate-y-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-attooh-lime"
               >
-                <p className="text-xs text-gray-500">{ex.example_code}</p>
-                <h3 className="text-base font-semibold text-gray-900 mt-1">{ex.title}</h3>
-                <p className="text-sm text-gray-600 mt-2">{ex.reason}</p>
-                <span className="block mt-3 text-sm font-medium text-blue-600">
+                <p className="font-lato text-[11px] font-bold uppercase tracking-[0.16em] text-attooh-lime-hover">
+                  {ex.example_code}
+                </p>
+                <h3 className="text-base font-bold text-attooh-charcoal mt-2">{ex.title}</h3>
+                <p className="text-sm text-attooh-muted mt-2">{ex.reason}</p>
+                <span className="block mt-4 font-lato font-bold text-[13px] uppercase tracking-[0.08em] text-attooh-lime-hover">
                   Open →
                 </span>
               </Link>
@@ -118,10 +122,10 @@ export const RecommendationsPage: React.FC = () => {
 
       {data.suggested_worksheets.length > 0 && (
         <section>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
+          <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-4">
             Suggested worksheets
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {data.suggested_worksheets.map((ws) => (
               <WorksheetCard
                 key={ws.worksheet_code}

@@ -50,18 +50,18 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
         {visual.symbol}
       </span>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-900">{event.title}</p>
-        <p className="text-xs text-gray-500">{relativeTimeFromIso(event.timestamp)}</p>
+        <p className="text-sm text-attooh-charcoal">{event.title}</p>
+        <p className="text-xs text-attooh-muted">{relativeTimeFromIso(event.timestamp)}</p>
       </div>
       {event.event_type === 'stage_changed' && stageDir && (
         <span
           data-testid="stage-direction"
-          className={`shrink-0 inline-flex items-center text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ring-1 ${
+          className={`shrink-0 inline-flex items-center font-lato text-[10px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded ring-1 ${
             stageDir === 'up'
-              ? 'bg-emerald-50 text-emerald-800 ring-emerald-200'
+              ? 'bg-attooh-lime-pale text-attooh-success ring-attooh-lime'
               : stageDir === 'down'
-                ? 'bg-red-50 text-red-800 ring-red-200'
-                : 'bg-gray-50 text-gray-800 ring-gray-200'
+                ? 'bg-[rgba(199,54,59,0.1)] text-attooh-danger ring-[rgba(199,54,59,0.25)]'
+                : 'bg-attooh-bg text-attooh-slate ring-attooh-border'
           }`}
         >
           {stageDirectionSymbol(stageDir)}
@@ -71,11 +71,11 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
   );
 
   return (
-    <li className="bg-white rounded-lg shadow px-4 py-3">
+    <li className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm px-5 py-4">
       {event.link ? (
         <Link
           to={event.link}
-          className="block hover:bg-gray-50 -mx-2 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="block hover:bg-attooh-lime-pale -mx-2 px-2 py-1 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-attooh-lime"
         >
           {body}
         </Link>
@@ -134,8 +134,10 @@ export const ActivityPage: React.FC = () => {
   return (
     <AppLayout maxWidth="narrow" className="space-y-6">
       <header>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Activity</h1>
-        <p className="text-gray-600 mt-1">
+        <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal break-words tracking-tight">
+          Activity
+        </h1>
+        <p className="text-attooh-muted mt-1.5">
           Every assessment, worksheet, and step you've completed, newest first.
         </p>
       </header>
@@ -145,10 +147,10 @@ export const ActivityPage: React.FC = () => {
       {events.length === 0 ? (
         <div
           data-testid="activity-empty"
-          className="bg-white rounded-lg shadow p-6 text-center space-y-3"
+          className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7 text-center space-y-3"
         >
-          <p className="text-gray-700">Nothing here yet.</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-attooh-charcoal">Nothing here yet.</p>
+          <p className="text-sm text-attooh-muted">
             Take an assessment to start the timeline.
           </p>
           <Link to="/assessments" className="inline-block">

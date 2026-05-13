@@ -66,8 +66,11 @@ export const WorksheetResultsPage: React.FC = () => {
       <AppLayout maxWidth="narrow" className="py-12 space-y-6">
         <FormError error={error || 'Missing submission.'} />
         <div className="text-center">
-          <Link to="/worksheets" className="text-blue-600 underline">
-            Back to worksheets
+          <Link
+            to="/worksheets"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to worksheets
           </Link>
         </div>
       </AppLayout>
@@ -76,10 +79,13 @@ export const WorksheetResultsPage: React.FC = () => {
 
   return (
     <AppLayout maxWidth="default">
-      <Link to="/worksheets" className="text-sm text-blue-600 underline">
+      <Link
+        to="/worksheets"
+        className="inline-flex items-center font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+      >
         ← Worksheets
       </Link>
-      <div className="mt-4">
+      <div className="mt-5">
         <WorksheetSubmissionResult submission={submission} />
       </div>
     </AppLayout>

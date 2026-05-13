@@ -63,8 +63,11 @@ export const WorksheetHistoryPage: React.FC = () => {
       <AppLayout maxWidth="narrow" className="py-12">
         <FormError error={error} />
         <div className="mt-6 text-center">
-          <Link to="/worksheets" className="text-blue-600 underline">
-            Back to worksheets
+          <Link
+            to="/worksheets"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
+            ← Back to worksheets
           </Link>
         </div>
       </AppLayout>
@@ -76,59 +79,62 @@ export const WorksheetHistoryPage: React.FC = () => {
     <AppLayout maxWidth="default" className="space-y-6">
       <header className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <Link to="/worksheets" className="text-sm text-blue-600 underline">
+          <Link
+            to="/worksheets"
+            className="inline-flex items-center font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
+          >
             ← Worksheets
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1 break-words">
+          <h1 className="font-montserrat text-2xl sm:text-3xl font-bold text-attooh-charcoal mt-2 break-words tracking-tight">
             {data.worksheet_code} history
           </h1>
         </div>
         <Link
           to={`/worksheets/${encodeURIComponent(data.worksheet_code)}`}
-          className="text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+          className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
         >
-          Take it again
+          Take it again →
         </Link>
       </header>
 
       {data.submissions.length === 0 ? (
-        <p className="text-center text-gray-600 py-8">No submissions yet.</p>
+        <p className="text-center text-attooh-muted py-8">No submissions yet.</p>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <div className="overflow-x-auto bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm">
           <table className="min-w-full text-sm">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-500">
+            <thead className="bg-attooh-bg font-lato text-xs uppercase tracking-wider text-attooh-slate">
               <tr>
-                <th className="text-left px-4 py-2">Date</th>
-                <th className="text-right px-4 py-2">Completion</th>
-                <th className="text-left px-4 py-2">Headline values</th>
-                <th className="px-4 py-2" />
+                <th className="text-left px-5 py-3">Date</th>
+                <th className="text-right px-5 py-3">Completion</th>
+                <th className="text-left px-5 py-3">Headline values</th>
+                <th className="px-5 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-attooh-border">
               {data.submissions.map((s) => (
                 <tr key={s.worksheet_id}>
-                  <td className="px-4 py-2 align-top text-gray-800">
+                  <td className="px-5 py-3 align-top text-attooh-charcoal">
                     {formatDate(s.created_at)}
                   </td>
-                  <td className="px-4 py-2 align-top text-right text-gray-800">
+                  <td className="px-5 py-3 align-top text-right text-attooh-charcoal">
                     {s.completion_percentage}%
                   </td>
-                  <td className="px-4 py-2 align-top">
-                    <ul className="text-xs text-gray-600 space-y-0.5">
+                  <td className="px-5 py-3 align-top">
+                    <ul className="text-xs text-attooh-muted space-y-0.5">
                       {Object.entries(s.calculated_values_summary).map(([k, v]) => (
                         <li key={k}>
-                          <span className="text-gray-500">{humaniseKey(k)}:</span>{' '}
-                          <span className="font-medium text-gray-900">
+                          <span className="text-attooh-muted">{humaniseKey(k)}:</span>{' '}
+                          <span className="font-medium text-attooh-charcoal">
                             {renderSummaryValue(k, v)}
                           </span>
                         </li>
                       ))}
                     </ul>
                   </td>
-                  <td className="px-4 py-2 align-top text-right">
+                  <td className="px-5 py-3 align-top text-right">
                     <Link
                       to={`/worksheets/results/${encodeURIComponent(s.worksheet_id)}`}
-                      className="text-sm text-blue-600 hover:text-blue-800 underline"
+                      className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
                     >
                       View
                     </Link>
