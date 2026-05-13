@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
+from app.api import admin as admin_routes
 from app.api import assessments as assessments_routes
 from app.api import auth as auth_routes
 from app.api import chatbot as chatbot_routes
@@ -117,6 +118,7 @@ def create_app() -> FastAPI:
     app.include_router(content_routes.router)
     app.include_router(worksheets_routes.router)
     app.include_router(chatbot_routes.router)
+    app.include_router(admin_routes.router)
 
     @app.get("/health", tags=["meta"], status_code=status.HTTP_200_OK)
     async def health() -> dict[str, str]:

@@ -68,6 +68,7 @@ async def _profile_view(session: AsyncSession, user: User) -> UserProfile:
         household_size=user.household_size,
         number_of_dependants=user.number_of_dependants,
         is_business_owner=user.is_business_owner,
+        is_admin=user.is_admin,
         primary_language=user.primary_language,
         timezone=user.timezone,
         subscription_tier=user.subscription_tier,

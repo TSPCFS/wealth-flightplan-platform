@@ -111,6 +111,7 @@ class UserProfile(ZuluResponse):
     household_size: int | None = None
     number_of_dependants: int | None = None
     is_business_owner: bool = False
+    is_admin: bool = False
     primary_language: str = "en"
     timezone: str = "SAST"
     subscription_tier: str

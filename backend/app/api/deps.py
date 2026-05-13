@@ -110,7 +110,26 @@ async def get_current_user(
 
     res = await session.execute(select(User).where(User.user_id == user_id))
     user = res.scalar_one_or_none()
-    if user is None or user.account_status != "active":
+    if user is None:
+        raise APIError(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            code="TOKEN_INVALID",
+            message="Access token is invalid.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # Suspension check runs BEFORE the account_status / token_version checks.
+    # Suspending sets account_status='suspended' and bumps token_version too;
+    # checking suspended_at first means the FE gets the friendlier 403 instead
+    # of a generic 401 on the next request.
+    if user.suspended_at is not None:
+        raise APIError(
+            status_code=status.HTTP_403_FORBIDDEN,
+            code="FORBIDDEN_USER_SUSPENDED",
+            message="Your account is currently suspended. Contact your administrator.",
+        )
+
+    if user.account_status != "active":
         raise APIError(
             status_code=status.HTTP_401_UNAUTHORIZED,
             code="TOKEN_INVALID",
@@ -124,5 +143,23 @@ async def get_current_user(
             code="TOKEN_INVALID",
             message="Access token has been revoked.",
             headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+
+async def require_admin(
+    user: Annotated[User, Depends(get_current_user)],
+) -> User:
+    """Admin-only gate for /admin/* endpoints.
+
+    Layered on top of ``get_current_user`` — by the time this dependency runs
+    we already know the bearer token is valid, the account is active, and the
+    user isn't suspended. We only need to check the role bit.
+    """
+    if not user.is_admin:
+        raise APIError(
+            status_code=status.HTTP_403_FORBIDDEN,
+            code="FORBIDDEN_NOT_ADMIN",
+            message="Admin role required.",
         )
     return user
