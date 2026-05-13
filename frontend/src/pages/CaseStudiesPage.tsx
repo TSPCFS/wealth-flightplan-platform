@@ -59,38 +59,44 @@ export const CaseStudiesPage: React.FC = () => {
     setQ('');
   };
 
+  const labelCls = 'block font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate';
+  const fieldCls =
+    'mt-1.5 block w-full px-3.5 py-2.5 border-[1.5px] border-attooh-border rounded-lg text-sm text-attooh-charcoal bg-white transition focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale';
+
   return (
     <AppLayout maxWidth="wide" className="space-y-6">
       <header className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Case studies</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="font-montserrat text-2xl sm:text-[36px] font-bold text-attooh-charcoal tracking-tight break-words">
+            Case studies
+          </h1>
+          <p className="text-base text-attooh-muted mt-1">
             Real-household scenarios that show the framework in motion.
           </p>
         </div>
-        <span className="text-sm text-gray-500">
+        <span className="font-lato text-[11px] uppercase tracking-wider text-attooh-muted">
           {loading ? 'Loading…' : `${total} stud${total === 1 ? 'y' : 'ies'}`}
         </span>
       </header>
 
-      <section className="bg-white rounded-lg shadow p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <label className="block">
-            <span className="text-xs font-medium text-gray-700">Search</span>
+            <span className={labelCls}>Search</span>
             <input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="name, situation, learning"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={fieldCls}
             />
           </label>
           <label className="block">
-            <span className="text-xs font-medium text-gray-700">Stage</span>
+            <span className={labelCls}>Stage</span>
             <select
               value={stage}
               onChange={(e) => setStage(e.target.value as Stage | '')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={fieldCls}
             >
               <option value="">All stages</option>
               {STAGE_OPTIONS.map((s) => (
@@ -101,11 +107,11 @@ export const CaseStudiesPage: React.FC = () => {
             </select>
           </label>
           <label className="block">
-            <span className="text-xs font-medium text-gray-700">Step</span>
+            <span className={labelCls}>Step</span>
             <select
               value={step}
               onChange={(e) => setStep(e.target.value as StepNumber | '')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={fieldCls}
             >
               <option value="">All steps</option>
               {STEP_OPTIONS.map((s) => (
@@ -121,7 +127,7 @@ export const CaseStudiesPage: React.FC = () => {
             <button
               type="button"
               onClick={clearFilters}
-              className="text-xs text-blue-600 hover:text-blue-800 underline"
+              className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
             >
               Clear filters
             </button>
@@ -132,23 +138,25 @@ export const CaseStudiesPage: React.FC = () => {
       {error && <FormError error={error} />}
 
       {studies && studies.length === 0 && !loading && (
-        <p className="text-center text-gray-600 py-8">
+        <p className="text-center text-attooh-muted py-8">
           No case studies match. Try clearing filters.
         </p>
       )}
 
       {studies && studies.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {studies.map((study) => (
             <Link
               key={study.study_code}
               to={`/case-studies/${encodeURIComponent(study.study_code)}`}
-              className="block bg-white rounded-lg shadow border border-transparent p-5 hover:border-blue-500 hover:shadow-md transition"
+              className="group block bg-attooh-card rounded-xl border border-attooh-border p-6 shadow-attooh-sm transition-all duration-200 hover:border-attooh-lime hover:shadow-attooh-md hover:-translate-y-[3px]"
             >
-              <div className="text-xs text-gray-500 mb-1">{study.study_code}</div>
-              <h3 className="text-base font-semibold text-gray-900 mb-2">{study.name}</h3>
-              <p className="text-sm text-gray-700 mb-2 line-clamp-3">{study.summary}</p>
-              <p className="text-xs text-gray-500 line-clamp-2">{study.learning}</p>
+              <div className="font-lato text-[11px] font-bold uppercase tracking-[0.16em] text-attooh-lime-hover mb-2">
+                {study.study_code}
+              </div>
+              <h3 className="text-base font-bold text-attooh-charcoal mb-2">{study.name}</h3>
+              <p className="text-sm text-attooh-charcoal mb-2 line-clamp-3">{study.summary}</p>
+              <p className="text-xs text-attooh-muted line-clamp-2 italic">{study.learning}</p>
             </Link>
           ))}
         </div>

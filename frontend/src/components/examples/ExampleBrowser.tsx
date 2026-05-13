@@ -77,38 +77,44 @@ export const ExampleBrowser: React.FC = () => {
 
   const filtersActive = step || stage || calc || hasCalc || q;
 
+  const labelCls = 'block font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate';
+  const fieldCls =
+    'mt-1.5 block w-full px-3.5 py-2.5 border-[1.5px] border-attooh-border rounded-lg text-sm text-attooh-charcoal bg-white transition focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale';
+
   return (
     <AppLayout maxWidth="wide" className="space-y-6">
       <header className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Worked examples</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="font-montserrat text-2xl sm:text-[36px] font-bold text-attooh-charcoal tracking-tight break-words">
+            Worked examples
+          </h1>
+          <p className="text-base text-attooh-muted mt-1">
             Scenarios that illustrate each step of the framework.
           </p>
         </div>
-        <span className="text-sm text-gray-500">
+        <span className="font-lato text-[11px] uppercase tracking-wider text-attooh-muted">
           {loading ? 'Loading…' : `${total} example${total === 1 ? '' : 's'}`}
         </span>
       </header>
 
-      <section className="bg-white rounded-lg shadow p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+      <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <label className="block">
-            <span className="text-xs font-medium text-gray-700">Search</span>
+            <span className={labelCls}>Search</span>
             <input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="title, principle, keywords"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={fieldCls}
             />
           </label>
           <label className="block">
-            <span className="text-xs font-medium text-gray-700">Step</span>
+            <span className={labelCls}>Step</span>
             <select
               value={step}
               onChange={(e) => setStep(e.target.value as StepNumber | '')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={fieldCls}
             >
               <option value="">All steps</option>
               {STEP_OPTIONS.map((s) => (
@@ -119,11 +125,11 @@ export const ExampleBrowser: React.FC = () => {
             </select>
           </label>
           <label className="block">
-            <span className="text-xs font-medium text-gray-700">Stage</span>
+            <span className={labelCls}>Stage</span>
             <select
               value={stage}
               onChange={(e) => setStage(e.target.value as Stage | '')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={fieldCls}
             >
               <option value="">All stages</option>
               {STAGE_OPTIONS.map((s) => (
@@ -134,11 +140,11 @@ export const ExampleBrowser: React.FC = () => {
             </select>
           </label>
           <label className="block">
-            <span className="text-xs font-medium text-gray-700">Calculator type</span>
+            <span className={labelCls}>Calculator type</span>
             <select
               value={calc}
               onChange={(e) => setCalc(e.target.value as CalculatorType | '')}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={fieldCls}
             >
               <option value="">Any</option>
               {CALC_OPTIONS.map((c) => (
@@ -148,14 +154,14 @@ export const ExampleBrowser: React.FC = () => {
               ))}
             </select>
           </label>
-          <label className="flex items-end gap-2 pb-1">
+          <label className="flex items-end gap-2 pb-2">
             <input
               type="checkbox"
               checked={hasCalc}
               onChange={(e) => setHasCalc(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-attooh-border text-attooh-lime focus:ring-attooh-lime"
             />
-            <span className="text-sm text-gray-800">Has calculator</span>
+            <span className="text-sm text-attooh-charcoal">Has calculator</span>
           </label>
         </div>
 
@@ -164,7 +170,7 @@ export const ExampleBrowser: React.FC = () => {
             <button
               type="button"
               onClick={clearFilters}
-              className="text-xs text-blue-600 hover:text-blue-800 underline"
+              className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
             >
               Clear filters
             </button>
@@ -175,13 +181,13 @@ export const ExampleBrowser: React.FC = () => {
       {error && <FormError error={error} />}
 
       {examples && examples.length === 0 && !loading && (
-        <p className="text-center text-gray-600 py-8">
+        <p className="text-center text-attooh-muted py-8">
           No examples match. Try clearing filters.
         </p>
       )}
 
       {examples && examples.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {examples.map((ex) => (
             <ExampleCard key={ex.example_code} example={ex} />
           ))}
