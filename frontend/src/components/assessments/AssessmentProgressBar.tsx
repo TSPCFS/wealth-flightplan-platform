@@ -9,7 +9,7 @@ export const AssessmentProgressBar: React.FC<AssessmentProgressBarProps> = ({ cu
   const pct = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
   return (
     <div className="w-full">
-      <div className="flex justify-between text-xs text-gray-600 mb-1">
+      <div className="flex justify-between text-xs text-attooh-muted mb-1.5">
         <span>
           Question {current} of {total}
         </span>
@@ -21,10 +21,10 @@ export const AssessmentProgressBar: React.FC<AssessmentProgressBarProps> = ({ cu
         aria-valuemax={total}
         aria-valuenow={current}
         aria-label={`Question ${current} of ${total}`}
-        className="w-full bg-gray-200 rounded-full h-2"
+        className="w-full bg-attooh-border rounded-full h-2 overflow-hidden"
       >
         <div
-          className="bg-blue-600 h-2 rounded-full transition-all"
+          className="bg-attooh-lime h-2 rounded-full transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>

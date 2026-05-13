@@ -70,18 +70,20 @@ export const ResetProgressModal: React.FC<Props> = ({
         if (e.key === 'Escape' && !submitting) onClose();
       }}
     >
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
-        <h2 id="reset-modal-title" className="text-xl font-bold text-gray-900">
+      <div className="bg-attooh-card rounded-2xl shadow-attooh-md border border-attooh-border max-w-md w-full p-7 space-y-5">
+        <h2 id="reset-modal-title" className="font-montserrat text-xl font-bold text-attooh-charcoal tracking-tight">
           Reset all your testing data?
         </h2>
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-attooh-charcoal">
           This action wipes everything you've created on this account so you can
           re-run the cascade from a clean state.
         </p>
 
-        <div className="rounded-lg bg-red-50 ring-1 ring-red-200 p-3 text-sm">
-          <p className="font-semibold text-red-800 mb-1">Will be deleted</p>
-          <ul className="list-disc list-inside text-red-800 space-y-0.5">
+        <div className="rounded-r-lg bg-[rgba(199,54,59,0.08)] border-l-4 border-attooh-danger p-4 text-sm">
+          <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-danger mb-1.5">
+            Will be deleted
+          </p>
+          <ul className="list-disc list-inside text-attooh-charcoal space-y-0.5">
             <li>All assessments (5Q, 10Q, GAP test)</li>
             <li>All worksheet drafts and submissions</li>
             <li>Framework step progress</li>
@@ -89,17 +91,19 @@ export const ResetProgressModal: React.FC<Props> = ({
           </ul>
         </div>
 
-        <div className="rounded-lg bg-emerald-50 ring-1 ring-emerald-200 p-3 text-sm">
-          <p className="font-semibold text-emerald-800 mb-1">Will be kept</p>
-          <ul className="list-disc list-inside text-emerald-800 space-y-0.5">
+        <div className="rounded-r-lg bg-attooh-lime-pale border-l-4 border-attooh-lime p-4 text-sm">
+          <p className="font-lato text-[10px] font-bold uppercase tracking-[0.16em] text-attooh-success mb-1.5">
+            Will be kept
+          </p>
+          <ul className="list-disc list-inside text-attooh-charcoal space-y-0.5">
             <li>Your account, profile, and password</li>
             <li>Compliance audit log</li>
           </ul>
         </div>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-700">
-            Type <span className="font-mono font-bold">{CONFIRM_WORD}</span> to confirm
+          <span className="font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate">
+            Type <span className="font-mono font-bold text-attooh-charcoal">{CONFIRM_WORD}</span> to confirm
           </span>
           <input
             ref={inputRef}
@@ -110,14 +114,14 @@ export const ResetProgressModal: React.FC<Props> = ({
             aria-label="Type RESET to confirm"
             autoComplete="off"
             spellCheck={false}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-mono focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus:border-blue-500"
+            className="mt-1.5 block w-full px-3.5 py-2.5 border-[1.5px] border-attooh-border rounded-lg text-sm font-mono bg-white transition focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale"
           />
         </label>
 
         {error && <FormError error={error} />}
 
         {toast ? (
-          <p role="status" className="text-sm text-emerald-800 text-center">
+          <p role="status" className="text-sm font-medium text-attooh-success text-center">
             {toast}
           </p>
         ) : (

@@ -132,28 +132,32 @@ export const ProfileForm: React.FC<Props> = ({ profile, onSaved }) => {
         <input
           type="checkbox"
           {...register('is_business_owner')}
-          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          className="h-4 w-4 rounded border-attooh-border text-attooh-lime focus:ring-attooh-lime"
         />
-        <span className="text-sm text-gray-800">
+        <span className="text-sm text-attooh-charcoal">
           I'm a business owner (unlocks Step 4b in your progress)
         </span>
       </label>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <label className="block">
-          <span className="text-sm font-medium text-gray-700">Primary language</span>
+          <span className="font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate">
+            Primary language
+          </span>
           <select
             {...register('primary_language')}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1.5 block w-full px-3.5 py-2.5 border-[1.5px] border-attooh-border rounded-lg text-sm text-attooh-charcoal bg-white transition focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale"
           >
             <option value="en">English</option>
           </select>
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-gray-700">Timezone</span>
+          <span className="font-lato font-bold text-[11px] uppercase tracking-[0.1em] text-attooh-slate">
+            Timezone
+          </span>
           <select
             {...register('timezone')}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1.5 block w-full px-3.5 py-2.5 border-[1.5px] border-attooh-border rounded-lg text-sm text-attooh-charcoal bg-white transition focus:outline-none focus:border-attooh-lime focus:ring-[3px] focus:ring-attooh-lime-pale"
           >
             <option value="SAST">SAST (GMT+2)</option>
           </select>
@@ -168,7 +172,7 @@ export const ProfileForm: React.FC<Props> = ({ profile, onSaved }) => {
           <span
             role="status"
             data-testid="profile-saved-toast"
-            className="text-sm text-emerald-700"
+            className="text-sm font-medium text-attooh-success"
           >
             Saved
           </span>

@@ -30,13 +30,14 @@ export const WorksheetSubmissionResult: React.FC<Props> = ({ submission }) => {
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="font-montserrat text-2xl font-bold text-attooh-charcoal tracking-tight">
           {submission.worksheet_code} results
         </h1>
         <div className="flex gap-2">
           <Button
             type="button"
             variant="secondary"
+            size="sm"
             onClick={() => onExport('pdf')}
             disabled={exporting !== null}
             aria-label="Export as PDF"
@@ -46,6 +47,7 @@ export const WorksheetSubmissionResult: React.FC<Props> = ({ submission }) => {
           <Button
             type="button"
             variant="secondary"
+            size="sm"
             onClick={() => onExport('csv')}
             disabled={exporting !== null}
             aria-label="Export as CSV"
@@ -64,12 +66,12 @@ export const WorksheetSubmissionResult: React.FC<Props> = ({ submission }) => {
         values={submission.calculated_values}
       />
 
-      <div className="text-center text-sm">
+      <div className="text-center">
         <Link
           to={`/worksheets/${encodeURIComponent(submission.worksheet_code)}/history`}
-          className="text-blue-600 hover:text-blue-800 underline"
+          className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
         >
-          View history for this worksheet
+          View history for this worksheet →
         </Link>
       </div>
     </div>

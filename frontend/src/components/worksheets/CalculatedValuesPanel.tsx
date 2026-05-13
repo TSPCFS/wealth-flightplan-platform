@@ -42,15 +42,15 @@ export const CalculatedValuesPanel: React.FC<Props> = ({ values }) => {
   if (entries.length === 0) return null;
 
   return (
-    <section className="bg-white rounded-lg shadow p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-3">
+    <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7">
+      <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate mb-4">
         Calculated values
       </h2>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {entries.map(([key, value]) => (
-          <div key={key} className="flex items-baseline justify-between gap-2 border-b border-gray-100 pb-1">
-            <dt className="text-sm text-gray-600">{humaniseKey(key)}</dt>
-            <dd className="text-sm font-medium text-gray-900 text-right">
+          <div key={key} className="flex items-baseline justify-between gap-2 border-b border-attooh-border pb-1.5">
+            <dt className="text-sm text-attooh-muted">{humaniseKey(key)}</dt>
+            <dd className="text-sm font-bold text-attooh-charcoal text-right">
               {renderValue(key, value)}
             </dd>
           </div>

@@ -18,7 +18,7 @@ interface HistoryTimelineProps {
 export const HistoryTimeline: React.FC<HistoryTimelineProps> = ({ progression }) => {
   if (progression.length === 0) {
     return (
-      <p className="text-gray-600">
+      <p className="text-attooh-muted">
         Take a 5- or 10-question assessment to start building your progression timeline.
       </p>
     );
@@ -31,24 +31,24 @@ export const HistoryTimeline: React.FC<HistoryTimelineProps> = ({ progression })
   );
 
   return (
-    <ol className="border-l-2 border-blue-200 pl-6 space-y-6">
+    <ol className="border-l-2 border-attooh-lime pl-6 space-y-6">
       {sorted.map((entry, idx) => {
         const isLatest = idx === sorted.length - 1;
         return (
           <li key={`${entry.date}-${entry.stage}`} className="relative">
             <span
               aria-hidden="true"
-              className={`absolute -left-[33px] top-1 inline-block w-4 h-4 rounded-full ring-2 ring-white ${
-                isLatest ? 'bg-blue-600' : 'bg-blue-300'
+              className={`absolute -left-[33px] top-1 inline-block w-4 h-4 rounded-full ring-[3px] ring-attooh-lime-pale ${
+                isLatest ? 'bg-attooh-lime' : 'bg-attooh-lime-pale border-2 border-attooh-lime'
               }`}
             />
             <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-base font-semibold text-gray-900">{entry.stage}</h3>
-              <time className="text-xs text-gray-500" dateTime={entry.date}>
+              <h3 className="text-base font-bold text-attooh-charcoal">{entry.stage}</h3>
+              <time className="text-xs text-attooh-muted" dateTime={entry.date}>
                 {formatDate(entry.date)}
               </time>
             </div>
-            <p className="text-sm text-gray-600">Score: {entry.score}</p>
+            <p className="text-sm text-attooh-muted">Score: {entry.score}</p>
           </li>
         );
       })}

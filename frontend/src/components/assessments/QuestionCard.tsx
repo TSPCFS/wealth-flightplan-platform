@@ -21,16 +21,19 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   const groupName = `assessment-${question.code}`;
 
   return (
-    <fieldset className="bg-white rounded-lg shadow p-6 sm:p-8">
+    <fieldset className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7 sm:p-9">
       <legend className="sr-only">
         Question {questionNumber} of {total}: {question.prompt}
       </legend>
-      <p className="text-sm font-medium text-blue-700 mb-1" aria-hidden="true">
+      <p
+        className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-lime-hover mb-2"
+        aria-hidden="true"
+      >
         Question {questionNumber} of {total}
       </p>
-      <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{question.prompt}</h2>
+      <h2 className="text-lg sm:text-xl font-bold text-attooh-charcoal mb-2">{question.prompt}</h2>
       {question.helperText && (
-        <p className="text-sm text-gray-500 mb-4">{question.helperText}</p>
+        <p className="text-sm text-attooh-muted mb-4">{question.helperText}</p>
       )}
 
       <div role="radiogroup" aria-labelledby={`${groupName}-legend`} className="space-y-3 mt-4">
@@ -41,10 +44,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             <label
               key={option.value}
               htmlFor={id}
-              className={`flex items-center min-h-[44px] px-4 py-3 rounded-md border cursor-pointer transition-colors ${
+              className={`flex items-center min-h-[44px] px-4 py-3 rounded-lg border-[1.5px] cursor-pointer transition-colors ${
                 selected
-                  ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600'
-                  : 'border-gray-300 hover:bg-gray-50'
+                  ? 'border-attooh-lime bg-attooh-lime-pale'
+                  : 'border-attooh-border hover:bg-attooh-bg'
               }`}
             >
               <input
@@ -54,9 +57,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                 value={option.value}
                 checked={selected}
                 onChange={() => onChange(option.value)}
-                className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                className="h-4 w-4 text-attooh-lime border-attooh-border focus:ring-attooh-lime"
               />
-              <span className="ml-3 text-base text-gray-900">{option.label}</span>
+              <span className="ml-3 text-base text-attooh-charcoal">{option.label}</span>
             </label>
           );
         })}

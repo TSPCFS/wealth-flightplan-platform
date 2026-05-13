@@ -133,7 +133,7 @@ export const AssessmentFlow: React.FC<AssessmentFlowProps> = ({
         <div className="mt-4 text-center">
           <button
             type="button"
-            className="text-sm text-blue-600 hover:text-blue-800 underline"
+            className="font-lato font-bold text-xs uppercase tracking-wider text-attooh-lime-hover hover:text-attooh-charcoal"
             onClick={() => {
               const firstBad = questions.findIndex((q) => fieldErrors[q.code]);
               if (firstBad >= 0) draft.setIndex(firstBad);

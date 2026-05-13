@@ -32,20 +32,20 @@ export const StageDisplay: React.FC<StageDisplayProps> = ({
 
   const deltaColor =
     delta.direction === 'up'
-      ? 'text-green-700 bg-green-50'
+      ? 'text-attooh-success bg-attooh-lime-pale'
       : delta.direction === 'down'
-        ? 'text-red-700 bg-red-50'
-        : 'text-gray-700 bg-gray-100';
+        ? 'text-attooh-danger bg-[rgba(199,54,59,0.1)]'
+        : 'text-attooh-slate bg-attooh-bg';
 
   return (
-    <section className="bg-white rounded-lg shadow p-6 sm:p-8">
+    <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7 sm:p-9">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="font-lato font-bold text-[11px] uppercase tracking-[0.16em] text-attooh-slate">
           Your current stage
         </h2>
         <span
           data-testid="stage-delta"
-          className={`inline-flex items-center text-xs font-semibold px-2 py-1 rounded ${deltaColor}`}
+          className={`inline-flex items-center font-lato text-[10px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded ${deltaColor}`}
         >
           <span aria-hidden="true" className="mr-1">
             {delta.symbol}
@@ -54,17 +54,23 @@ export const StageDisplay: React.FC<StageDisplayProps> = ({
         </span>
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 break-words">{calculatedStage}</h1>
-      <p className="text-gray-700 mb-4">{stageDetails.description}</p>
+      <h1 className="font-montserrat text-3xl sm:text-4xl font-bold text-attooh-charcoal mb-3 break-words tracking-tight">
+        {calculatedStage}
+      </h1>
+      <p className="text-attooh-charcoal mb-5">{stageDetails.description}</p>
 
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
         <div>
-          <dt className="text-gray-500">Income runway</dt>
-          <dd className="text-gray-900 font-medium">{stageDetails.income_runway}</dd>
+          <dt className="font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-attooh-muted">
+            Income runway
+          </dt>
+          <dd className="text-attooh-charcoal font-medium mt-0.5">{stageDetails.income_runway}</dd>
         </div>
         <div>
-          <dt className="text-gray-500">Total score</dt>
-          <dd className="text-gray-900 font-medium">{totalScore}</dd>
+          <dt className="font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-attooh-muted">
+            Total score
+          </dt>
+          <dd className="text-attooh-charcoal font-medium mt-0.5">{totalScore}</dd>
         </div>
       </dl>
     </section>

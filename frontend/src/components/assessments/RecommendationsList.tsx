@@ -11,9 +11,9 @@ export const RecommendationsList: React.FC<RecommendationsListProps> = ({
 }) => {
   if (recommendations.length === 0) return null;
   return (
-    <section className="bg-white rounded-lg shadow p-6 sm:p-8">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">{title}</h2>
-      <ul className="space-y-2 list-disc list-inside text-gray-800">
+    <section className="bg-attooh-card rounded-xl border border-attooh-border shadow-attooh-sm p-7 sm:p-9">
+      <h2 className="font-montserrat text-lg font-bold text-attooh-charcoal mb-4">{title}</h2>
+      <ul className="space-y-2 list-disc list-inside text-attooh-charcoal marker:text-attooh-lime-hover">
         {recommendations.map((rec) => (
           <li key={rec}>{rec}</li>
         ))}
